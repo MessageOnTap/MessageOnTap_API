@@ -19,8 +19,8 @@ public class DataUtils {
         return json;
     }
 
-    public static Map<String, Object> jsonToMap(JSONObject json) throws JSONException {
-        Map<String, Object> retMap = new HashMap<String, Object>();
+    public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
+        HashMap<String, Object> retMap = new HashMap<String, Object>();
 
         if(json != JSONObject.NULL) {
             retMap = toMap(json);
@@ -28,8 +28,8 @@ public class DataUtils {
         return retMap;
     }
 
-    public static Map<String, Object> toMap(JSONObject object) throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
+    public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
+        HashMap<String, Object> map = new HashMap<String, Object>();
 
         Iterator<String> keysItr = object.keys();
         while(keysItr.hasNext()) {
