@@ -33,8 +33,8 @@ public class PluginData implements Parcelable {
     /**
      * Sets the trigger criteria string. Default null.
      */
-    public PluginData trigger(String trigger) {
-        mTrigger = trigger;
+    public PluginData trigger(Trigger trigger) {
+        mTrigger = trigger.getJson();
         return this;
     }
 
