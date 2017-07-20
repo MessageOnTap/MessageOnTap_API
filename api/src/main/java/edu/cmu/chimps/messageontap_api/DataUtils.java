@@ -1,11 +1,13 @@
 package edu.cmu.chimps.messageontap_api;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,5 +64,27 @@ public class DataUtils {
             list.add(value);
         }
         return list;
+    }
+
+    public static String SimpleObjectToJson(Object object,String typeKey){
+        Gson gson=new Gson();
+        switch (typeKey){
+            case Globals.TYPE_TRIGGER:
+                Type type = new TypeToken<List<Trigger>>() {}.getType();
+                return gson.toJson(object,type);
+            default:
+                return "";
+        }
+    }
+
+    public static Object JsonToSimpleObject(String json,String typeKey){
+        Gson gson=new Gson();
+        switch (typeKey){
+            case Globals.TYPE_TRIGGER:
+                Type type = new TypeToken<List<Trigger>>() {}.getType();
+                return gson.fromJson(json,type);
+            default:
+                return "";
+        }
     }
 }

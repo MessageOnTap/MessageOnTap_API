@@ -38,4 +38,7 @@ public class Globals {
     public final static String ACTION_END= "end";
     public final static String ACTION_CREATE					= "create";
 
+    //Object Type
+    public final static String TYPE_TRIGGER = "trigger";
+
 }
