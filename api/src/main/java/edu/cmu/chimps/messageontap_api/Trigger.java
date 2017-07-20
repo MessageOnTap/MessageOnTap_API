@@ -1,6 +1,6 @@
 package edu.cmu.chimps.messageontap_api;
 
-import android.content.ComponentName;
+import android.content.PackageName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,15 +13,13 @@ import java.util.Set;
 
 public class Trigger {
     private ArrayList<String> mTriggerKeyList;
-    ComponentName mComponentName;
-    public Trigger(ComponentName componentName){
+    private String mPackageName;
+    public Trigger(){
         mTriggerKeyList = new ArrayList<>();
-        mComponentName = componentName;
     }
 
-    public Trigger(ComponentName componentName,ArrayList<String> keyList){
+    public Trigger(ArrayList<String> keyList){
         mTriggerKeyList = keyList;
-        mComponentName = componentName;
     }
 
     public boolean activateTrigger(Set<String> set){
@@ -33,8 +31,12 @@ public class Trigger {
         return true;
     }
 
-    public ComponentName getComponentName(){
-        return mComponentName;
+    public PackageName getPackageName(){
+        return mPackageName;
+    }
+
+    public void setPackageName(String packageName) {
+        mPackageName = packageName;
     }
 
     public String getJson(){
