@@ -19,6 +19,7 @@ allprojects {
         maven { url 'http://www.idescout.com/maven/repo/' }
         maven {
             url 'https://jitpack.io'
+            credentials { username '2187bd0393c236c0d58fbf94fecff2a8d1c3c50b' }
         }
     }
 }
