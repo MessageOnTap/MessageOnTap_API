@@ -1,6 +1,5 @@
 package edu.cmu.chimps.messageontap_api;
 
-import android.content.PackageName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,7 +30,7 @@ public class Trigger {
         return true;
     }
 
-    public PackageName getPackageName(){
+    public String getPackageName(){
         return mPackageName;
     }
 
