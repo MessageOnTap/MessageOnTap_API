@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DataUtils {
-    public static String hashMapToString(HashMap<String,Object> map){
+    public static String hashMapToString(HashMap<String, Object> map) {
         Gson gson = new Gson();
         String json = gson.toJson(map);
         return json;
@@ -24,7 +24,7 @@ public class DataUtils {
     public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
         HashMap<String, Object> retMap = new HashMap<String, Object>();
 
-        if(json != JSONObject.NULL) {
+        if (json != JSONObject.NULL) {
             retMap = toMap(json);
         }
         return retMap;
@@ -34,15 +34,13 @@ public class DataUtils {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
         Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
+        while (keysItr.hasNext()) {
             String key = keysItr.next();
             Object value = object.get(key);
 
-            if(value instanceof JSONArray) {
+            if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
+            } else if (value instanceof JSONObject) {
                 value = toMap((JSONObject) value);
             }
             map.put(key, value);
@@ -52,13 +50,11 @@ public class DataUtils {
 
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
+        for (int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
-            if(value instanceof JSONArray) {
+            if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);
-            }
-
-            else if(value instanceof JSONObject) {
+            } else if (value instanceof JSONObject) {
                 value = toMap((JSONObject) value);
             }
             list.add(value);
@@ -66,23 +62,25 @@ public class DataUtils {
         return list;
     }
 
-    public static String SimpleObjectToJson(Object object,String typeKey){
-        Gson gson=new Gson();
-        switch (typeKey){
+    public static String SimpleObjectToJson(Object object, String typeKey) {
+        Gson gson = new Gson();
+        switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<List<Trigger>>() {}.getType();
-                return gson.toJson(object,type);
+                Type type = new TypeToken<List<Trigger>>() {
+                }.getType();
+                return gson.toJson(object, type);
             default:
                 return "";
         }
     }
 
-    public static Object JsonToSimpleObject(String json,String typeKey){
-        Gson gson=new Gson();
-        switch (typeKey){
+    public static Object JsonToSimpleObject(String json, String typeKey) {
+        Gson gson = new Gson();
+        switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<List<Trigger>>() {}.getType();
-                return gson.fromJson(json,type);
+                Type type = new TypeToken<List<Trigger>>() {
+                }.getType();
+                return gson.fromJson(json, type);
             default:
                 return "";
         }

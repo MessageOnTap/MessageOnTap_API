@@ -1,4 +1,5 @@
 package edu.cmu.chimps.messageontap_api;
+
 //TODO Change the Globals which could be downloaded from online server from PKG
 public class Globals {
 
@@ -22,21 +23,21 @@ public class Globals {
     public final static String KEY_ACTION_UPDATE_CONTACT = "action_update_contact";
     public final static String KEY_ACTION_CREATE_GRAPH_NODE = "action_create_graph_node";
     public final static String KEY_ACTION_UPDATE_GRAPH_NODE = "action_update_graph_node";
-    public final static String KEY_ACTION_MESSAGE_PERCEPTION	= "action_message_perception";
-    public final static String KEY_ACTION_UI					= "action_ui";
+    public final static String KEY_ACTION_MESSAGE_PERCEPTION = "action_message_perception";
+    public final static String KEY_ACTION_UI = "action_ui";
 
     public final static String KEY_ACTION = "action";
     public final static String KEY_QUERY_SUBJECT = "query_subject";
     public final static String KEY_QUERY_INFO = "query_info";
     public final static String KEY_QUERY_ID = "query_id";
-    public final static String KEY_ATTRIBUTE_LIST="attribute_list";
+    public final static String KEY_ATTRIBUTE_LIST = "attribute_list";
     //An action Type for representing doing nothing
-    public final static String ACTION_UPDATE= "update";
-    public final static String ACTION_SHOW= "show";
-    public final static String ACTION_RETRIEVE= "retrieve";
+    public final static String ACTION_UPDATE = "update";
+    public final static String ACTION_SHOW = "show";
+    public final static String ACTION_RETRIEVE = "retrieve";
     public final static String ACTION_ADD_EXACT = "add_exact";
-    public final static String ACTION_END= "end";
-    public final static String ACTION_CREATE					= "create";
+    public final static String ACTION_END = "end";
+    public final static String ACTION_CREATE = "create";
 
     //Object Type
     public final static String TYPE_TRIGGER = "trigger";

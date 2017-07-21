@@ -13,24 +13,25 @@ import java.util.Set;
 public class Trigger {
     private ArrayList<String> mTriggerKeyList;
     private String mPackageName;
-    public Trigger(){
+
+    public Trigger() {
         mTriggerKeyList = new ArrayList<>();
     }
 
-    public Trigger(ArrayList<String> keyList){
+    public Trigger(ArrayList<String> keyList) {
         mTriggerKeyList = keyList;
     }
 
-    public boolean activateTrigger(Set<String> set){
-        for (String mKey : mTriggerKeyList){
-            if(!set.contains(mKey)){
+    public boolean activateTrigger(Set<String> set) {
+        for (String mKey : mTriggerKeyList) {
+            if (!set.contains(mKey)) {
                 return false;
             }
         }
         return true;
     }
 
-    public String getPackageName(){
+    public String getPackageName() {
         return mPackageName;
     }
 
@@ -38,11 +39,11 @@ public class Trigger {
         mPackageName = packageName;
     }
 
-    public String getJson(){
-        return DataUtils.SimpleObjectToJson(this,Globals.TYPE_TRIGGER);
+    public String getJson() {
+        return DataUtils.SimpleObjectToJson(this, Globals.TYPE_TRIGGER);
     }
 
-    public String getTypeKey(){
+    public String getTypeKey() {
         return Globals.TYPE_TRIGGER;
     }
 }
