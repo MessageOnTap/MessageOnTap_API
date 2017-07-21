@@ -66,7 +66,7 @@ public class DataUtils {
         Gson gson = new Gson();
         switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<List<Trigger>>() {
+                Type type = new TypeToken<Trigger>() {
                 }.getType();
                 return gson.toJson(object, type);
             default:
@@ -78,7 +78,7 @@ public class DataUtils {
         Gson gson = new Gson();
         switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<List<Trigger>>() {
+                Type type = new TypeToken<Trigger>() {
                 }.getType();
                 return gson.fromJson(json, type);
             default:
