@@ -19,7 +19,7 @@ public abstract class MessageOnTapPlugin extends Service {
 
     protected IPluginManager mManager;
 
-    private IBinder mBinder = new IPlugin.Stub(){
+    private IBinder mBinder = new IPlugin.Stub() {
 
         @Override
         public void onMessageReceived(MessageData data) throws RemoteException {
@@ -36,7 +36,7 @@ public abstract class MessageOnTapPlugin extends Service {
         public void registerManager(IPluginManager manager) throws RemoteException {
             String packageName = null;
             String[] packages = getPackageManager().getPackagesForUid(Binder.getCallingUid());
-            if(packages!=null && packages.length>0){
+            if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
             Log.e("plugin", "registering manager " + packageName);
@@ -50,7 +50,7 @@ public abstract class MessageOnTapPlugin extends Service {
         public void unregisterManager(IPluginManager manager) throws RemoteException {
             String packageName = null;
             String[] packages = getPackageManager().getPackagesForUid(Binder.getCallingUid());
-            if(packages!=null && packages.length>0){
+            if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
             mManager = null;
@@ -86,5 +86,6 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     protected abstract PluginData iPluginData();
+
     protected abstract void analyzeMessage(MessageData data);
 }

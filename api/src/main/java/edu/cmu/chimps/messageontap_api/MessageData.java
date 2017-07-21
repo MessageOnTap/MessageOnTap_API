@@ -77,7 +77,7 @@ public class MessageData implements Parcelable {
      * Returns the method
      * Default null.
      */
-    public String method(){
+    public String method() {
         return mMethod;
     }
 
@@ -120,7 +120,7 @@ public class MessageData implements Parcelable {
         data.putLong(KEY_QUERYID, mQueryid);
         data.putString(KEY_REQUEST, mRequest);
         data.putString(KEY_RESPONSE, mResponse);
-        data.putString(KEY_METHOD,mMethod);
+        data.putString(KEY_METHOD, mMethod);
         return data;
     }
 
