@@ -11,5 +11,9 @@ Official plug-ins of MessageOnTap can be found here: [MessageOnTap_Plugins](http
 
 ## How to Develop a MessageOnTap Plug-In?
 ### How Plug-Ins Work?
+![Loop of Flow](images/flow.jpg)
+*TBA...*
 ### Web Development Portal
+*TBA...*
 ### Development Document
+*TBA...*
