@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * This is the data type for pluggings to set up their triggers at message perception
+ * This is the data type for plugins to set up their triggers at message perception
  */
 
 public class Trigger {

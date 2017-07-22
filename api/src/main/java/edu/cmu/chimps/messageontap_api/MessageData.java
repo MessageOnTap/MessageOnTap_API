@@ -10,13 +10,15 @@ import org.json.JSONObject;
 
 
 public class MessageData implements Parcelable {
-    private static final String KEY_QUERYID = "queryid";
+    private static final String KEY_FID = "flow_id";
+    private static final String KEY_SID = "sequence_id";
     private static final String KEY_REQUEST = "request";
     private static final String KEY_RESPONSE = "response";
     private static final String KEY_METHOD = "method";
 
 
-    private long mQueryid = 0;
+    private long mFID = 0;
+    private long mSID = 0;
     private String mRequest = null;
     private String mResponse = null;
     private String mMethod = null;
@@ -26,18 +28,34 @@ public class MessageData implements Parcelable {
     }
 
     /**
-     * Returns the query ID
+     * Returns the flow ID
      * Default 0.
      */
-    public long queryid() {
-        return mQueryid;
+    public long fid() {
+        return mFID;
     }
 
     /**
-     * Sets the query ID. Default 0.
+     * Sets the flow ID. Default 0.
      */
-    public MessageData queryid(long queryid) {
-        mQueryid = queryid;
+    public MessageData fid(long fid) {
+        mFID = fid;
+        return this;
+    }
+
+    /**
+     * Returns the sequence ID
+     * Default 0.
+     */
+    public long sid() {
+        return mSID;
+    }
+
+    /**
+     * Sets the sequence ID. Default 0.
+     */
+    public MessageData sid(long sid) {
+        mSID = sid;
         return this;
     }
 
@@ -94,7 +112,8 @@ public class MessageData implements Parcelable {
      */
     public JSONObject serialize() throws JSONException {
         JSONObject data = new JSONObject();
-        data.put(KEY_QUERYID, mQueryid);
+        data.put(KEY_FID, mFID);
+        data.put(KEY_SID, mSID);
         data.put(KEY_REQUEST, mRequest);
         data.put(KEY_RESPONSE, mResponse);
         data.put(KEY_METHOD, mMethod);
@@ -106,7 +125,8 @@ public class MessageData implements Parcelable {
      * object.
      */
     public void deserialize(JSONObject data) throws JSONException {
-        this.mQueryid = data.optLong(KEY_QUERYID);
+        this.mFID = data.optLong(KEY_FID);
+        this.mSID = data.optLong(KEY_SID);
         this.mRequest = data.optString(KEY_REQUEST);
         this.mResponse = data.optString(KEY_RESPONSE);
         this.mMethod = data.optString(KEY_METHOD);
@@ -117,7 +137,8 @@ public class MessageData implements Parcelable {
      */
     public Bundle toBundle() {
         Bundle data = new Bundle();
-        data.putLong(KEY_QUERYID, mQueryid);
+        data.putLong(KEY_FID, mFID);
+        data.putLong(KEY_SID, mSID);
         data.putString(KEY_REQUEST, mRequest);
         data.putString(KEY_RESPONSE, mResponse);
         data.putString(KEY_METHOD, mMethod);
@@ -129,7 +150,8 @@ public class MessageData implements Parcelable {
      * object.
      */
     public void fromBundle(Bundle src) {
-        this.mQueryid = src.getLong(KEY_QUERYID);
+        this.mFID = src.getLong(KEY_FID);
+        this.mSID = src.getLong(KEY_SID);
         this.mRequest = src.getString(KEY_REQUEST);
         this.mResponse = src.getString(KEY_RESPONSE);
         this.mMethod = src.getString(KEY_METHOD);
@@ -152,7 +174,8 @@ public class MessageData implements Parcelable {
     private MessageData(Parcel in) {
         int parcelableSize = in.readInt();
         int startPosition = in.dataPosition();
-        this.mQueryid = in.readLong();
+        this.mFID = in.readLong();
+        this.mSID = in.readLong();
         this.mRequest = in.readString();
         this.mResponse = in.readString();
         this.mMethod = in.readString();
@@ -174,7 +197,8 @@ public class MessageData implements Parcelable {
         int sizePosition = parcel.dataPosition();
         parcel.writeInt(0);
         int startPosition = parcel.dataPosition();
-        parcel.writeLong(mQueryid);
+        parcel.writeLong(mFID);
+        parcel.writeLong(mSID);
         parcel.writeString(TextUtils.isEmpty(mRequest) ? "" : mRequest);
         parcel.writeString(TextUtils.isEmpty(mResponse) ? "" : mResponse);
         parcel.writeString(TextUtils.isEmpty(mMethod) ? "" : mMethod);
@@ -199,7 +223,8 @@ public class MessageData implements Parcelable {
 
         try {
             MessageData other = (MessageData) o;
-            return other.mQueryid == mQueryid
+            return other.mFID == mFID
+                    && other.mSID == mSID
                     && TextUtils.equals(other.mRequest, mRequest)
                     && TextUtils.equals(other.mResponse, mResponse)
                     && TextUtils.equals(other.mMethod, mMethod);
