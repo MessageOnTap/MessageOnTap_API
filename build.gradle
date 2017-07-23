@@ -21,13 +21,13 @@ allprojects {
             url 'https://jitpack.io'
             credentials { username '2187bd0393c236c0d58fbf94fecff2a8d1c3c50b' }
         }
-	maven {
-	    url "https://jfrog.yiad.am/artifactory/MessageOnTap-release"
-	    credentials {
-		username = "${yiadam_jfrog_username}"
-		password = "${yiadam_jfrog_password}"
-	    }
-	}
+        maven {
+            url "https://jfrog.yiad.am/artifactory/MessageOnTap-release"
+            credentials {
+                username = "${yiadam_jfrog_username}"
+                password = "${yiadam_jfrog_password}"
+            }
+        }
     }
 }
 
