@@ -42,7 +42,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.github.chentc:PrivacyStreams:v0.1.4.6'
+    //compile 'com.github.chentc:PrivacyStreams:v0.1.4.6'
+    compile 'privacystreams:privacystreams-core:0.1.4.8'
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.0'
