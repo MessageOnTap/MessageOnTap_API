@@ -3,10 +3,10 @@ package edu.cmu.chimps.messageontap_api;
 
 import edu.cmu.chimps.messageontap_api.IPluginManager;
 import edu.cmu.chimps.messageontap_api.PluginData;
-import edu.cmu.chimps.messageontap_api.MessageData;
+import edu.cmu.chimps.messageontap_api.TaskData;
 
 interface IPlugin {
-    void onMessageReceived(in MessageData data);
+    void onTaskReceived(in TaskData data);
     PluginData getPluginData();
 
     void registerManager(IPluginManager cb);

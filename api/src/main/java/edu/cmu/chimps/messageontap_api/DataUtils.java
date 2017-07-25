@@ -1,5 +1,7 @@
 package edu.cmu.chimps.messageontap_api;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -28,6 +30,13 @@ public class DataUtils {
             retMap = toMap(json);
         }
         return retMap;
+    }
+
+    public static HashMap<String, Object> toMap(String text) throws JSONException {
+        if (TextUtils.isEmpty(text))
+            return new HashMap<>();
+        else
+            return toMap(new JSONObject(text));
     }
 
     public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {

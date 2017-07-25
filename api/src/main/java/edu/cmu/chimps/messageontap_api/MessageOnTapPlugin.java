@@ -5,8 +5,18 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 
 public abstract class MessageOnTapPlugin extends Service {
@@ -18,13 +28,39 @@ public abstract class MessageOnTapPlugin extends Service {
     public static final String ACTION_EXTENSION = "edu.cmu.chimps.messageontap_prototype.Plugin";
 
     protected IPluginManager mManager;
+    private HashMap<Long, Session> sessionList = new HashMap<>();
 
     private IBinder mBinder = new IPlugin.Stub() {
 
         @Override
-        public void onMessageReceived(MessageData data) throws RemoteException {
+        public void onTaskReceived(TaskData data) throws RemoteException {
 //            Log.e("extension","Receive message");
-            analyzeMessage(data);
+            Log.e("plugin", "got message data: " + data);
+            long sid = data.sid(),
+                    tid = data.tid();
+            String type = data.type();
+            if (sid != -100) { // Eastern eggs are always fun. Aren't they?
+                if (TextUtils.equals(type, "PMS")) {
+                    handlePMSTask(tid, sid, data.method());
+                }
+                Task task = new Task(data);
+                try {
+                    HashMap<String, Object> content = DataUtils.toMap(data.content());
+                    if (tid == 0) {
+                        sessionList.put(sid, new Session(task));
+                        initNewSession(sid, content);
+                    } else {
+                        Session session = sessionList.get(sid);
+                        session.newTask(task);
+                        newTaskReceived(sid, tid, content);
+                    }
+                } catch (Exception e) {
+                    Session session = sessionList.get(sid);
+                    session.failTask(tid);
+                }
+            } else {
+                Log.e("plugin", "Hello Developer! Test plugin communication up! Isn't it a nice day? Hooray lol");
+            }
         }
 
         @Override
@@ -85,7 +121,46 @@ public abstract class MessageOnTapPlugin extends Service {
         return mBinder;
     }
 
+    protected void sendTaskResponse(long sid, HashMap<String, Object> params) {
+        Session session = sessionList.get(sid);
+        Task task = session.getTask(new Long(0));
+        task.prepareSendResponse(params);
+        session.updateTaskResponse(0);
+        try {
+            mManager.sendResponse(task.getTaskData());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void handlePMSTask(long sid, long tid, String method) {
+        switch (method) {
+            case "queryStatus":
+                try {
+                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type("PMS").method("statusReply").content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            case "refetchResponse":
+                Session session = sessionList.get(sid);
+                Task task = session.getTask(tid);
+                if (task.getStatus() == 1) {
+                    try {
+                        mManager.sendResponse(task.getTaskData());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // TODO:retry
+                }
+            default:
+                Log.e("plugin", "Unknown PMS task received.");
+        }
+    }
+
     protected abstract PluginData iPluginData();
 
-    protected abstract void analyzeMessage(MessageData data);
+    protected abstract void initNewSession(long sid, HashMap<String, Object> data) throws Exception;
+
+    protected abstract void newTaskReceived(long sid, long tid, HashMap<String, Object> data) throws Exception;
 }

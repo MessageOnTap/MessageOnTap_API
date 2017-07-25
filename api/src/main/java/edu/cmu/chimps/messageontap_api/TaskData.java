@@ -9,21 +9,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class MessageData implements Parcelable {
-    private static final String KEY_FID = "flow_id";
-    private static final String KEY_SID = "sequence_id";
-    private static final String KEY_REQUEST = "request";
-    private static final String KEY_RESPONSE = "response";
+public class TaskData implements Parcelable {
+    private static final String KEY_SID = "flow_id";
+    private static final String KEY_TID = "sequence_id";
+    private static final String KEY_CONTENT = "content";
+    private static final String KEY_TYPE = "type";
     private static final String KEY_METHOD = "method";
 
 
-    private long mFID = 0;
     private long mSID = 0;
-    private String mRequest = null;
-    private String mResponse = null;
+    private long mTID = 0;
+    private String mContent = null;
+    private String mType = null;
     private String mMethod = null;
 
-    public MessageData() {
+    public TaskData() {
 
     }
 
@@ -31,15 +31,15 @@ public class MessageData implements Parcelable {
      * Returns the flow ID
      * Default 0.
      */
-    public long fid() {
-        return mFID;
+    public long sid() {
+        return mSID;
     }
 
     /**
      * Sets the flow ID. Default 0.
      */
-    public MessageData fid(long fid) {
-        mFID = fid;
+    public TaskData sid(long sid) {
+        mSID = sid;
         return this;
     }
 
@@ -47,47 +47,47 @@ public class MessageData implements Parcelable {
      * Returns the sequence ID
      * Default 0.
      */
-    public long sid() {
-        return mSID;
+    public long tid() {
+        return mTID;
     }
 
     /**
      * Sets the sequence ID. Default 0.
      */
-    public MessageData sid(long sid) {
-        mSID = sid;
+    public TaskData tid(long tid) {
+        mTID = tid;
         return this;
     }
 
     /**
-     * Returns the request info
+     * Returns the content info
      * Default null.
      */
-    public String request() {
-        return mRequest;
+    public String content() {
+        return mContent;
     }
 
     /**
-     * Sets the request info. Default null.
+     * Sets the content info. Default null.
      */
-    public MessageData request(String request) {
-        mRequest = request;
+    public TaskData content(String content) {
+        mContent = content;
         return this;
     }
 
     /**
-     * Returns the response info
+     * Returns the type
      * Default null.
      */
-    public String response() {
-        return mResponse;
+    public String type() {
+        return mType;
     }
 
     /**
-     * Sets the response info. Default null.
+     * Sets the type. Default null.
      */
-    public MessageData response(String response) {
-        mResponse = response;
+    public TaskData type(String type) {
+        mType = type;
         return this;
     }
 
@@ -102,7 +102,7 @@ public class MessageData implements Parcelable {
     /**
      * Sets the method. Default null.
      */
-    public MessageData method(String method) {
+    public TaskData method(String method) {
         mMethod = method;
         return this;
     }
@@ -112,10 +112,10 @@ public class MessageData implements Parcelable {
      */
     public JSONObject serialize() throws JSONException {
         JSONObject data = new JSONObject();
-        data.put(KEY_FID, mFID);
         data.put(KEY_SID, mSID);
-        data.put(KEY_REQUEST, mRequest);
-        data.put(KEY_RESPONSE, mResponse);
+        data.put(KEY_TID, mTID);
+        data.put(KEY_CONTENT, mContent);
+        data.put(KEY_TYPE, mType);
         data.put(KEY_METHOD, mMethod);
         return data;
     }
@@ -125,10 +125,10 @@ public class MessageData implements Parcelable {
      * object.
      */
     public void deserialize(JSONObject data) throws JSONException {
-        this.mFID = data.optLong(KEY_FID);
         this.mSID = data.optLong(KEY_SID);
-        this.mRequest = data.optString(KEY_REQUEST);
-        this.mResponse = data.optString(KEY_RESPONSE);
+        this.mTID = data.optLong(KEY_TID);
+        this.mContent = data.optString(KEY_CONTENT);
+        this.mType = data.optString(KEY_TYPE);
         this.mMethod = data.optString(KEY_METHOD);
     }
 
@@ -137,10 +137,10 @@ public class MessageData implements Parcelable {
      */
     public Bundle toBundle() {
         Bundle data = new Bundle();
-        data.putLong(KEY_FID, mFID);
         data.putLong(KEY_SID, mSID);
-        data.putString(KEY_REQUEST, mRequest);
-        data.putString(KEY_RESPONSE, mResponse);
+        data.putLong(KEY_TID, mTID);
+        data.putString(KEY_CONTENT, mContent);
+        data.putString(KEY_TYPE, mType);
         data.putString(KEY_METHOD, mMethod);
         return data;
     }
@@ -150,40 +150,40 @@ public class MessageData implements Parcelable {
      * object.
      */
     public void fromBundle(Bundle src) {
-        this.mFID = src.getLong(KEY_FID);
         this.mSID = src.getLong(KEY_SID);
-        this.mRequest = src.getString(KEY_REQUEST);
-        this.mResponse = src.getString(KEY_RESPONSE);
+        this.mTID = src.getLong(KEY_TID);
+        this.mContent = src.getString(KEY_CONTENT);
+        this.mType = src.getString(KEY_TYPE);
         this.mMethod = src.getString(KEY_METHOD);
     }
 
     /**
      * @see Parcelable
      */
-    public static final Creator<MessageData> CREATOR
-            = new Creator<MessageData>() {
-        public MessageData createFromParcel(Parcel in) {
-            return new MessageData(in);
+    public static final Creator<TaskData> CREATOR
+            = new Creator<TaskData>() {
+        public TaskData createFromParcel(Parcel in) {
+            return new TaskData(in);
         }
 
-        public MessageData[] newArray(int size) {
-            return new MessageData[size];
+        public TaskData[] newArray(int size) {
+            return new TaskData[size];
         }
     };
 
-    private MessageData(Parcel in) {
+    private TaskData(Parcel in) {
         int parcelableSize = in.readInt();
         int startPosition = in.dataPosition();
-        this.mFID = in.readLong();
         this.mSID = in.readLong();
-        this.mRequest = in.readString();
-        this.mResponse = in.readString();
+        this.mTID = in.readLong();
+        this.mContent = in.readString();
+        this.mType = in.readString();
         this.mMethod = in.readString();
-        if (TextUtils.isEmpty(this.mRequest)) {
-            this.mRequest = null;
+        if (TextUtils.isEmpty(this.mContent)) {
+            this.mContent = null;
         }
-        if (TextUtils.isEmpty(this.mResponse)) {
-            this.mResponse = null;
+        if (TextUtils.isEmpty(this.mType)) {
+            this.mType = null;
         }
         if (TextUtils.isEmpty(this.mMethod)) {
             this.mMethod = null;
@@ -197,10 +197,10 @@ public class MessageData implements Parcelable {
         int sizePosition = parcel.dataPosition();
         parcel.writeInt(0);
         int startPosition = parcel.dataPosition();
-        parcel.writeLong(mFID);
         parcel.writeLong(mSID);
-        parcel.writeString(TextUtils.isEmpty(mRequest) ? "" : mRequest);
-        parcel.writeString(TextUtils.isEmpty(mResponse) ? "" : mResponse);
+        parcel.writeLong(mTID);
+        parcel.writeString(TextUtils.isEmpty(mContent) ? "" : mContent);
+        parcel.writeString(TextUtils.isEmpty(mType) ? "" : mType);
         parcel.writeString(TextUtils.isEmpty(mMethod) ? "" : mMethod);
         // Go back and write the size
         int parcelableSize = parcel.dataPosition() - startPosition;
@@ -222,11 +222,11 @@ public class MessageData implements Parcelable {
         }
 
         try {
-            MessageData other = (MessageData) o;
-            return other.mFID == mFID
-                    && other.mSID == mSID
-                    && TextUtils.equals(other.mRequest, mRequest)
-                    && TextUtils.equals(other.mResponse, mResponse)
+            TaskData other = (TaskData) o;
+            return other.mSID == mSID
+                    && other.mTID == mTID
+                    && TextUtils.equals(other.mContent, mContent)
+                    && TextUtils.equals(other.mType, mType)
                     && TextUtils.equals(other.mMethod, mMethod);
 
         } catch (ClassCastException e) {
@@ -245,7 +245,7 @@ public class MessageData implements Parcelable {
     /**
      * Returns true if the two provided data objects are equal (or both null).
      */
-    public static boolean equals(MessageData x, MessageData y) {
+    public static boolean equals(TaskData x, TaskData y) {
         if (x == null || y == null) {
             return x == y;
         } else {
