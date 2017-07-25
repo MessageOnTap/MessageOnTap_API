@@ -28,7 +28,7 @@ public class TaskData implements Parcelable {
     }
 
     /**
-     * Returns the flow ID
+     * Returns the session ID
      * Default 0.
      */
     public long sid() {
@@ -36,7 +36,7 @@ public class TaskData implements Parcelable {
     }
 
     /**
-     * Sets the flow ID. Default 0.
+     * Sets the session ID. Default 0.
      */
     public TaskData sid(long sid) {
         mSID = sid;
@@ -44,7 +44,7 @@ public class TaskData implements Parcelable {
     }
 
     /**
-     * Returns the sequence ID
+     * Returns the task ID
      * Default 0.
      */
     public long tid() {
@@ -52,7 +52,7 @@ public class TaskData implements Parcelable {
     }
 
     /**
-     * Sets the sequence ID. Default 0.
+     * Sets the task ID. Default 0.
      */
     public TaskData tid(long tid) {
         mTID = tid;
