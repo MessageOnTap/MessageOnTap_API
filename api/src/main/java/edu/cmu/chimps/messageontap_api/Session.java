@@ -14,12 +14,14 @@ public class Session {
     private String mPackageName; // For PMS ONLY
     private Set<Long> mUncompleted;
     private HashMap<Long, Task> mTasks;
+    private long lastTID;
 
     public Session(String packageName, Task data) { // For PMS
         mPackageName = packageName;
         mUncompleted = new HashSet<>();
         mTasks = new HashMap<>();
         mTasks.put(new Long(0), data);
+        lastTID = 0;
     }
 
     public Session(Task data) { // For plugin
@@ -37,10 +39,12 @@ public class Session {
         this.mPackageName = packageName;
     }
 
-    public void newTask(Task task) {
-        Long tid = task.getTaskData().tid();
+    public Task newTask(Task task) {
+        long tid = ++lastTID;
+        task.setTaskData(task.getTaskData().tid(tid));
         mTasks.put(tid, task);
         mUncompleted.add(tid);
+        return task;
     }
 
     public void updateTaskResponse(long tid) {

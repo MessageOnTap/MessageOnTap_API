@@ -51,7 +51,7 @@ public abstract class MessageOnTapPlugin extends Service {
                         initNewSession(sid, content);
                     } else {
                         Session session = sessionList.get(sid);
-                        session.newTask(task);
+                        //session.newTask(task);
                         newTaskReceived(sid, tid, content);
                     }
                 } catch (Exception e) {
@@ -131,6 +131,20 @@ public abstract class MessageOnTapPlugin extends Service {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    protected long newTaskRequest(long sid, String type, String method, HashMap<String, Object> params) {
+        Session session = sessionList.get(sid);
+        String json = DataUtils.hashMapToString(params);
+        TaskData data = new TaskData().content(json).type(type).method(method);
+        Task task = new Task(data);
+        task = session.newTask(task);
+        try {
+            mManager.sendResponse(task.getTaskData());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return task.getTaskData().tid();
     }
 
     protected void handlePMSTask(long sid, long tid, String method) {
