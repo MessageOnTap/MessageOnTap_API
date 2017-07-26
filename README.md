@@ -1,7 +1,7 @@
 **This repo is not completed yet.**
 
 # MessageOnTap_API
-API powering plugins for MessageOnTap, a development framework for personal-data-powered messaging assistants.
+IPC (Interprocess Communication) library powering plugins for MessageOnTap, a development framework for personal-data-powered messaging assistants.
 
 ## About MessageOnTap
 [MessageOnTap](https://github.com/chentc/MessageOnTap) is a development framework for personal-data-powered messaging assistants.
@@ -11,7 +11,7 @@ Official plug-ins of MessageOnTap can be found here: [MessageOnTap_Plugins](http
 
 ## How to Develop a MessageOnTap Plug-In?
 ### How Plug-Ins Work?
-![Loop of Flow](images/flow.jpg)
+![Loop of Session](images/flow.jpg)
 *TBA...*
 ### Web Development Portal
 *TBA...*
