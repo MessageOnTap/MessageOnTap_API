@@ -1,5 +1,7 @@
 package edu.cmu.chimps.messageontap_api;
 
+import android.provider.ContactsContract;
+
 import java.util.HashMap;
 
 /**
@@ -11,7 +13,8 @@ public class Task {
     private int status = 0; //0:running; 1:done; 2:failed
     private long timestamp[];
 
-    Task(TaskData data) {
+    public Task(TaskData data) {
+        this.data = data;
         timestamp = new long[3];
         timestamp[0] = System.currentTimeMillis();
     }
@@ -42,7 +45,10 @@ public class Task {
     }
 
     public void prepareSendResponse(HashMap<String, Object> params) {
-        String json = DataUtils.hashMapToString(params);
+        this.prepareSendResponse(DataUtils.hashMapToString(params));
+    }
+
+    public void prepareSendResponse(String json) {
         data = data.content(json);
         this.updateStatus(1);
     }
