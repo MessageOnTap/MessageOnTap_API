@@ -52,7 +52,8 @@ public abstract class MessageOnTapPlugin extends Service {
                     } else {
                         Session session = sessionList.get(sid);
                         //session.newTask(task);
-                        newTaskReceived(sid, tid, content);
+                        session.updateTaskResponse(task);
+                        newTaskResponsed(sid, tid, content);
                     }
                 } catch (Exception e) {
                     Session session = sessionList.get(sid);
@@ -121,13 +122,24 @@ public abstract class MessageOnTapPlugin extends Service {
         return mBinder;
     }
 
-    protected void sendTaskResponse(long sid, HashMap<String, Object> params) {
+    /*protected void sendSessionResponse(long sid, String type, String method, HashMap<String, Object> params) {
         Session session = sessionList.get(sid);
         Task task = session.getTask(new Long(0));
         task.prepareSendResponse(params);
         session.updateTaskResponse(0);
         try {
             mManager.sendResponse(task.getTaskData());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    protected void endSession(long sid) {
+        Session session = sessionList.get(sid);
+        session.updateTaskResponse(0);
+        Task task = session.getTask(new Long(0));
+        try {
+            mManager.sendResponse(task.getTaskData().type("PMS").method("sessionReply").content(""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -176,5 +188,5 @@ public abstract class MessageOnTapPlugin extends Service {
 
     protected abstract void initNewSession(long sid, HashMap<String, Object> data) throws Exception;
 
-    protected abstract void newTaskReceived(long sid, long tid, HashMap<String, Object> data) throws Exception;
+    protected abstract void newTaskResponsed(long sid, long tid, HashMap<String, Object> data) throws Exception;
 }

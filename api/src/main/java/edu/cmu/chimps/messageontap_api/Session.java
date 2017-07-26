@@ -52,6 +52,13 @@ public class Session {
         mTasks.get(tid).updateStatus(1);
     }
 
+    public void updateTaskResponse(Task task) {
+        long tid = task.getTaskData().tid();
+        task.updateStatus(1);
+        mUncompleted.remove(tid);
+        mTasks.put(tid, task);
+    }
+
     public Task getTask(long tid) {
         return mTasks.get(tid);
     }
