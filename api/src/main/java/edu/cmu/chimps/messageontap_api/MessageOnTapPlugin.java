@@ -40,7 +40,7 @@ public abstract class MessageOnTapPlugin extends Service {
                     tid = data.tid();
             String type = data.type();
             if (sid != -100) { // Eastern eggs are always fun. Aren't they?
-                if (TextUtils.equals(type, "PMS")) {
+                if (TextUtils.equals(type, MethodConstants.PMS_TYPE)) {
                     handlePMSTask(tid, sid, data.method());
                 }
                 Task task = new Task(data);
@@ -139,7 +139,7 @@ public abstract class MessageOnTapPlugin extends Service {
         session.updateTaskResponse(0);
         Task task = session.getTask(new Long(0));
         try {
-            mManager.sendResponse(task.getTaskData().type("PMS").method("sessionReply").content(""));
+            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method("sessionEnd").content(""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -163,7 +163,7 @@ public abstract class MessageOnTapPlugin extends Service {
         switch (method) {
             case "queryStatus":
                 try {
-                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type("PMS").method("statusReply").content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
+                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type(MethodConstants.PMS_TYPE).method("statusReply").content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
