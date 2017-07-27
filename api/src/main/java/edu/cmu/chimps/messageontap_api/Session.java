@@ -1,5 +1,7 @@
 package edu.cmu.chimps.messageontap_api;
 
+import android.util.LongSparseArray;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,22 +15,22 @@ import edu.cmu.chimps.messageontap_api.Task;
 public class Session {
     private String mPackageName; // For PMS ONLY
     private Set<Long> mUncompleted;
-    private HashMap<Long, Task> mTasks;
+    private LongSparseArray<Task> mTasks;
     private long lastTID;
 
     public Session(String packageName, Task data) { // For PMS
         mPackageName = packageName;
         mUncompleted = new HashSet<>();
-        mTasks = new HashMap<>();
-        mTasks.put(new Long(0), data);
+        mTasks = new LongSparseArray<>();
+        mTasks.put(0L, data);
         lastTID = 0;
     }
 
     public Session(Task data) { // For plugin
         mUncompleted = new HashSet<>();
-        mTasks = new HashMap<>();
-        mTasks.put(new Long(0), data);
-        mUncompleted.add(new Long(0));
+        mTasks = new LongSparseArray<>();
+        mTasks.put(0L, data);
+        mUncompleted.add(0L);
     }
 
     public String getPackageName() {

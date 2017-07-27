@@ -5,30 +5,18 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.LongSparseArray;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 
 public abstract class MessageOnTapPlugin extends Service {
-    /**
-     * The {@link Intent} action representing a MessageOnTap plugin. This service should
-     * declare an <code>&lt;intent-filter&gt;</code> for this action in order to register with
-     * DashClock.
-     */
-    public static final String ACTION_EXTENSION = "edu.cmu.chimps.messageontap_prototype.Plugin";
 
     protected IPluginManager mManager;
-    private HashMap<Long, Session> sessionList = new HashMap<>();
+    private LongSparseArray<Session> sessionList = new LongSparseArray<>();
 
     private IBinder mBinder = new IPlugin.Stub() {
 
@@ -138,7 +126,7 @@ public abstract class MessageOnTapPlugin extends Service {
     protected void endSession(long sid) {
         Session session = sessionList.get(sid);
         session.updateTaskResponse(0);
-        Task task = session.getTask(new Long(0));
+        Task task = session.getTask(0);
         try {
             mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method("sessionEnd").content(""));
         } catch (RemoteException e) {
