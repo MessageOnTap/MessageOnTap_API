@@ -42,22 +42,23 @@ public abstract class MessageOnTapPlugin extends Service {
             if (sid != -100) { // Eastern eggs are always fun. Aren't they?
                 if (TextUtils.equals(type, MethodConstants.PMS_TYPE)) {
                     handlePMSTask(tid, sid, data.method());
-                }
-                Task task = new Task(data);
-                try {
-                    HashMap<String, Object> content = DataUtils.toMap(data.content());
-                    if (tid == 0) {
-                        sessionList.put(sid, new Session(task));
-                        initNewSession(sid, content);
-                    } else {
+                } else {
+                    Task task = new Task(data);
+                    try {
+                        HashMap<String, Object> content = DataUtils.toMap(data.content());
+                        if (tid == 0) {
+                            sessionList.put(sid, new Session(task));
+                            initNewSession(sid, content);
+                        } else {
+                            Session session = sessionList.get(sid);
+                            //session.newTask(task);
+                            session.updateTaskResponse(task);
+                            newTaskResponsed(sid, tid, content);
+                        }
+                    } catch (Exception e) {
                         Session session = sessionList.get(sid);
-                        //session.newTask(task);
-                        session.updateTaskResponse(task);
-                        newTaskResponsed(sid, tid, content);
+                        session.failTask(tid);
                     }
-                } catch (Exception e) {
-                    Session session = sessionList.get(sid);
-                    session.failTask(tid);
                 }
             } else {
                 Log.e("plugin", "Hello Developer! Test plugin communication up! Isn't it a nice day? Hooray lol");
@@ -160,6 +161,7 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     protected void handlePMSTask(long sid, long tid, String method) {
+        Log.e("plugin", "In Handle PMS task");
         switch (method) {
             case "queryStatus":
                 try {
