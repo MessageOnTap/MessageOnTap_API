@@ -39,6 +39,14 @@ public class Session {
         this.mPackageName = packageName;
     }
 
+    public Set<Long> getUncompletedTaskIDs() {
+        return mUncompleted;
+    }
+
+    public boolean isTaskCompleted(long tid) {
+        return mUncompleted.contains(tid);
+    }
+
     public Task newTask(Task task) {
         long tid = ++lastTID;
         task.setTaskData(task.getTaskData().tid(tid));

@@ -167,6 +167,7 @@ public abstract class MessageOnTapPlugin extends Service {
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                break;
             case "refetchResponse":
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
@@ -179,6 +180,7 @@ public abstract class MessageOnTapPlugin extends Service {
                 } else {
                     // TODO:retry
                 }
+                break;
             default:
                 Log.e("plugin", "Unknown PMS task received.");
         }

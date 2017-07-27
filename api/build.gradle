@@ -53,7 +53,7 @@ dependencies {
 // yiad.am jfrog repo
 def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
-def libraryVersion = '0.2.1'
+def libraryVersion = '0.2.2'
 
 publishing {
     publications {
