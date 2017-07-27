@@ -44,7 +44,10 @@ dependencies {
     })
     compile 'com.android.support:multidex:1.0.1'
     //compile 'com.github.chentc:PrivacyStreams:v0.1.4.6'
-    compile 'privacystreams:privacystreams-core:0.1.4.8'
+    compile('privacystreams:privacystreams-core:0.1.4.8') {
+        exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.json'
+    }
     compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'com.google.code.gson:gson:2.8.0'
@@ -55,22 +58,20 @@ def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
 def libraryVersion = '0.2.2'
 
-publishing {
-    publications {
-        aar(MavenPublication) {
-            groupId libraryGroupId
-            version libraryVersion
-            artifactId libraryArtifactId
-            artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
+publishing.publications {
+    aar(MavenPublication) {
+        groupId libraryGroupId
+        version libraryVersion
+        artifactId libraryArtifactId
+        artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
 
-            pom.withXml {
-                def dependencies = asNode().appendNode('dependencies')
-                configurations.getByName("_releaseCompile").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
-                    def dependency = dependencies.appendNode('dependency')
-                    dependency.appendNode('groupId', it.moduleGroup)
-                    dependency.appendNode('artifactId', it.moduleName)
-                    dependency.appendNode('version', it.moduleVersion)
-                }
+        pom.withXml {
+            def dependencies = asNode().appendNode('dependencies')
+            configurations.getByName("_releaseCompile").getResolvedConfiguration().getFirstLevelModuleDependencies().each {
+                def dependency = dependencies.appendNode('dependency')
+                dependency.appendNode('groupId', it.moduleGroup)
+                dependency.appendNode('artifactId', it.moduleName)
+                dependency.appendNode('version', it.moduleVersion)
             }
         }
     }
@@ -82,6 +83,8 @@ artifactory {
         repository {
             repoKey = 'MessageOnTap-release'
 
+            // Do not put credentials here.
+            // Put them in ~/.gradle/gradle.properties
             username = yiadam_jfrog_username
             password = yiadam_jfrog_password
         }
