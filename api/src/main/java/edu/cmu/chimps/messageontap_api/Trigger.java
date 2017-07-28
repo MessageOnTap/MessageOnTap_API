@@ -1,6 +1,7 @@
 package edu.cmu.chimps.messageontap_api;
 
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,6 +27,34 @@ import java.util.Set;
  */
 public class Trigger {
 
+
+    private static final int ROOT_PARENT_ID = -1;
+
+    public boolean isConcatenation(ParseTree parseTree, ParseTree.Node a, ParseTree.Node b){
+        //TODO : ROOT NODE
+        if(a.getParentId() == ROOT_PARENT_ID){
+            return false;
+        }
+        else{
+            if(parseTree.mNodeList.get(a.getParentId()).getChildrenIds().contains(b.getId())){
+                return true;
+            }
+        }
+        return true;
+    }
+
+    public boolean isSubordinate(ParseTree.Node a, ParseTree.Node b){
+        //TODO : ROOT NODE
+        if(a.getChildrenIds() == null){
+            return false;
+        }
+        else{
+            if(a.getChildrenIds().contains(b.getId())){
+                return true;
+            }
+        }
+        return true;
+    }
 
     enum Mood{MOOD_UNKNOWN, MOOD_IMPERATIVE, MOOD_INTERROGTIVE}
     enum Relation{UNKNOWN, CONCATENATION, SUBORDINATE}
@@ -104,23 +133,10 @@ public class Trigger {
             mOptionalTags.add(t.getName());
 
         }
-        this.mConstraints = constraints;
+        if(constraints != null)
+            this.mConstraints = constraints;
         this.mMood = mood;
         this.mDirection = direction;
-    }
-
-    /**
-     * Check Only Madatory Tags
-     * @param tagSet
-     * @return
-     */
-    public boolean activateTrigger(Set<String> tagSet) {
-        for (String mKey : tagSet) {
-            if (!mMadatoryTags.contains(mKey)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public String getPackageName() {
@@ -139,7 +155,59 @@ public class Trigger {
         return Globals.TYPE_TRIGGER;
     }
 
-    public boolean matchTrigger(){
+    public boolean matchTrigger(ParseTree parseTree){
+        // 1. Tag List
+        // 2. Tag Relation
+        // 3. Mood? Direction?
+
+        boolean flag = false;
+        //Direction Judge
+        //Incoming or Outgoing?
+        if(mDirection != Direction.UNKNOWN_DIRECTION) {
+            if (parseTree.direction != mDirection) {
+                return false;
+            }
+        }
+
+        //Mood Judge
+        //IMPERATIVE, INTERROGTIVE
+        if(mMood != Mood.MOOD_UNKNOWN) {
+            if (parseTree.mood != mMood) {
+                return false;
+            }
+        }
+
+        //Tag Judge Contains
+
+        if(!mMadatoryTags.isEmpty()) {
+
+            //Add Tags from ParseTree
+            HashMap<Integer, String> tagNames = new HashMap<>();
+            for (int i = 0; i < parseTree.mNodeList.size(); i++) {
+                if (!parseTree.mNodeList.get(i).getTagList().isEmpty()) {
+                    for (Tag t : parseTree.mNodeList.get(i).getTagList()) {
+                        tagNames.put(i, t.getName());
+                    }
+                }
+            }
+
+            if(!tagNames.keySet().contains(mMadatoryTags)){
+                return false;
+            }
+        }
+
+        //A -> B
+        if(!mConstraints.isEmpty()){
+            for(Constraint c:mConstraints){
+                String tagA = c.tagA_name;
+                String tagB = c.tagB_name;
+                Relation relation = c.relation;
+
+
+            }
+        }
+
         return true;
     }
+
 }
