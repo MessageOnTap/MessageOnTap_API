@@ -1,13 +1,8 @@
 package edu.cmu.chimps.messageontap_api;
 
-import android.content.Context;
 import android.text.TextUtils;
 
-import com.github.privacystreams.core.Item;
-import com.github.privacystreams.utils.annotations.PSItemField;
-
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Tag {
@@ -18,9 +13,9 @@ public class Tag {
 
     private String mName;
     private String mEntityName;
-    private ArrayList<String> mKeywordList;
+    private Set<String> mKeywordList;
 
-    public Tag(String name, ArrayList<String> keywordList) {
+    public Tag(String name, Set<String> keywordList) {
         this.mName = name;
         this.mKeywordList = keywordList;
     }
@@ -38,11 +33,11 @@ public class Tag {
         return mName;
     }
 
-    void setKeywordList(ArrayList keywordList) {
+    void setKeywordList(Set keywordList) {
         mKeywordList = keywordList;
     }
 
-    ArrayList<String> getKeywordList() {
+    Set<String> getKeywordList() {
         return mKeywordList;
     }
 
@@ -55,7 +50,7 @@ public class Tag {
     }
 
     boolean matchRE(String word) {
-        ArrayList<String> keywordList = getKeywordList();
+        Set<String> keywordList = getKeywordList();
 
         for (String str : keywordList) {
             if (Pattern.matches(str, word))

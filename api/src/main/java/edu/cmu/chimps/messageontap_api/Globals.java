@@ -42,4 +42,6 @@ public class Globals {
     //Object Type
     public final static String TYPE_TRIGGER = "trigger";
 
+
+
 }
