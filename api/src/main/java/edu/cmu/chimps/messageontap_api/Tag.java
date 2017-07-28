@@ -13,11 +13,11 @@ public class Tag {
 
     private String mName;
     private String mEntityName;
-    private Set<String> mKeywordList;
+    private Set<String> mKeywords;
 
-    public Tag(String name, Set<String> keywordList) {
+    public Tag(String name, Set<String> keywords) {
         this.mName = name;
-        this.mKeywordList = keywordList;
+        this.mKeywords = keywords;
     }
 
     public Tag(String name, String entityName) {
@@ -34,11 +34,11 @@ public class Tag {
     }
 
     void setKeywordList(Set keywordList) {
-        mKeywordList = keywordList;
+        mKeywords = keywordList;
     }
 
     Set<String> getKeywordList() {
-        return mKeywordList;
+        return mKeywords;
     }
 
     void setEntityName(String entityName) {

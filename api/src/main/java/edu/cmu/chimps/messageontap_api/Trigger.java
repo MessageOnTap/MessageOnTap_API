@@ -38,6 +38,8 @@ public class Trigger {
         Relation relation = Relation.UNKNOWN;
     }
 
+    private String name = "null";
+
     private Set<String> mMadatoryTags = new HashSet<>();
 
     private Set<String> mOptionalTags = new HashSet<>();
@@ -51,6 +53,7 @@ public class Trigger {
     private String mPackageName; //TODO: Plugin Id
 
     public Trigger() {
+        name = "";
         mMadatoryTags = new HashSet<String>();
         mOptionalTags = new HashSet<String>();
         mConstraints = new HashSet<Constraint>();
@@ -58,19 +61,52 @@ public class Trigger {
         mDirection = Direction.UNKNOWN_DIRECTION;
     }
 
-    public Trigger(Set<Tag> pluginMadatoryTagSet) {
-        for(Tag t:pluginMadatoryTagSet) {
-            mMadatoryTags.addAll(t.getKeywordList());
+    public Trigger(String name, Set<Tag> pluginMadatoryTags) {
+        this.name = name;
+        for(Tag t:pluginMadatoryTags) {
+            mMadatoryTags.add(t.getName());
         }
     }
 
-    public Trigger(Set<Tag> pluginMadatoryTagSet, Set<Tag> pluginOptionalTagSet) {
-        for(Tag mandatoryTag:pluginMadatoryTagSet) {
-            mMadatoryTags.addAll(mandatoryTag.getKeywordList());
+    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags) {
+        this.name = name;
+        for(Tag t:pluginMadatoryTags) {
+            mMadatoryTags.add(t.getName());
+
         }
-        for(Tag optionalTag:pluginOptionalTagSet) {
-            mMadatoryTags.addAll(optionalTag.getKeywordList());
+        for(Tag t:pluginOptionalTags) {
+            mOptionalTags.add(t.getName());
+
         }
+    }
+
+    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints){
+        this.name = name;
+        for(Tag t:pluginMadatoryTags) {
+            mMadatoryTags.add(t.getName());
+
+        }
+        for(Tag t:pluginOptionalTags) {
+            mOptionalTags.add(t.getName());
+
+        }
+        this.mConstraints = constraints;
+    }
+
+    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints
+                    , Mood mood, Direction direction){
+        this.name = name;
+        for(Tag t:pluginMadatoryTags) {
+            mMadatoryTags.add(t.getName());
+
+        }
+        for(Tag t:pluginOptionalTags) {
+            mOptionalTags.add(t.getName());
+
+        }
+        this.mConstraints = constraints;
+        this.mMood = mood;
+        this.mDirection = direction;
     }
 
     /**
@@ -101,5 +137,9 @@ public class Trigger {
 
     public String getTypeKey() {
         return Globals.TYPE_TRIGGER;
+    }
+
+    public boolean matchTrigger(){
+        return true;
     }
 }
