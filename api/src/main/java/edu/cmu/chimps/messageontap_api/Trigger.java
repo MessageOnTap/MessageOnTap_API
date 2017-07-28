@@ -179,18 +179,17 @@ public class Trigger {
 
         //Tag Judge Contains
 
-        if(!mMadatoryTags.isEmpty()) {
-
-            //Add Tags from ParseTree
-            HashMap<Integer, String> tagNames = new HashMap<>();
-            for (int i = 0; i < parseTree.mNodeList.size(); i++) {
-                if (!parseTree.mNodeList.get(i).getTagList().isEmpty()) {
-                    for (Tag t : parseTree.mNodeList.get(i).getTagList()) {
-                        tagNames.put(i, t.getName());
-                    }
+        //Add Tags from ParseTree
+        HashMap<String, Integer> tagNames = new HashMap<>();
+        for (int i = 0; i < parseTree.mNodeList.size(); i++) {
+            if (!parseTree.mNodeList.get(i).getTagList().isEmpty()) {
+                for (Tag t : parseTree.mNodeList.get(i).getTagList()) {
+                    tagNames.put(t.getName(), i);
                 }
             }
+        }
 
+        if(!mMadatoryTags.isEmpty()) {
             if(!tagNames.keySet().contains(mMadatoryTags)){
                 return false;
             }
@@ -202,7 +201,18 @@ public class Trigger {
                 String tagA = c.tagA_name;
                 String tagB = c.tagB_name;
                 Relation relation = c.relation;
-
+                ParseTree.Node nodeA = parseTree.mNodeList.get(tagNames.get(tagA));
+                ParseTree.Node nodeB = parseTree.mNodeList.get(tagNames.get(tagB));
+                if(relation == Relation.CONCATENATION){
+                    if(!isConcatenation(parseTree, nodeA, nodeB)){
+                        return false;
+                    }
+                }
+                if(relation == Relation.SUBORDINATE){
+                    if(!isSubordinate(nodeA, nodeB)){
+                        return false;
+                    }
+                }
 
             }
         }
