@@ -20,64 +20,60 @@ public class Tag {
     private String mEntityName;
     private ArrayList<String> mKeywordList;
 
-    public Tag(String name, ArrayList<String> keywordList){
+    public Tag(String name, ArrayList<String> keywordList) {
         this.mName = name;
         this.mKeywordList = keywordList;
     }
 
-    public Tag(String name, String entityName){
+    public Tag(String name, String entityName) {
         this.mName = name;
         this.mEntityName = entityName;
     }
 
-    void setName(String name){
+    void setName(String name) {
         mName = name;
     }
 
-    String getName(){
+    String getName() {
         return mName;
     }
 
-    void setKeywordList(ArrayList keywordList){
+    void setKeywordList(ArrayList keywordList) {
         mKeywordList = keywordList;
     }
 
-    ArrayList<String> getKeywordList(){
+    ArrayList<String> getKeywordList() {
         return mKeywordList;
     }
 
-    void setEntityName(String entityName){
+    void setEntityName(String entityName) {
         this.mEntityName = entityName;
     }
 
-    String getEntityName(){
+    String getEntityName() {
         return mEntityName;
     }
 
-    boolean matchRE(String word){
-
+    boolean matchRE(String word) {
         ArrayList<String> keywordList = getKeywordList();
-        boolean flag = false;
 
-        for(String str: keywordList){
-                if(Pattern.matches(str, word)){
-                    flag = true;
-                    break;
-                };
-            }
-        return flag;
+        for (String str : keywordList) {
+            if (Pattern.matches(str, word))
+                return true;
+        }
+        return false;
     }
 
-    boolean matchEntity(String entity){
+    boolean matchEntity(String entity) {
         return TextUtils.equals(entity, getEntityName());
     }
 
-    public boolean matchWord(String word, String entity){
-        if(getKeywordList()!=null)
-            if(matchRE(word))
+    public boolean matchWord(String word, String entity) {
+        if (getKeywordList() != null)
+            if (matchRE(word))
                 return true;
-        if(getEntityName() != null)
-            if(getEntityName() != null && matchEntity(entity))
+        if (getEntityName() != null)
+            if (getEntityName() != null && matchEntity(entity))
                 return true;
 
         return false;
