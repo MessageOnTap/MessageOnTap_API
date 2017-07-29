@@ -8,16 +8,16 @@ import java.util.regex.Pattern;
 public class Tag {
     public static final String TAG_ID = "tag_id";
     public static final String NAME = "name";
-    public static final String KEYWORD_LIST = "keyword_list";
+    public static final String REGULAREXPRESSION_LIST = "re_list";
     public static final String ENTITY_NAME = "entity_name";
 
     private String mName;
     private String mEntityName;
-    private Set<String> mKeywords;
+    private Set<String> mRegularExpressions;
 
-    public Tag(String name, Set<String> keywords) {
+    public Tag(String name, Set<String> RegularExpressions) {
         this.mName = name;
-        this.mKeywords = keywords;
+        this.mRegularExpressions = RegularExpressions;
     }
 
     public Tag(String name, String entityName) {
@@ -34,11 +34,11 @@ public class Tag {
     }
 
     void setKeywordList(Set keywordList) {
-        mKeywords = keywordList;
+        mRegularExpressions = keywordList;
     }
 
     Set<String> getKeywordList() {
-        return mKeywords;
+        return mRegularExpressions;
     }
 
     void setEntityName(String entityName) {
