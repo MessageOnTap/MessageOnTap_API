@@ -56,9 +56,7 @@ public class Trigger {
         return true;
     }
 
-    enum Mood{MOOD_UNKNOWN, MOOD_IMPERATIVE, MOOD_INTERROGTIVE}
     enum Relation{UNKNOWN, CONCATENATION, SUBORDINATE}
-    enum Direction {UNKNOWN_DIRECTION, INCOMING_DIRECTION, OUTGOING_DIRECTION}
 
     private class Constraint{
         //TODO
@@ -75,9 +73,9 @@ public class Trigger {
 
     private Set<Constraint> mConstraints = new HashSet<>();
 
-    private Mood mMood = Mood.MOOD_UNKNOWN;
+    private ParseTree.Mood mMood = ParseTree.Mood.MOOD_UNKNOWN;
 
-    private Direction mDirection = Direction.UNKNOWN_DIRECTION;
+    private ParseTree.Direction mDirection = ParseTree.Direction.UNKNOWN_DIRECTION;
 
     private String mPackageName; //TODO: Plugin Id
 
@@ -86,8 +84,8 @@ public class Trigger {
         mMadatoryTags = new HashSet<String>();
         mOptionalTags = new HashSet<String>();
         mConstraints = new HashSet<Constraint>();
-        mMood = Mood.MOOD_UNKNOWN;
-        mDirection = Direction.UNKNOWN_DIRECTION;
+        mMood = ParseTree.Mood.MOOD_UNKNOWN;
+        mDirection = ParseTree.Direction.UNKNOWN_DIRECTION;
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags) {
@@ -123,7 +121,7 @@ public class Trigger {
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints
-                    , Mood mood, Direction direction){
+                    , ParseTree.Mood mood, ParseTree.Direction direction){
         this.name = name;
         for(Tag t:pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
@@ -163,7 +161,7 @@ public class Trigger {
         boolean flag = false;
         //Direction Judge
         //Incoming or Outgoing?
-        if(mDirection != Direction.UNKNOWN_DIRECTION) {
+        if(mDirection != ParseTree.Direction.UNKNOWN_DIRECTION) {
             if (parseTree.direction != mDirection) {
                 return false;
             }
@@ -171,7 +169,7 @@ public class Trigger {
 
         //Mood Judge
         //IMPERATIVE, INTERROGTIVE
-        if(mMood != Mood.MOOD_UNKNOWN) {
+        if(mMood != ParseTree.Mood.MOOD_UNKNOWN) {
             if (parseTree.mood != mMood) {
                 return false;
             }
