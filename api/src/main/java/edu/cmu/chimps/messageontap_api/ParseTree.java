@@ -4,15 +4,9 @@ import android.util.SparseArray;
 
 import java.util.ArrayList;
 
-/**
- * Created by mars on 29/07/2017.
- */
-
 public class ParseTree {
 
-    private static final int FLAG_NORMAL = 0;
-    private static final int FLAG_DELETE = 1;
-    private static final int FLAG_MERGE = 2;
+    enum Flag{NORMAL, DELETE, MERGE}
 
     public class Node {
 
@@ -23,12 +17,12 @@ public class ParseTree {
         private ArrayList<Integer> mChildrenIds;
         private int mParentId;
         private String mRelation;
-        private int mFlag; // 0 = normal, 1 = delete, 2 = merge
+        private Flag mFlag;
         private ArrayList<Tag> mTagList;
 
         public Node() {
             this.mChildrenIds = new ArrayList<>();
-            this.mFlag = FLAG_DELETE;
+            this.mFlag = Flag.DELETE;
         }
 
         public void setValue(String type, String word) {
@@ -37,7 +31,7 @@ public class ParseTree {
             //this.entity = null;
             //this.parentId = null;
             //this.childrenIds = new ArrayList<>();
-            this.mFlag = FLAG_NORMAL;
+            this.mFlag = Flag.NORMAL;
         }
 
         public void setId(int id) {
@@ -100,11 +94,11 @@ public class ParseTree {
             this.mRelation = relation;
         }
 
-        public int getFlag() {
+        public Flag getFlag() {
             return mFlag;
         }
 
-        public void setFlag(int flag) {
+        public void setFlag(Flag flag) {
             this.mFlag = flag;
         }
 
