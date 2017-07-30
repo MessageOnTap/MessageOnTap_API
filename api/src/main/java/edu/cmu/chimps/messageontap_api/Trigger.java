@@ -65,7 +65,7 @@ public class Trigger {
         Relation relation = Relation.UNKNOWN;
     }
 
-    private String name = "null";
+    private String mName = "null";
 
     private Set<String> mMadatoryTags = new HashSet<>();
 
@@ -80,7 +80,7 @@ public class Trigger {
     private String mPackageName; //TODO: Plugin Id
 
     public Trigger() {
-        name = "";
+        mName = "";
         mMadatoryTags = new HashSet<String>();
         mOptionalTags = new HashSet<String>();
         mConstraints = new HashSet<Constraint>();
@@ -89,14 +89,14 @@ public class Trigger {
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags) {
-        this.name = name;
+        this.mName = name;
         for(Tag t:pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
         }
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags) {
-        this.name = name;
+        this.mName = name;
         for(Tag t:pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
@@ -108,7 +108,7 @@ public class Trigger {
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints){
-        this.name = name;
+        this.mName = name;
         for(Tag t:pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
@@ -122,7 +122,7 @@ public class Trigger {
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints
                     , ParseTree.Mood mood, ParseTree.Direction direction){
-        this.name = name;
+        this.mName = name;
         for(Tag t:pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
@@ -143,6 +143,14 @@ public class Trigger {
 
     public void setPackageName(String packageName) {
         mPackageName = packageName;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        this.mName = name;
     }
 
     public String getJson() {
