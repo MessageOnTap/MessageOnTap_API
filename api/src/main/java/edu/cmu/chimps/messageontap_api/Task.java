@@ -1,7 +1,5 @@
 package edu.cmu.chimps.messageontap_api;
 
-import android.provider.ContactsContract;
-
 import java.util.HashMap;
 
 /**
@@ -45,7 +43,7 @@ public class Task {
     }
 
     public void prepareSendResponse(HashMap<String, Object> params) {
-        this.prepareSendResponse(DataUtils.hashMapToString(params));
+        this.prepareSendResponse(JSONUtils.hashMapToString(params));
     }
 
     public void prepareSendResponse(String json) {

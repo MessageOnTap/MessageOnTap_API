@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class DataUtils {
+public class JSONUtils {
     public static String hashMapToString(HashMap<String, Object> map) {
         Gson gson = new Gson();
         String json = gson.toJson(map);

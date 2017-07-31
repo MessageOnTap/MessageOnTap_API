@@ -33,7 +33,7 @@ public abstract class MessageOnTapPlugin extends Service {
                 } else {
                     Task task = new Task(data);
                     try {
-                        HashMap<String, Object> content = DataUtils.toMap(data.content());
+                        HashMap<String, Object> content = JSONUtils.toMap(data.content());
                         if (tid == 0) {
                             sessionList.put(sid, new Session(task));
                             initNewSession(sid, content);
@@ -136,7 +136,7 @@ public abstract class MessageOnTapPlugin extends Service {
 
     protected long newTaskRequest(long sid, String type, String method, HashMap<String, Object> params) {
         Session session = sessionList.get(sid);
-        String json = DataUtils.hashMapToString(params);
+        String json = JSONUtils.hashMapToString(params);
         TaskData data = new TaskData().content(json).type(type).method(method);
         Task task = new Task(data);
         task = session.newTask(task);

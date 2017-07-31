@@ -310,26 +310,6 @@ public class ParseTree {
         return mNodeList.get(mRootId);
     }
 
-    public Node getNodeById(int id) {
-        return mNodeList.get(id);
-    }
-
-    private boolean changeRoot(int newRootId) {
-        mRootId = newRootId;
-        return true;
-    }
-
-
-    /**
-     * Override Function toString()
-     * Use the Recursive Function toString() Defined in Node
-     * To Print the ParseTree
-     */
-    @Override
-    public String toString() {
-        return getRoot().toString();
-    }
-
     public boolean isConcatenation(Node a, Node b) {
         return a.getParentId() == b.getParentId();
     }
@@ -347,5 +327,316 @@ public class ParseTree {
         }
         return false;
     }
+
+    //Need to change to Mood
+    public void moodDetection() {
+        for (int i = 0; i < mNodeList.size(); i++) {
+            if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
+                if (mNodeList.get(i).getWord().equals("?")) {
+                    mood = Mood.MOOD_INTERROGTIVE;
+                }
+            }
+            if (getRoot().getType().equals(POS_VERB)) {
+                for (int childId : getRoot().getChildrenIds()) {
+                    if (getNodeById(childId).getType().equals(DEP_NOUN_SUBJECT)) {
+                        mood = Mood.MOOD_INTERROGTIVE;
+                    }
+                }
+                mood = Mood.MOOD_IMPERATIVE;
+            }
+        }
+        mood = Mood.MOOD_UNKNOWN;
+
+    }
+
+    /**
+     * Merge the Nodes in the ParseTree
+     * Example: Let's meet at Hilton Garden Inn
+     * [Hilton Garden Inn] Should be merged
+     */
+    public void merge() {
+        merge(getRoot());
+        clearMergedNodes(getRoot());
+    }
+
+    /**
+     * @param node : Start From Root Node
+     *             Post-order Traversal Recursive Function
+     */
+    public void merge(Node node) {
+
+        if (node.getChildrenIds() != null) {
+            for (int childId : node.getChildrenIds()) {
+                Node child = mNodeList.get(childId);
+                merge(child);
+                if (child.getFlag() == FLAG_MERGE) {
+                    if (child.getId() < node.getId())
+                        node.setWord(child.getWord() + " " + node.getWord());
+                    else
+                        node.setWord(node.getWord() + " " + child.getWord());
+                    child.setFlag(-1);
+                }
+            }
+        }
+    }
+
+    /**
+     * Clear the Merged Nodes in the Tree
+     *
+     * @param node : start From Root Node
+     */
+    public void clearMergedNodes(Node node) {
+        if (node.getChildrenIds() != null) {
+            for (int childId : node.getChildrenIds()) {
+                Node child = mNodeList.get(childId);
+                clearMergedNodes(child);
+                if (child.getFlag() == -1) {
+                    node.getChildrenIds().remove(childId);
+                }
+            }
+        }
+    }
+
+
+    public boolean isMerge(ArrayList<Node> mNodeList) {
+        if (mNodeList == null) return false;
+        for (Node n : mNodeList) {
+            if (n.getFlag() == FLAG_MERGE)
+                return true;
+        }
+        return false;
+    }
+
+    public Node getNodeById(int id) {
+        return mNodeList.get(id);
+    }
+
+    public void setNodeById() {
+
+    }
+
+    public void reduce(int nodeId) {
+        if (getNodeById(nodeId).getChildrenIds() != null) {
+            ArrayList<Integer> toDelete = new ArrayList<>();
+            ArrayList<Integer> toAdd = new ArrayList<>();
+            int subjNodeId = NOT_EXIST;
+            int dobjNodeId = NOT_EXIST;
+            int iobjNodeId = NOT_EXIST;
+            for (int childId : getNodeById(nodeId).getChildrenIds()) {
+                reduce(childId);
+                switch (getNodeById(nodeId).getFlag()) {
+                    case FLAG_MERGE:
+                        setNodeWordById(nodeId, getNodeById(childId).getWord() + " " + getNodeById(nodeId).getWord());   //???TODO: Or node.getWord() + child.getWord()
+                    case FLAG_DELETE:
+                        if (getNodeById(childId).getChildrenIds() != null) {
+                            for (int ccId : getNodeById(childId).getChildrenIds()) {
+                                setNodeParentId(ccId, nodeId);
+                                toAdd.add(ccId);
+                            }
+                        }
+                        toDelete.add(childId);
+                        break;
+                }
+                /* TODO check the relationship between Subjects (getRelation == "nsubj")
+                   TODO and Objects (dobj and pobj)
+                 */
+                if (getNodeById(childId).getRelation().equals(DEP_NOUN_SUBJECT))
+                    subjNodeId = childId;
+                if (getNodeById(childId).getRelation().equals(DEP_OBJECTIVE))
+                    dobjNodeId = childId;
+                if (getNodeById(childId).getRelation().equals(DEP_INDIRECT_OBJECTIVE))
+                    iobjNodeId = childId;
+            }
+            if (subjNodeId != NOT_EXIST) {
+                if (dobjNodeId != NOT_EXIST) {
+                    setNodeParentId(subjNodeId, dobjNodeId);
+                    addChildById(dobjNodeId, subjNodeId);
+                    toDelete.add(subjNodeId);
+                } else if (iobjNodeId != NOT_EXIST) {
+                    setNodeParentId(subjNodeId, iobjNodeId);
+                    addChildById(iobjNodeId, subjNodeId);
+                    toDelete.add(subjNodeId);
+                }
+            }
+            removeChildrenById(nodeId, toDelete);
+            addChildreById(nodeId, toAdd);
+        }
+        if (getNodeById(nodeId).getWord().toLowerCase().equals("when")) {
+            setNodeWordById(nodeId, "time");
+            setNodeTypeById(nodeId, POS_NOUN);
+        }
+        if (getNodeById(nodeId).getWord().toLowerCase().equals("where")) {
+
+            setNodeWordById(nodeId, "location");
+            setNodeTypeById(nodeId, POS_NOUN);
+        }
+        if (getNodeById(nodeId).getType().equals(POS_NOUN) || getNodeById(nodeId).getType().equals(POS_PROPERNOUN)) { // Nouns
+            return;
+        }
+        if (getNodeById(nodeId).getType().startsWith(POS_PRONOUN)) {
+            if (getNodeById(nodeId).getWord().toLowerCase().equals("you")) {
+                if (getNodeById(nodeId).getRelation().equals(DEP_NOUN_SUBJECT)) {
+                    return;
+                } else {
+                    getNodeById(nodeId).setFlag(FLAG_DELETE);
+                    return;
+                }
+            }
+            if (!getNodeById(nodeId).getWord().toLowerCase().equals("me")) {
+                return;
+            }
+        }
+        setNodeFlagById(nodeId, FLAG_DELETE);
+    }
+
+    public void resolveObjectRelation(int nodeId) {
+        if (getNodeById(nodeId).getChildrenIds() != null) {
+            ArrayList<Integer> toDelete = new ArrayList<>();
+            int subjNodeId = NOT_EXIST;
+            int dobjNodeId = NOT_EXIST;
+            int iobjNodeId = NOT_EXIST;
+            for (int childId : getNodeById(nodeId).getChildrenIds()) {
+                if (getNodeById(childId).getRelation().equals(DEP_NOUN_SUBJECT))
+                    subjNodeId = childId;
+                if (getNodeById(childId).getRelation().equals(DEP_OBJECTIVE))
+                    dobjNodeId = childId;
+                if (getNodeById(childId).getRelation().equals(DEP_INDIRECT_OBJECTIVE))
+                    iobjNodeId = childId;
+            }
+            if (subjNodeId != NOT_EXIST) {
+                if (dobjNodeId != NOT_EXIST) {
+                    setNodeParentId(subjNodeId, dobjNodeId);
+                    addChildById(dobjNodeId, subjNodeId);
+                    toDelete.add(subjNodeId);
+                } else if (iobjNodeId != NOT_EXIST) {
+                    setNodeParentId(subjNodeId, iobjNodeId);
+                    addChildById(iobjNodeId, subjNodeId);
+                    toDelete.add(subjNodeId);
+                }
+            }
+            removeChildrenById(nodeId, toDelete);
+        }
+
+    }
+
+    private boolean changeRoot(int newRootId) {
+        mRootId = newRootId;
+        mNodeList.get(mRootId).setParentId(ROOT_PARENT_ID);
+        return true;
+    }
+
+    public void reduce() {
+        Node root = mNodeList.get(mRootId);
+        reduce(root.getId());            //root Node
+        if (root.getFlag() == FLAG_DELETE) {
+            Iterator<Integer> it = root.getChildrenIds().iterator();
+            int firstId = it.next();
+            if (root.getChildrenIds().size() > 1) {
+                ArrayList<Integer> toDemote = new ArrayList<>();
+                int nodeId = 0;
+                while (it.hasNext()) {
+                    nodeId = it.next();
+                    setNodeParentId(nodeId, root.getId());
+                    toDemote.add(nodeId);
+                }
+                addChildreById(firstId, toDemote);
+                removeChildrenById(root.getId(), toDemote);
+            }
+            if (getNodeById(firstId).getChildrenIds().size() > 0) {
+                ArrayList<Integer> toPromote = new ArrayList<>();
+                Iterator<Integer> cIt = getNodeById(firstId).getChildrenIds().iterator();
+                int cFirstId = cIt.next(), cNodeId = 0;
+                while (cIt.hasNext()) {
+                    cNodeId = cIt.next();
+                    if (getNodeById(cNodeId).getRelation().equals(DEP_CONJUNCTION) || getNodeById(cNodeId).getRelation().equals(DEP_COORDINATING_CONJUNCTION)) {
+                        setNodeParentId(cNodeId, root.getId());
+                        toPromote.add(cNodeId);
+                    }
+                }
+                addChildreById(root.getId(), toPromote);
+                removeChildrenById(cFirstId, toPromote);
+            }
+            if (root.getChildrenIds().size() == 1) {
+                changeRoot(root.getChildrenIds().iterator().next());
+            }
+        }
+        // advmod
+        if (root.getChildrenIds().size() > 0) {
+            int advmodNodeId = NOT_EXIST;
+            int nodeId = 0;
+            Iterator<Integer> it = root.getChildrenIds().iterator();
+            while (it.hasNext()) {
+                nodeId = it.next();
+                if (getNodeById(nodeId).getRelation().equals(DEP_ADVERB_MODIFIER)) {
+                    advmodNodeId = nodeId;
+                    break;
+                }
+            }
+            if (advmodNodeId != NOT_EXIST) {
+                // swap the contents
+                String tmp = getNodeById(advmodNodeId).getType();
+                setNodeTypeById(advmodNodeId, root.getType());
+                root.setType(tmp);
+                tmp = getNodeById(advmodNodeId).getWord();
+                setNodeWordById(advmodNodeId, root.getWord());
+                root.setWord(tmp);
+                tmp = getNodeById(advmodNodeId).getRelation();
+                setRelationById(advmodNodeId, root.getRelation());
+                root.setRelation(tmp);
+                resolveObjectRelation(root.getId());
+            }
+        }
+
+        // TODO: check for a case which *doesn't* use advmod (when or where) but still requires some special handling re. subject and object?
+    }
+
+    /**
+     * @param context : context of Service (SemanticUnderstanding)
+     * @param tagList : A list of tags which are candidates may add to a node
+     *                Add Tag to Every Tree Node
+     */
+    public void addTag(ArrayList<Tag> tagList, Context context) {
+        addTag(getRoot(), tagList, context);
+    }
+
+    /**
+     * @param node    : Start from Root Node
+     * @param tagList : A list of tags which are candidates may add to a node
+     * @param context : context of Service (Used in AsyncTask of getting results Concept Graph)
+     *                Recursive Function （Post-order traversal）
+     *                Look Through All the Tree Nodes to Add Tags (By Concept Graph)
+     */
+    public void addTag(Node node, ArrayList<Tag> tagList, Context context) {
+        for (Tag t : tagList) {
+            if (t.matchWord(node.getWord(), node.getEntity()))
+                node.addTag(t);
+        }
+    }
+
+    /**
+     * Override Function toString()
+     * Use the Recursive Function toString() Defined in Node
+     * To Print the ParseTree
+     */
+    @Override
+    public String toString() {
+        return getRoot().toString();
+    }
+
+    public static ArrayList<ParseTree> split(ParseTree tree) {
+        /*
+        TODO: change this
+        ArrayList<ParseTree> list = new ArrayList<>();
+        if (tree.getRoot().getFlag() == FLAG_NORMAL) {
+            list.add(new ParseTree(tree.getRoot()));
+        } else {
+            for (Node node : tree.getRoot().getChildren()) {
+                list.add(new ParseTree(node));
+            }
+        }
+        return list;*/
+        return null;
+    }
+
 
 }

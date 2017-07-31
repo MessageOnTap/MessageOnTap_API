@@ -123,7 +123,7 @@ public class Trigger {
     }
 
     public String getJson() {
-        return DataUtils.SimpleObjectToJson(this, Globals.TYPE_TRIGGER);
+        return JSONUtils.SimpleObjectToJson(this, Globals.TYPE_TRIGGER);
     }
 
     public String getTypeKey() {
