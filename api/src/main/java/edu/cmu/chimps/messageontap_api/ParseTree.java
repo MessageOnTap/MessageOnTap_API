@@ -24,6 +24,7 @@ public class ParseTree {
     private static final int FLAG_NORMAL = 0;
     private static final int FLAG_DELETE = 1;
     private static final int FLAG_MERGE = 2;
+    private static final int ROOT_PARENT_ID = -1;
 
     /**
      * Constants for ParseTree Mood
@@ -313,8 +314,8 @@ public class ParseTree {
         return mNodeList.get(id);
     }
 
-    private boolean changeRoot(int newmRootId) {
-        mRootId = newmRootId;
+    private boolean changeRoot(int newRootId) {
+        mRootId = newRootId;
         return true;
     }
 
@@ -329,5 +330,22 @@ public class ParseTree {
         return getRoot().toString();
     }
 
+    public boolean isConcatenation(Node a, Node b) {
+        return a.getParentId() == b.getParentId();
+    }
+
+    public boolean isSubordinate(Node a, Node b, Boolean nested) {
+        int parentId = b.getParentId(),
+                aId = a.getId();
+        if (parentId == aId)
+            return true;
+        while (nested && b.getParentId() != ROOT_PARENT_ID) {
+            b = getNodeById(parentId);
+            parentId = b.getParentId();
+            if (parentId == aId)
+                return true;
+        }
+        return false;
+    }
 
 }

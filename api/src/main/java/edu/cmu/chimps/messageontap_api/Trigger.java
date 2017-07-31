@@ -8,57 +8,26 @@ import java.util.Set;
 /**
  * This is the data type for plugins to set up their triggers at message perception
  * 1. Tag List
- *
  */
 
 /**
- *     Trigger
-
- + Set<Tag> mandatoryTags
-
- + Set<Tag> optionalTags
-
- + Set<Constraint> contraints
-
- + int mood
-
- + int direction
-
+ * Trigger
+ * <p>
+ * + Set<Tag> mandatoryTags
+ * <p>
+ * + Set<Tag> optionalTags
+ * <p>
+ * + Set<Constraint> contraints
+ * <p>
+ * + int mood
+ * <p>
+ * + int direction
  */
 public class Trigger {
 
+    enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
 
-    private static final int ROOT_PARENT_ID = -1;
-
-    public boolean isConcatenation(ParseTree parseTree, ParseTree.Node a, ParseTree.Node b){
-        //TODO : ROOT NODE
-        if(a.getParentId() == ROOT_PARENT_ID){
-            return false;
-        }
-        else{
-            if(parseTree.mNodeList.get(a.getParentId()).getChildrenIds().contains(b.getId())){
-                return true;
-            }
-        }
-        return true;
-    }
-
-    public boolean isSubordinate(ParseTree.Node a, ParseTree.Node b){
-        //TODO : ROOT NODE
-        if(a.getChildrenIds() == null){
-            return false;
-        }
-        else{
-            if(a.getChildrenIds().contains(b.getId())){
-                return true;
-            }
-        }
-        return true;
-    }
-
-    enum Relation{UNKNOWN, CONCATENATION, SUBORDINATE}
-
-    private class Constraint{
+    private class Constraint {
         //TODO
         String tagA_name = "";
         String tagB_name = "";
@@ -90,30 +59,30 @@ public class Trigger {
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags) {
         this.mName = name;
-        for(Tag t:pluginMadatoryTags) {
+        for (Tag t : pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
         }
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags) {
         this.mName = name;
-        for(Tag t:pluginMadatoryTags) {
+        for (Tag t : pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
         }
-        for(Tag t:pluginOptionalTags) {
+        for (Tag t : pluginOptionalTags) {
             mOptionalTags.add(t.getName());
 
         }
     }
 
-    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints){
+    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints) {
         this.mName = name;
-        for(Tag t:pluginMadatoryTags) {
+        for (Tag t : pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
         }
-        for(Tag t:pluginOptionalTags) {
+        for (Tag t : pluginOptionalTags) {
             mOptionalTags.add(t.getName());
 
         }
@@ -121,17 +90,17 @@ public class Trigger {
     }
 
     public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints
-                    , ParseTree.Mood mood, ParseTree.Direction direction){
+            , ParseTree.Mood mood, ParseTree.Direction direction) {
         this.mName = name;
-        for(Tag t:pluginMadatoryTags) {
+        for (Tag t : pluginMadatoryTags) {
             mMadatoryTags.add(t.getName());
 
         }
-        for(Tag t:pluginOptionalTags) {
+        for (Tag t : pluginOptionalTags) {
             mOptionalTags.add(t.getName());
 
         }
-        if(constraints != null)
+        if (constraints != null)
             this.mConstraints = constraints;
         this.mMood = mood;
         this.mDirection = direction;
@@ -161,15 +130,14 @@ public class Trigger {
         return Globals.TYPE_TRIGGER;
     }
 
-    public boolean matchTrigger(ParseTree parseTree){
+    public boolean matchTrigger(ParseTree parseTree) {
         // 1. Tag List
         // 2. Tag Relation
         // 3. Mood? Direction?
 
-        boolean flag = false;
         //Direction Judge
         //Incoming or Outgoing?
-        if(mDirection != ParseTree.Direction.UNKNOWN_DIRECTION) {
+        if (mDirection != ParseTree.Direction.UNKNOWN_DIRECTION) {
             if (parseTree.direction != mDirection) {
                 return false;
             }
@@ -177,7 +145,7 @@ public class Trigger {
 
         //Mood Judge
         //IMPERATIVE, INTERROGTIVE
-        if(mMood != ParseTree.Mood.MOOD_UNKNOWN) {
+        if (mMood != ParseTree.Mood.MOOD_UNKNOWN) {
             if (parseTree.mood != mMood) {
                 return false;
             }
@@ -195,31 +163,33 @@ public class Trigger {
             }
         }
 
-        if(!mMadatoryTags.isEmpty()) {
-            if(!tagNames.keySet().contains(mMadatoryTags)){
+        if (!mMadatoryTags.isEmpty()) {
+            if (!tagNames.keySet().contains(mMadatoryTags)) {
                 return false;
             }
         }
 
         //A -> B
-        if(!mConstraints.isEmpty()){
-            for(Constraint c:mConstraints){
+        if (!mConstraints.isEmpty()) {
+            for (Constraint c : mConstraints) {
                 String tagA = c.tagA_name;
                 String tagB = c.tagB_name;
                 Relation relation = c.relation;
                 ParseTree.Node nodeA = parseTree.mNodeList.get(tagNames.get(tagA));
                 ParseTree.Node nodeB = parseTree.mNodeList.get(tagNames.get(tagB));
-                if(relation == Relation.CONCATENATION){
-                    if(!isConcatenation(parseTree, nodeA, nodeB)){
+                if (relation == Relation.CONCATENATION) {
+                    if (!parseTree.isConcatenation(nodeA, nodeB)) {
+                        return false;
+                    }
+                } else if (relation == Relation.DIRECT_SUBORDINATION) { // A is B's direct father
+                    if (!parseTree.isSubordinate(nodeA, nodeB, false)) {
+                        return false;
+                    }
+                } else if (relation == Relation.NESTED_SUBORNIDATION) { // A is B's ancestor
+                    if (!parseTree.isSubordinate(nodeA, nodeB, true)) {
                         return false;
                     }
                 }
-                if(relation == Relation.SUBORDINATE){
-                    if(!isSubordinate(nodeA, nodeB)){
-                        return false;
-                    }
-                }
-
             }
         }
 
