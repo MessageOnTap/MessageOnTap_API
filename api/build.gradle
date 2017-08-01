@@ -44,7 +44,11 @@ dependencies {
     })
     compile 'com.android.support:multidex:1.0.1'
     //compile 'com.github.chentc:PrivacyStreams:v0.1.4.6'
-    compile('privacystreams:privacystreams-core:0.1.4.8') {
+    /*compile('privacystreams:privacystreams-core:0.1.4.8') {
+        exclude group: 'org.apache.httpcomponents'
+        exclude group: 'org.json'
+    }*/
+    compile('privacystreams:privacystreams-android-sdk:0.1.5.2') {
         exclude group: 'org.apache.httpcomponents'
         exclude group: 'org.json'
     }
@@ -56,7 +60,7 @@ dependencies {
 // yiad.am jfrog repo
 def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
-def libraryVersion = '0.2.5'
+def libraryVersion = '0.3.0-canary1'
 
 publishing.publications {
     aar(MavenPublication) {

@@ -4,8 +4,14 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,101 +23,90 @@ import edu.cmu.chimps.messageontap_api.Tag;
 
 public class ParseTree {
 
-    /**
-     * Constants for Word Flag
-     */
     public static final int NOT_EXIST = -1;
-    private static final int FLAG_NORMAL = 0;
-    private static final int FLAG_DELETE = 1;
-    private static final int FLAG_MERGE = 2;
-    private static final int ROOT_PARENT_ID = -1;
-
-    /**
-     * Constants for ParseTree Mood
-     */
-    private static final int MOOD_IMPERATIVE = 1;
-    private static final int MOOD_INTERROGTIVE = 2;
 
     /**
      * Universal POS tags by Stanford
      */
-    private static final String POS_ADJECTIVE = "ADJ";
-    private static final String POS_ADVERB = "ADV";
-    private static final String POS_VERB = "VERB";
+    public static final String POS_ADJECTIVE = "ADJ";
+    public static final String POS_ADVERB = "ADV";
+    public static final String POS_VERB = "VERB";
 
-    private static final String POS_NUMERAL = "NUM";
-    private static final String POS_NOUN = "NOUN";
-    private static final String POS_PROPERNOUN = "PROPN";
-    private static final String POS_PRONOUN = "PRON";
+    public static final String POS_NUMERAL = "NUM";
+    public static final String POS_NOUN = "NOUN";
+    public static final String POS_PROPERNOUN = "PROPN";
+    public static final String POS_PRONOUN = "PRON";
 
-    private static final String POS_COORDINATING_CONJUNCTION = "CCONJ";
-    private static final String POS_SUBORDINATING_CONJUNCTION = "SCONJ";
+    public static final String POS_COORDINATING_CONJUNCTION = "CCONJ";
+    public static final String POS_SUBORDINATING_CONJUNCTION = "SCONJ";
 
-    private static final String POS_ADPOSITION = "ADP";
-    private static final String POS_AUXILIARY = "AUX";
-    private static final String POS_DETERMINER = "DET";
-    private static final String POS_INTERJECTION = "INTJ";
+    public static final String POS_ADPOSITION = "ADP";
+    public static final String POS_AUXILIARY = "AUX";
+    public static final String POS_DETERMINER = "DET";
+    public static final String POS_INTERJECTION = "INTJ";
 
-    private static final String POS_PARTICLE = "PART";
-    private static final String POS_PUNCTUAATION = "PUNCT";
-    private static final String POS_SYMBOL = "SYM";
+    public static final String POS_PARTICLE = "PART";
+    public static final String POS_PUNCTUAATION = "PUNCT";
+    public static final String POS_SYMBOL = "SYM";
 
-    private static final String POS_UNKNOWN = "X";
+    public static final String POS_UNKNOWN = "X";
 
     /**
      * Universal Dependencies
      */
-    private static final String DEP_NOUN_SUBJECT = "NSUBJ";
-    private static final String DEP_OBJECTIVE = "OBJ";
-    private static final String DEP_INDIRECT_OBJECTIVE = "IOBJ"; // Tom teaches Sam (direct obj) math (indirect obj)
+    public static final String DEP_NOUN_SUBJECT = "NSUBJ";
+    public static final String DEP_OBJECTIVE = "OBJ";
+    public static final String DEP_INDIRECT_OBJECTIVE = "IOBJ"; // Tom teaches Sam (direct obj) math (indirect obj)
 
-    private static final String DEP_CLAUSE_SUBJECT = "CSUBJ";
-    private static final String DEP_CLAUSAL_COMPLEMENT = "CCOMP"; // this one has its own subject. eg. Adam says that Mars likes to swim.
-    private static final String DEP_OPEN_CLAUSAL_COMPLEMENT = "XCOMP"; // this one does not. eg Fanglin looks great.
+    public static final String DEP_CLAUSE_SUBJECT = "CSUBJ";
+    public static final String DEP_CLAUSAL_COMPLEMENT = "CCOMP"; // this one has its own subject. eg. Adam says that Mars likes to swim.
+    public static final String DEP_OPEN_CLAUSAL_COMPLEMENT = "XCOMP"; // this one does not. eg Fanglin looks great.
 
-    private static final String DEP_OBLIQUE_NOMINAL = "OBL";
-    private static final String DEP_VOCATIVE = "VOCATIVE";
-    private static final String DEP_EXPLETIVE = "EXPL";
-    private static final String DEP_DISLOCATED = "DISLOCATED";
+    public static final String DEP_OBLIQUE_NOMINAL = "OBL";
+    public static final String DEP_VOCATIVE = "VOCATIVE";
+    public static final String DEP_EXPLETIVE = "EXPL";
+    public static final String DEP_DISLOCATED = "DISLOCATED";
 
-    private static final String DEP_AUXILIARY = "AUX";
-    private static final String DEP_COPULA = "COP";
-    private static final String DEP_MARKER = "MARK";
+    public static final String DEP_AUXILIARY = "AUX";
+    public static final String DEP_COPULA = "COP";
+    public static final String DEP_MARKER = "MARK";
 
-    private static final String DEP_ADVERB_CLAUSE_MODIFIER = "ADVCL";
-    private static final String DEP_ADVERB_MODIFIER = "ADVMOB";
-    private static final String DEP_NOMINAL_MODIFIER = "NMOD";
-    private static final String DEP_APPOSITIONAL_MODIFIER = "APPOS";
-    private static final String DEP_NUMERIC_MODIFIER = "NUMMOD";
-    private static final String DEP_CLAUSAL_MODIFIER = "ACL";
-    private static final String DEP_ADJECTIVE_MODIFIER = "AMOD";
+    public static final String DEP_ADVERB_CLAUSE_MODIFIER = "ADVCL";
+    public static final String DEP_ADVERB_MODIFIER = "ADVMOB";
+    public static final String DEP_NOMINAL_MODIFIER = "NMOD";
+    public static final String DEP_APPOSITIONAL_MODIFIER = "APPOS";
+    public static final String DEP_NUMERIC_MODIFIER = "NUMMOD";
+    public static final String DEP_CLAUSAL_MODIFIER = "ACL";
+    public static final String DEP_ADJECTIVE_MODIFIER = "AMOD";
 
-    private static final String DEP_DISCOURSE = "DISCOURSE";
-    private static final String DEP_DETERMINER = "DET";
-    private static final String DEP_CLASSIFIER = "CLF";
-    private static final String DEP_CASE = "CASE";
+    public static final String DEP_DISCOURSE = "DISCOURSE";
+    public static final String DEP_DETERMINER = "DET";
+    public static final String DEP_CLASSIFIER = "CLF";
+    public static final String DEP_CASE = "CASE";
 
-    private static final String DEP_CONJUNCTION = "CONJ";
-    private static final String DEP_COORDINATING_CONJUNCTION = "CC";
+    public static final String DEP_CONJUNCTION = "CONJ";
+    public static final String DEP_COORDINATING_CONJUNCTION = "CC";
 
-    private static final String DEP_FIXED_MULTIWORD_EXPRESSION = "FIXED";
-    private static final String DEP_FLAT_MULTIWORDD_EXPRESSION = "FLAT";
-    private static final String DEP_COMPOUND = "COMPOUND";
+    public static final String DEP_FIXED_MULTIWORD_EXPRESSION = "FIXED";
+    public static final String DEP_FLAT_MULTIWORDD_EXPRESSION = "FLAT";
+    public static final String DEP_COMPOUND = "COMPOUND";
 
-    private static final String DEP_LIST = "LIST";
-    private static final String DEP_PARATAXIS = "PARATAXIS";
+    public static final String DEP_LIST = "LIST";
+    public static final String DEP_PARATAXIS = "PARATAXIS";
 
-    private static final String DEP_ORPHAN = "ORPHAN";
-    private static final String DEP_GOES_WITH = "GOESWITH";
-    private static final String DEP_REPARANDUM = "REPARANDUM"; //overridden disfluency
+    public static final String DEP_ORPHAN = "ORPHAN";
+    public static final String DEP_GOES_WITH = "GOESWITH";
+    public static final String DEP_REPARANDUM = "REPARANDUM"; //overridden disfluency
 
-    private static final String DEP_PUNCTUATION = "PUNCT";
-    private static final String DEP_ROOT = "ROOT";
-    private static final String DEP_UNKNOWN = "DEP";
+    public static final String DEP_PUNCTUATION = "PUNCT";
+    public static final String DEP_ROOT = "ROOT";
+    public static final String DEP_UNKNOWN = "DEP";
 
-    enum Mood {MOOD_UNKNOWN, MOOD_IMPERATIVE, MOOD_INTERROGTIVE}
+    public enum Mood {UNKNOWN, IMPERATIVE, INTERROGTIVE}
 
-    enum Direction {UNKNOWN_DIRECTION, INCOMING_DIRECTION, OUTGOING_DIRECTION}
+    public enum Direction {UNKNOWN, INCOMING, OUTGOING}
+
+    public enum Flag {NORMAL, DELETE, MERGE}
 
     /**
      * Node of ParseTree
@@ -128,7 +123,8 @@ public class ParseTree {
      * + toString()
      * + print()
      */
-    public class Node {
+    // START Node Class
+    static public class Node {
 
         private int mId;
         private String mType;
@@ -137,12 +133,13 @@ public class ParseTree {
         private Set<Integer> mChildrenIds;
         private int mParentId;
         private String mRelation;
-        private int mFlag; // 0 = normal, 1 = delete, 2 = merge
-        private ArrayList<Tag> mTagList;
+        private Flag mFlag; // 0 = normal, 1 = delete, 2 = merge
+        private Set<String> mTagSet;
 
         public Node() {
             this.mChildrenIds = new HashSet<>();
-            this.mFlag = FLAG_DELETE;
+            this.mTagSet = new HashSet<>();
+            this.mFlag = Flag.DELETE;
         }
 
         public void setValue(String type, String word) {
@@ -151,7 +148,7 @@ public class ParseTree {
             //this.entity = null;
             //this.parentId = null;
             //this.childrenIds = new ArrayList<>();
-            this.mFlag = FLAG_NORMAL;
+            this.mFlag = Flag.NORMAL;
         }
 
         public void setId(int id) {
@@ -214,49 +211,36 @@ public class ParseTree {
             this.mRelation = relation;
         }
 
-        public int getFlag() {
+        public Flag getFlag() {
             return mFlag;
         }
 
-        public void setFlag(int flag) {
+        public void setFlag(Flag flag) {
             this.mFlag = flag;
         }
 
-        public ArrayList<Tag> getTagList() {
-            return mTagList;
+        public Set<String> getTagList() {
+            return mTagSet;
         }
 
-        public void setTagList(ArrayList<Tag> tagList) {
-            this.mTagList = tagList;
+        public void setTagList(Set<String> tagSet) {
+            this.mTagSet = tagSet;
+        }
+
+        public void addTag(String t) {
+            mTagSet.add(t);
         }
 
         public void addTag(Tag t) {
-            ArrayList<Tag> tagList = this.getTagList();
-            tagList.add(t);
-            this.setTagList(tagList);
+            mTagSet.add(t.getName());
         }
 
-        @Override
-        public String toString() {
-            return print("");
-        }
-
-        private String print(String indent) {
-            String ret = indent;
-            if (this.getRelation() != null) ret += this.getRelation();
-            ret += "(" + getType() + " " + getWord() + ")";
-            if (getChildrenIds().size() > 0) {
-                ret += " {\n";
-                for (int childId : getChildrenIds()) {
-                    ret += getNodeById(childId).print(indent + "  ");
-                }
-                ret += indent + "}";
-            }
-            ret += "\n";
-            return ret;
+        public boolean isRoot() {
+            return mParentId == NOT_EXIST;
         }
 
     }
+    // END Node Class
 
     SparseArray<Node> mNodeList;
     int mRootId;
@@ -298,7 +282,7 @@ public class ParseTree {
         mNodeList.get(id).setType(type);
     }
 
-    private void setNodeFlagById(int nodeId, int flag) {
+    private void setNodeFlagById(int nodeId, Flag flag) {
         mNodeList.get(nodeId).setFlag(flag);
     }
 
@@ -319,9 +303,11 @@ public class ParseTree {
                 aId = a.getId();
         if (parentId == aId)
             return true;
-        while (nested && b.getParentId() != ROOT_PARENT_ID) {
+        while (nested) {
             b = getNodeById(parentId);
             parentId = b.getParentId();
+            if (parentId == NOT_EXIST)
+                return false;
             if (parentId == aId)
                 return true;
         }
@@ -333,19 +319,19 @@ public class ParseTree {
         for (int i = 0; i < mNodeList.size(); i++) {
             if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
                 if (mNodeList.get(i).getWord().equals("?")) {
-                    mood = Mood.MOOD_INTERROGTIVE;
+                    mood = Mood.INTERROGTIVE;
                 }
             }
             if (getRoot().getType().equals(POS_VERB)) {
                 for (int childId : getRoot().getChildrenIds()) {
                     if (getNodeById(childId).getType().equals(DEP_NOUN_SUBJECT)) {
-                        mood = Mood.MOOD_INTERROGTIVE;
+                        mood = Mood.INTERROGTIVE;
                     }
                 }
-                mood = Mood.MOOD_IMPERATIVE;
+                mood = Mood.IMPERATIVE;
             }
         }
-        mood = Mood.MOOD_UNKNOWN;
+        mood = Mood.UNKNOWN;
 
     }
 
@@ -369,12 +355,12 @@ public class ParseTree {
             for (int childId : node.getChildrenIds()) {
                 Node child = mNodeList.get(childId);
                 merge(child);
-                if (child.getFlag() == FLAG_MERGE) {
+                if (child.getFlag() == Flag.MERGE) {
                     if (child.getId() < node.getId())
                         node.setWord(child.getWord() + " " + node.getWord());
                     else
                         node.setWord(node.getWord() + " " + child.getWord());
-                    child.setFlag(-1);
+                    child.setFlag(Flag.DELETE);
                 }
             }
         }
@@ -390,7 +376,7 @@ public class ParseTree {
             for (int childId : node.getChildrenIds()) {
                 Node child = mNodeList.get(childId);
                 clearMergedNodes(child);
-                if (child.getFlag() == -1) {
+                if (child.getFlag() == Flag.DELETE) {
                     node.getChildrenIds().remove(childId);
                 }
             }
@@ -401,7 +387,7 @@ public class ParseTree {
     public boolean isMerge(ArrayList<Node> mNodeList) {
         if (mNodeList == null) return false;
         for (Node n : mNodeList) {
-            if (n.getFlag() == FLAG_MERGE)
+            if (n.getFlag() == Flag.MERGE)
                 return true;
         }
         return false;
@@ -425,9 +411,9 @@ public class ParseTree {
             for (int childId : getNodeById(nodeId).getChildrenIds()) {
                 reduce(childId);
                 switch (getNodeById(nodeId).getFlag()) {
-                    case FLAG_MERGE:
+                    case MERGE:
                         setNodeWordById(nodeId, getNodeById(childId).getWord() + " " + getNodeById(nodeId).getWord());   //???TODO: Or node.getWord() + child.getWord()
-                    case FLAG_DELETE:
+                    case DELETE:
                         if (getNodeById(childId).getChildrenIds() != null) {
                             for (int ccId : getNodeById(childId).getChildrenIds()) {
                                 setNodeParentId(ccId, nodeId);
@@ -478,7 +464,7 @@ public class ParseTree {
                 if (getNodeById(nodeId).getRelation().equals(DEP_NOUN_SUBJECT)) {
                     return;
                 } else {
-                    getNodeById(nodeId).setFlag(FLAG_DELETE);
+                    getNodeById(nodeId).setFlag(Flag.DELETE);
                     return;
                 }
             }
@@ -486,7 +472,7 @@ public class ParseTree {
                 return;
             }
         }
-        setNodeFlagById(nodeId, FLAG_DELETE);
+        setNodeFlagById(nodeId, Flag.DELETE);
     }
 
     public void resolveObjectRelation(int nodeId) {
@@ -519,16 +505,21 @@ public class ParseTree {
 
     }
 
-    private boolean changeRoot(int newRootId) {
+    public boolean changeRoot(int newRootId) {
         mRootId = newRootId;
-        mNodeList.get(mRootId).setParentId(ROOT_PARENT_ID);
+        mNodeList.get(mRootId).setParentId(NOT_EXIST);
+        return true;
+    }
+
+    public boolean setRootId(int newRootId) {
+        mRootId = newRootId;
         return true;
     }
 
     public void reduce() {
         Node root = mNodeList.get(mRootId);
         reduce(root.getId());            //root Node
-        if (root.getFlag() == FLAG_DELETE) {
+        if (root.getFlag() == Flag.DELETE) {
             Iterator<Integer> it = root.getChildrenIds().iterator();
             int firstId = it.next();
             if (root.getChildrenIds().size() > 1) {
@@ -620,7 +611,22 @@ public class ParseTree {
      */
     @Override
     public String toString() {
-        return getRoot().toString();
+        return print("", getRoot());
+    }
+
+    private String print(String indent, Node node) {
+        String ret = indent;
+        if (node.getRelation() != null) ret += node.getRelation();
+        ret += "(" + node.getType() + " " + node.getWord() + ")";
+        if (node.getChildrenIds().size() > 0) {
+            ret += " {\n";
+            for (int childId : node.getChildrenIds()) {
+                ret += print(indent + "  ", getNodeById(childId));
+            }
+            ret += indent + "}";
+        }
+        ret += "\n";
+        return ret;
     }
 
     public static ArrayList<ParseTree> split(ParseTree tree) {
@@ -636,6 +642,14 @@ public class ParseTree {
         }
         return list;*/
         return null;
+    }
+
+    public void setNodeList(SparseArray nodeList) {
+        mNodeList = nodeList;
+    }
+
+    public SparseArray<Node> getNodeList() {
+        return mNodeList;
     }
 
 

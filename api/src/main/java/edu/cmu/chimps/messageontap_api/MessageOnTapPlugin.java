@@ -128,7 +128,7 @@ public abstract class MessageOnTapPlugin extends Service {
         session.updateTaskResponse(0);
         Task task = session.getTask(0);
         try {
-            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method("sessionEnd").content(""));
+            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_END_SESSION).content(""));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -151,14 +151,14 @@ public abstract class MessageOnTapPlugin extends Service {
     protected void handlePMSTask(long sid, long tid, String method) {
         Log.e("plugin", "In Handle PMS task");
         switch (method) {
-            case "queryStatus":
+            case MethodConstants.PMS_METHOD_STATUS_QUERY:
                 try {
-                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type(MethodConstants.PMS_TYPE).method("statusReply").content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
+                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_STATUS_REPLY).content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
                 break;
-            case "refetchResponse":
+            case MethodConstants.PMS_METHOD_RESPONSE_REFETCH:
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
                 if (task.getStatus() == 1) {

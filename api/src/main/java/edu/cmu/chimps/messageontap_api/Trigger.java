@@ -13,9 +13,9 @@ import java.util.Set;
 /**
  * Trigger
  * <p>
- * + Set<Tag> mandatoryTags
+ * + Set<String> mandatoryTags
  * <p>
- * + Set<Tag> optionalTags
+ * + Set<String> optionalTags
  * <p>
  * + Set<Constraint> contraints
  * <p>
@@ -27,7 +27,7 @@ public class Trigger {
 
     enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
 
-    private class Constraint {
+    public class Constraint {
         //TODO
         String tagA_name = "";
         String tagB_name = "";
@@ -42,9 +42,9 @@ public class Trigger {
 
     private Set<Constraint> mConstraints = new HashSet<>();
 
-    private ParseTree.Mood mMood = ParseTree.Mood.MOOD_UNKNOWN;
+    private ParseTree.Mood mMood = ParseTree.Mood.UNKNOWN;
 
-    private ParseTree.Direction mDirection = ParseTree.Direction.UNKNOWN_DIRECTION;
+    private ParseTree.Direction mDirection = ParseTree.Direction.UNKNOWN;
 
     private String mPackageName; //TODO: Plugin Id
 
@@ -53,51 +53,51 @@ public class Trigger {
         mMadatoryTags = new HashSet<String>();
         mOptionalTags = new HashSet<String>();
         mConstraints = new HashSet<Constraint>();
-        mMood = ParseTree.Mood.MOOD_UNKNOWN;
-        mDirection = ParseTree.Direction.UNKNOWN_DIRECTION;
+        mMood = ParseTree.Mood.UNKNOWN;
+        mDirection = ParseTree.Direction.UNKNOWN;
     }
 
-    public Trigger(String name, Set<Tag> pluginMadatoryTags) {
+    public Trigger(String name, Set<String> pluginMadatoryTags) {
         this.mName = name;
-        for (Tag t : pluginMadatoryTags) {
-            mMadatoryTags.add(t.getName());
-        }
-    }
-
-    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags) {
-        this.mName = name;
-        for (Tag t : pluginMadatoryTags) {
-            mMadatoryTags.add(t.getName());
-
-        }
-        for (Tag t : pluginOptionalTags) {
-            mOptionalTags.add(t.getName());
-
+        for (String t : pluginMadatoryTags) {
+            mMadatoryTags.add(t);
         }
     }
 
-    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints) {
+    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags) {
         this.mName = name;
-        for (Tag t : pluginMadatoryTags) {
-            mMadatoryTags.add(t.getName());
+        for (String t : pluginMadatoryTags) {
+            mMadatoryTags.add(t);
 
         }
-        for (Tag t : pluginOptionalTags) {
-            mOptionalTags.add(t.getName());
+        for (String t : pluginOptionalTags) {
+            mOptionalTags.add(t);
+
+        }
+    }
+
+    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints) {
+        this.mName = name;
+        for (String t : pluginMadatoryTags) {
+            mMadatoryTags.add(t);
+
+        }
+        for (String t : pluginOptionalTags) {
+            mOptionalTags.add(t);
 
         }
         this.mConstraints = constraints;
     }
 
-    public Trigger(String name, Set<Tag> pluginMadatoryTags, Set<Tag> pluginOptionalTags, Set<Constraint> constraints
+    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints
             , ParseTree.Mood mood, ParseTree.Direction direction) {
         this.mName = name;
-        for (Tag t : pluginMadatoryTags) {
-            mMadatoryTags.add(t.getName());
+        for (String t : pluginMadatoryTags) {
+            mMadatoryTags.add(t);
 
         }
-        for (Tag t : pluginOptionalTags) {
-            mOptionalTags.add(t.getName());
+        for (String t : pluginOptionalTags) {
+            mOptionalTags.add(t);
 
         }
         if (constraints != null)
@@ -123,7 +123,7 @@ public class Trigger {
     }
 
     public String getJson() {
-        return JSONUtils.SimpleObjectToJson(this, Globals.TYPE_TRIGGER);
+        return JSONUtils.simpleObjectToJson(this, Globals.TYPE_TRIGGER);
     }
 
     public String getTypeKey() {
@@ -137,7 +137,7 @@ public class Trigger {
 
         //Direction Judge
         //Incoming or Outgoing?
-        if (mDirection != ParseTree.Direction.UNKNOWN_DIRECTION) {
+        if (mDirection != ParseTree.Direction.UNKNOWN) {
             if (parseTree.direction != mDirection) {
                 return false;
             }
@@ -145,7 +145,7 @@ public class Trigger {
 
         //Mood Judge
         //IMPERATIVE, INTERROGTIVE
-        if (mMood != ParseTree.Mood.MOOD_UNKNOWN) {
+        if (mMood != ParseTree.Mood.UNKNOWN) {
             if (parseTree.mood != mMood) {
                 return false;
             }
@@ -156,9 +156,9 @@ public class Trigger {
         //Add Tags from ParseTree
         HashMap<String, Integer> tagNames = new HashMap<>();
         for (int i = 0; i < parseTree.mNodeList.size(); i++) {
-            if (!parseTree.mNodeList.get(i).getTagList().isEmpty()) {
-                for (Tag t : parseTree.mNodeList.get(i).getTagList()) {
-                    tagNames.put(t.getName(), i);
+            if (!parseTree.getNodeById(i).getTagList().isEmpty()) {
+                for (String t : parseTree.mNodeList.get(i).getTagList()) {
+                    tagNames.put(t, i);
                 }
             }
         }

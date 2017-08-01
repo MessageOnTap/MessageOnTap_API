@@ -1,8 +1,15 @@
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -14,13 +21,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class JSONUtils {
+    public static Gson gson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
+                    @Override
+                    /**
+                     * Deserialize a parse tree JSON to ParseTree class object.
+                     * @author: Adam Yi <xuan@yiad.am>
+                     */
+                    public ParseTree deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        JsonObject treeObj = json.getAsJsonObject();
+                        Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
+                                }.getType(),
+                                new SparseArrayTypeAdapter<ParseTree.Node>(ParseTree.Node.class))
+                                .create();
+                        // Construct a tree (this shouldn't try to parse the sparseArray stuff
+                        ParseTree tree = gson.fromJson(json, ParseTree.class);
+                        SparseArray<ParseTree.Node> nodeList = gson.fromJson(treeObj.get("mNodeList"),
+                                new TypeToken<SparseArray<ParseTree.Node>>() {
+                                }.getType());
+                        // set the correct node list
+                        tree.setNodeList(nodeList);
+                        return tree;
+                    }
+                }).create();
+    }
+
     public static String hashMapToString(HashMap<String, Object> map) {
-        Gson gson = new Gson();
-        String json = gson.toJson(map);
-        return json;
+        return gson().toJson(map);
     }
 
     public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
@@ -71,11 +101,16 @@ public class JSONUtils {
         return list;
     }
 
-    public static String SimpleObjectToJson(Object object, String typeKey) {
-        Gson gson = new Gson();
+    public static String simpleObjectToJson(Object object, String typeKey) {
+        Gson gson = gson();
+        Type type;
         switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<Trigger>() {
+                type = new TypeToken<Trigger>() {
+                }.getType();
+                return gson.toJson(object, type);
+            case Globals.TYPE_PARSETREE:
+                type = new TypeToken<ParseTree>() {
                 }.getType();
                 return gson.toJson(object, type);
             default:
@@ -83,11 +118,15 @@ public class JSONUtils {
         }
     }
 
-    public static Object JsonToSimpleObject(String json, String typeKey) {
-        Gson gson = new Gson();
+    public static Object jsonToSimpleObject(String json, String typeKey) {
+        Gson gson = gson();
         switch (typeKey) {
             case Globals.TYPE_TRIGGER:
                 Type type = new TypeToken<Trigger>() {
+                }.getType();
+                return gson.fromJson(json, type);
+            case Globals.TYPE_PARSETREE:
+                type = new TypeToken<ParseTree>() {
                 }.getType();
                 return gson.fromJson(json, type);
             default:
