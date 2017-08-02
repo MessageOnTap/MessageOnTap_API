@@ -15,6 +15,8 @@ import java.util.HashMap;
 
 public abstract class MessageOnTapPlugin extends Service {
 
+    private static final String TAG = "Plugin_API";
+
     protected IPluginManager mManager;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
 
@@ -23,7 +25,7 @@ public abstract class MessageOnTapPlugin extends Service {
         @Override
         public void onTaskReceived(TaskData data) throws RemoteException {
 //            Log.e("extension","Receive message");
-            Log.e("plugin", "got message data: " + data);
+            Log.e(TAG, "got message data: " + data);
             long sid = data.sid(),
                     tid = data.tid();
             String type = data.type();
@@ -49,7 +51,7 @@ public abstract class MessageOnTapPlugin extends Service {
                     }
                 }
             } else {
-                Log.e("plugin", "Hello Developer! Test plugin communication up! Isn't it a nice day? Hooray lol");
+                Log.e(TAG, "Hello Developer! Test plugin communication up! Isn't it a nice day? Hooray lol");
             }
         }
 
@@ -65,7 +67,7 @@ public abstract class MessageOnTapPlugin extends Service {
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
-            Log.e("plugin", "registering manager " + packageName);
+            Log.e(TAG, "registering manager " + packageName);
 
             mManager = manager;
             //plugins.put(packageName, listener);
@@ -128,13 +130,21 @@ public abstract class MessageOnTapPlugin extends Service {
         session.updateTaskResponse(0);
         Task task = session.getTask(0);
         try {
-            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_END_SESSION).content(""));
+            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_END_SESSION).content("{}"));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    protected long newTaskRequest(long sid, String type, String method, HashMap<String, Object> params) {
+    protected void createSession() {
+        try {
+            mManager.sendResponse(new TaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_NEW_SESSION).content("{}"));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected long createTask(long sid, String type, String method, HashMap<String, Object> params) {
         Session session = sessionList.get(sid);
         String json = JSONUtils.hashMapToString(params);
         TaskData data = new TaskData().content(json).type(type).method(method);
@@ -149,7 +159,7 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     protected void handlePMSTask(long sid, long tid, String method) {
-        Log.e("plugin", "In Handle PMS task");
+        Log.e(TAG, "In Handle PMS task");
         switch (method) {
             case MethodConstants.PMS_METHOD_STATUS_QUERY:
                 try {
@@ -172,7 +182,7 @@ public abstract class MessageOnTapPlugin extends Service {
                 }
                 break;
             default:
-                Log.e("plugin", "Unknown PMS task received.");
+                Log.e(TAG, "Unknown PMS task received.");
         }
     }
 

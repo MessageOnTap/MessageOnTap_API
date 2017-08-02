@@ -15,6 +15,7 @@ public class MethodConstants {
     /**
      * methods of PMS tasks
      */
+    public static final String PMS_METHOD_NEW_SESSION = "session_new";
     public static final String PMS_METHOD_END_SESSION = "session_end";
     public static final String PMS_METHOD_STATUS_QUERY = "status_query";
     public static final String PMS_METHOD_STATUS_REPLY = "status_reply";
