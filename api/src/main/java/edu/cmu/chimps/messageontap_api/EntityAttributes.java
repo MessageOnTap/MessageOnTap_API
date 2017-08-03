@@ -98,6 +98,11 @@ public class EntityAttributes {
 
     }
 
+
+    public static class PMS {
+        public static final String TRIGGER_SOURCE = "trigger";
+    }
+
     public static final String CURRENT_MESSAGE_CONTACT_NAME = "current_message_contact_name";
 
     public static final String CURRENT_MESSAGE_RELATIVE_POSITION = "current_message_relative_position";

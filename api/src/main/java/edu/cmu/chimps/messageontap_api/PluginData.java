@@ -28,6 +28,24 @@ public class PluginData implements Parcelable {
     public PluginData() {
     }
 
+    public String tagSet() {
+        return mTagSet;
+    }
+
+    public PluginData tagSet(String tagSet) {
+        mTagSet = tagSet;
+        return this;
+    }
+
+    public String triggerSet() {
+        return mTriggerSet;
+    }
+
+    public PluginData triggerSet(String triggerSet) {
+        mTriggerSet = triggerSet;
+        return this;
+    }
+
     /**
      * Serializes the contents of this object to JSON.
      */

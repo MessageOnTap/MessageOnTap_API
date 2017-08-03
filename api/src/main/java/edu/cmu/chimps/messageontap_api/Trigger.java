@@ -36,9 +36,9 @@ public class Trigger {
 
     private String mName = "null";
 
-    private Set<String> mMadatoryTags = new HashSet<>();
+    private Set<Object> mMandatoryTags = new HashSet<>();
 
-    private Set<String> mOptionalTags = new HashSet<>();
+    private Set<Object> mOptionalTags = new HashSet<>();
 
     private Set<Constraint> mConstraints = new HashSet<>();
 
@@ -50,36 +50,45 @@ public class Trigger {
 
     public Trigger() {
         mName = "";
-        mMadatoryTags = new HashSet<String>();
-        mOptionalTags = new HashSet<String>();
+        mMandatoryTags = new HashSet<Object>();
+        mOptionalTags = new HashSet<Object>();
         mConstraints = new HashSet<Constraint>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
     }
 
-    public Trigger(String name, Set<String> pluginMadatoryTags) {
+    public Trigger(String name, Set<String> pluginMandatoryTags) {
         this.mName = name;
-        for (String t : pluginMadatoryTags) {
-            mMadatoryTags.add(t);
+        mMandatoryTags = new HashSet<Object>();
+        mOptionalTags = new HashSet<Object>();
+        mMood = ParseTree.Mood.UNKNOWN;
+        mDirection = ParseTree.Direction.UNKNOWN;
+        for (String t : pluginMandatoryTags) {
+            mMandatoryTags.add(t);
         }
     }
 
-    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags) {
+    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags) {
         this.mName = name;
-        for (String t : pluginMadatoryTags) {
-            mMadatoryTags.add(t);
-
-        }
+        mMandatoryTags = new HashSet<Object>();
+        mOptionalTags = new HashSet<Object>();
+        mConstraints = new HashSet<Constraint>();
+        mMood = ParseTree.Mood.UNKNOWN;
+        mDirection = ParseTree.Direction.UNKNOWN;
         for (String t : pluginOptionalTags) {
             mOptionalTags.add(t);
-
         }
     }
 
-    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints) {
+    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints) {
         this.mName = name;
-        for (String t : pluginMadatoryTags) {
-            mMadatoryTags.add(t);
+        mMandatoryTags = new HashSet<Object>();
+        mOptionalTags = new HashSet<Object>();
+        mConstraints = new HashSet<Constraint>();
+        mMood = ParseTree.Mood.UNKNOWN;
+        mDirection = ParseTree.Direction.UNKNOWN;
+        for (String t : pluginMandatoryTags) {
+            mMandatoryTags.add(t);
 
         }
         for (String t : pluginOptionalTags) {
@@ -89,11 +98,14 @@ public class Trigger {
         this.mConstraints = constraints;
     }
 
-    public Trigger(String name, Set<String> pluginMadatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints
+    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints
             , ParseTree.Mood mood, ParseTree.Direction direction) {
         this.mName = name;
-        for (String t : pluginMadatoryTags) {
-            mMadatoryTags.add(t);
+        mMandatoryTags = new HashSet<Object>();
+        mOptionalTags = new HashSet<Object>();
+        mConstraints = new HashSet<Constraint>();
+        for (String t : pluginMandatoryTags) {
+            mMandatoryTags.add(t);
 
         }
         for (String t : pluginOptionalTags) {
@@ -154,17 +166,17 @@ public class Trigger {
         //Tag Judge Contains
 
         //Add Tags from ParseTree
-        HashMap<String, Integer> tagNames = new HashMap<>();
+        HashMap<Object, Integer> tagNames = new HashMap<>();
         for (int i = 0; i < parseTree.mNodeList.size(); i++) {
             if (!parseTree.getNodeById(i).getTagList().isEmpty()) {
-                for (String t : parseTree.mNodeList.get(i).getTagList()) {
+                for (Object t : parseTree.mNodeList.get(i).getTagList()) {
                     tagNames.put(t, i);
                 }
             }
         }
 
-        if (!mMadatoryTags.isEmpty()) {
-            if (!tagNames.keySet().contains(mMadatoryTags)) {
+        if (!mMandatoryTags.isEmpty()) {
+            if (!tagNames.keySet().contains(mMandatoryTags)) {
                 return false;
             }
         }
@@ -196,4 +208,27 @@ public class Trigger {
         return true;
     }
 
+    public Set<Object> getMandatoryTags() {
+        return mMandatoryTags;
+    }
+
+    public void setMandatoryTags(Set<Object> mandatoryTags) {
+        this.mMandatoryTags = mandatoryTags;
+    }
+
+    public Set<Object> getOptionalTags() {
+        return mOptionalTags;
+    }
+
+    public void setOptionalTags(Set<Object> optionalTags) {
+        this.mOptionalTags = optionalTags;
+    }
+
+    public Set<Constraint> getConstraints() {
+        return mConstraints;
+    }
+
+    public void setConstraints(Set<Constraint> constraints) {
+        this.mConstraints = constraints;
+    }
 }

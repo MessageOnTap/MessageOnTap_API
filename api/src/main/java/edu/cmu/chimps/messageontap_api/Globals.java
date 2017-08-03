@@ -42,6 +42,8 @@ public class Globals {
     //Object Type
     public final static String TYPE_TRIGGER = "trigger";
     public final static String TYPE_PARSETREE = "parseTree";
+    public final static String TYPE_TAGSET = "tagSet";
+    public final static String TYPE_TRIGGERSET = "triggerSet";
 
 
 }

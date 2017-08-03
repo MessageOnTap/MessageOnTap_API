@@ -1,8 +1,10 @@
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
+import android.util.LongSparseArray;
 import android.util.SparseArray;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -19,6 +21,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -120,17 +123,27 @@ public class JSONUtils {
 
     public static Object jsonToSimpleObject(String json, String typeKey) {
         Gson gson = gson();
+        Type type;
         switch (typeKey) {
             case Globals.TYPE_TRIGGER:
-                Type type = new TypeToken<Trigger>() {
+                type = new TypeToken<Trigger>() {
                 }.getType();
-                return gson.fromJson(json, type);
+                break;
             case Globals.TYPE_PARSETREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
-                return gson.fromJson(json, type);
+                break;
+            case Globals.TYPE_TAGSET:
+                type = new TypeToken<HashSet<Tag>>() {
+                }.getType();
+                break;
+            case Globals.TYPE_TRIGGERSET:
+                type = new TypeToken<HashSet<Trigger>>() {
+                }.getType();
+                break;
             default:
-                return "";
+                return null;
         }
+        return gson.fromJson(json, type);
     }
 }

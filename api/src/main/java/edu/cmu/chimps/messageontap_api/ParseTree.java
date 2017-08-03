@@ -2,6 +2,7 @@ package edu.cmu.chimps.messageontap_api;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.LongSparseArray;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -86,6 +87,7 @@ public class ParseTree {
 
     public static final String DEP_CONJUNCTION = "CONJ";
     public static final String DEP_COORDINATING_CONJUNCTION = "CC";
+    public static final String DEP_NOUN_NOUN = "NN";
 
     public static final String DEP_FIXED_MULTIWORD_EXPRESSION = "FIXED";
     public static final String DEP_FLAT_MULTIWORDD_EXPRESSION = "FLAT";
@@ -134,7 +136,7 @@ public class ParseTree {
         private int mParentId;
         private String mRelation;
         private Flag mFlag; // 0 = normal, 1 = delete, 2 = merge
-        private Set<String> mTagSet;
+        private Set<Object> mTagSet;
 
         public Node() {
             this.mChildrenIds = new HashSet<>();
@@ -219,20 +221,22 @@ public class ParseTree {
             this.mFlag = flag;
         }
 
-        public Set<String> getTagList() {
+        public Set<Object> getTagList() {
             return mTagSet;
         }
 
-        public void setTagList(Set<String> tagSet) {
-            this.mTagSet = tagSet;
+        public void setTagList(Set tagSet) {
+            mTagSet = new HashSet<>();
+            for (Object tag : tagSet)
+                mTagSet.add(tag);
         }
 
         public void addTag(String t) {
             mTagSet.add(t);
         }
 
-        public void addTag(Tag t) {
-            mTagSet.add(t.getName());
+        public void addTag(Long t) {
+            mTagSet.add(t);
         }
 
         public boolean isRoot() {
@@ -582,25 +586,17 @@ public class ParseTree {
     }
 
     /**
-     * @param context : context of Service (SemanticUnderstanding)
      * @param tagList : A list of tags which are candidates may add to a node
      *                Add Tag to Every Tree Node
      */
-    public void addTag(ArrayList<Tag> tagList, Context context) {
-        addTag(getRoot(), tagList, context);
-    }
-
-    /**
-     * @param node    : Start from Root Node
-     * @param tagList : A list of tags which are candidates may add to a node
-     * @param context : context of Service (Used in AsyncTask of getting results Concept Graph)
-     *                Recursive Function （Post-order traversal）
-     *                Look Through All the Tree Nodes to Add Tags (By Concept Graph)
-     */
-    public void addTag(Node node, ArrayList<Tag> tagList, Context context) {
-        for (Tag t : tagList) {
-            if (t.matchWord(node.getWord(), node.getEntity()))
-                node.addTag(t);
+    public void addTag(LongSparseArray<Tag> tagList) {
+        for (int i = mNodeList.size() - 1; i > -1; i--) {
+            Node node = mNodeList.valueAt(i);
+            for (int j = tagList.size() - 1; j > -1; j--) {
+                Tag tag = tagList.valueAt(j);
+                if (tag.matchWord(node.getWord(), node.getEntity()))
+                    node.addTag(tagList.keyAt(j));
+            }
         }
     }
 
