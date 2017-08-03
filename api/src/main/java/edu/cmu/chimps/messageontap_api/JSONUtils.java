@@ -172,14 +172,23 @@ public class JSONUtils {
             case Globals.TYPE_TRIGGER:
                 type = new TypeToken<Trigger>() {
                 }.getType();
-                return gson.toJson(object, type);
+                break;
             case Globals.TYPE_PARSETREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
-                return gson.toJson(object, type);
+                break;
+            case Globals.TYPE_TAGSET:
+                type = new TypeToken<HashSet<Tag>>() {
+                }.getType();
+                break;
+            case Globals.TYPE_TRIGGERSET:
+                type = new TypeToken<HashSet<Trigger>>() {
+                }.getType();
+                break;
             default:
                 return "";
         }
+        return gson.toJson(object, type);
     }
 
     /**
