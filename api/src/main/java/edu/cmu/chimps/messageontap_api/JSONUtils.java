@@ -52,7 +52,7 @@ public class JSONUtils {
                     @Override
                     /**
                      * Deserialize a parse tree JSON to ParseTree class object.
-                     * @author: Adam Yi <xuan@yiad.am>
+                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
                      */
                     public ParseTree deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject treeObj = json.getAsJsonObject();
@@ -187,7 +187,7 @@ public class JSONUtils {
                 break;
 
             case Globals.TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String,Object>>>(){
+                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
                 }.getType();
                 break;
             default:
@@ -224,7 +224,7 @@ public class JSONUtils {
                 }.getType();
                 break;
             case Globals.TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String,Object>>>(){
+                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
                 }.getType();
                 break;
             default:
@@ -237,15 +237,21 @@ public class JSONUtils {
         return refactorHashMap(mMap, 0);
     }
 
-    //-1: integer only mode
-    //0: smart mode
-    //1: long only mode
-    public static HashMap<String,Object> refactorHashMap(HashMap<String,Object> mMap, int mode){
-        for(String key:mMap.keySet()){
-            if(mMap.get(key)!=null && (mMap.get(key) instanceof Double||mMap.get(key) instanceof Float)){
+    /**
+     * Check all double and float values in a hash map. If they are integers, cast them to
+     * the data type that they should be.
+     *
+     * @param mMap the hash map to be refactored
+     * @param mode -1: Integer only Mode; 0: Smart Mode; 1: Long only Mode
+     * @return the hash map after refactoring
+     * @author Adam Yi &lt;xuan@yiad.am&gt;
+     */
+    public static HashMap<String, Object> refactorHashMap(HashMap<String, Object> mMap, int mode) {
+        for (String key : mMap.keySet()) {
+            if (mMap.get(key) != null && (mMap.get(key) instanceof Double || mMap.get(key) instanceof Float)) {
                 Double mDouble = (Double) mMap.get(key);
                 long mLong = mDouble.longValue();
-                if(mDouble == mLong){
+                if (mDouble == mLong) {
                     if (mode == 1) {
                         mMap.put(key, mLong);
                         continue;
@@ -256,7 +262,7 @@ public class JSONUtils {
                         continue;
                     }
                     if (mInt == mLong)
-                        mMap.put(key,mInt);
+                        mMap.put(key, mInt);
                     else
                         mMap.put(key, mLong);
                 }
@@ -265,27 +271,43 @@ public class JSONUtils {
         return mMap;
     }
 
-    public static Long longValue(Object num) throws UnsupportedOperationException{
+    /**
+     * Cast a number Object to Long
+     *
+     * @param num the object to be casted
+     * @return the casted Long
+     * @throws UnsupportedOperationException
+     * @author Adam Yi &lt;xuan@yiad.am&gt;
+     */
+    public static Long longValue(Object num) throws UnsupportedOperationException {
         if (num instanceof Long)
-            return (Long)num;
+            return (Long) num;
         if (num instanceof Integer)
-            return Long.valueOf((int)num);
+            return Long.valueOf((int) num);
         if (num instanceof Double)
-            return Long.valueOf((long)(double)num);
+            return Long.valueOf((long) (double) num);
         if (num instanceof Float)
-            return Long.valueOf((long)(float)num);
+            return Long.valueOf((long) (float) num);
         throw new UnsupportedOperationException();
     }
 
-    public static Integer intValue(Object num) throws UnsupportedOperationException{
+    /**
+     * Cast a number Object to Integer
+     *
+     * @param num the object to be casted
+     * @return the casted Integer
+     * @throws UnsupportedOperationException
+     * @author Adam Yi &lt;xuan@yiad.am&gt;
+     */
+    public static Integer intValue(Object num) throws UnsupportedOperationException {
         if (num instanceof Integer)
             return (Integer) num;
         if (num instanceof Long)
-            return Integer.valueOf((int)(long)num);
+            return Integer.valueOf((int) (long) num);
         if (num instanceof Double)
-            return Integer.valueOf((int)(double)num);
+            return Integer.valueOf((int) (double) num);
         if (num instanceof Float)
-            return Integer.valueOf((int)(float)num);
+            return Integer.valueOf((int) (float) num);
         throw new UnsupportedOperationException();
     }
 }
