@@ -246,6 +246,14 @@ public class Trigger {
         this.mOptionalTags = optionalTags;
     }
 
+    public Set<Object> getAllTags() {
+        Set<Object> result = new HashSet<Object>();
+        result.clear();
+        result.addAll(mMandatoryTags);
+        result.retainAll(mOptionalTags);
+        return result;
+    }
+
     public Set<Constraint> getConstraints() {
         return mConstraints;
     }

@@ -344,15 +344,18 @@ public class ParseTree {
             if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
                 if (mNodeList.get(i).getWord().equals("?")) {
                     mood = Mood.INTERROGTIVE;
+                    return;
                 }
             }
             if (getRoot().getType().equals(POS_VERB)) {
                 for (int childId : getRoot().getChildrenIds()) {
                     if (getNodeById(childId).getType().equals(DEP_NOUN_SUBJECT)) {
                         mood = Mood.INTERROGTIVE;
+                        return;
                     }
                 }
                 mood = Mood.IMPERATIVE;
+                return;
             }
         }
         mood = Mood.UNKNOWN;
@@ -430,7 +433,7 @@ public class ParseTree {
      * This should not be called directly, but
      * instead called from the other reduce function.
      */
-    private void reduce(int nodeId) {
+    private void recursiveReduce(int nodeId) {
         if (getNodeById(nodeId).getChildrenIds() != null) {
             ArrayList<Integer> toDelete = new ArrayList<>();
             ArrayList<Integer> toAdd = new ArrayList<>();
@@ -438,7 +441,7 @@ public class ParseTree {
             int dobjNodeId = NOT_EXIST;
             int iobjNodeId = NOT_EXIST;
             for (int childId : getNodeById(nodeId).getChildrenIds()) {
-                reduce(childId);
+                recursiveReduce(childId);
                 switch (getNodeById(nodeId).getFlag()) {
                     case MERGE:
                         setNodeWordById(nodeId, getNodeById(childId).getWord() + " " + getNodeById(nodeId).getWord());   //???TODO: Or node.getWord() + child.getWord()
@@ -534,29 +537,52 @@ public class ParseTree {
 
     }
 
-    public boolean changeRoot(int newRootId) {
+    public void changeRoot(int newRootId) {
         mRootId = newRootId;
         mNodeList.get(mRootId).setParentId(NOT_EXIST);
-        return true;
     }
 
-    public boolean setRootId(int newRootId) {
+    public void setRootId(int newRootId) {
         mRootId = newRootId;
-        return true;
     }
 
     /**
      * Reduce the tree to keep only essential data
      */
-    public void reduce() {
+    public void reduce(Trigger matchedTrigger) {
+        preReduce(matchedTrigger);
+        doReduce();
+    }
+
+    /**
+     * Mark all nodes untagged or without trigger tags as to be deleted
+     */
+    private void preReduce(Trigger matchedTrigger) {
+        Set<Object> tmp = new HashSet<>();
+        for (int i = mNodeList.size() - 1; i > -1; i--) {
+            Node node = mNodeList.get(i);
+            tmp.clear();
+            tmp.addAll(node.getTagList());
+            tmp.retainAll(matchedTrigger.getAllTags());
+            if (tmp.size() == 0)
+                node.setFlag(Flag.DELETE);
+        }
+    }
+
+    /**
+     * Reduce the tree to keep only essential data
+     * This should not be called directly, but
+     * instead called from the other reduce function.
+     */
+    private void doReduce() {
         Node root = mNodeList.get(mRootId);
-        reduce(root.getId());            //root Node
+        recursiveReduce(mRootId);            //root Node
         if (root.getFlag() == Flag.DELETE) {
             Iterator<Integer> it = root.getChildrenIds().iterator();
             int firstId = it.next();
             if (root.getChildrenIds().size() > 1) {
                 ArrayList<Integer> toDemote = new ArrayList<>();
-                int nodeId = 0;
+                int nodeId;
                 while (it.hasNext()) {
                     nodeId = it.next();
                     setNodeParentId(nodeId, root.getId());
@@ -586,7 +612,7 @@ public class ParseTree {
         // advmod
         if (root.getChildrenIds().size() > 0) {
             int advmodNodeId = NOT_EXIST;
-            int nodeId = 0;
+            int nodeId;
             Iterator<Integer> it = root.getChildrenIds().iterator();
             while (it.hasNext()) {
                 nodeId = it.next();
@@ -635,21 +661,22 @@ public class ParseTree {
      */
     @Override
     public String toString() {
-        return print("", getRoot());
+        return print("", getRoot()).toString();
     }
 
-    private String print(String indent, Node node) {
-        String ret = indent;
-        if (node.getRelation() != null) ret += node.getRelation();
-        ret += "(" + node.getType() + " " + node.getWord() + ")";
+    private StringBuilder print(String indent, Node node) {
+        StringBuilder ret = new StringBuilder(indent);
+        if (node.getRelation() != null)
+            ret.append(node.getRelation());
+        ret.append("(").append(node.getType()).append(" ").append(node.getWord()).append(")");
         if (node.getChildrenIds().size() > 0) {
-            ret += " {\n";
+            ret.append(" {\n");
             for (int childId : node.getChildrenIds()) {
-                ret += print(indent + "  ", getNodeById(childId));
+                ret.append(print(indent + "  ", getNodeById(childId)));
             }
-            ret += indent + "}";
+            ret.append(indent).append("}");
         }
-        ret += "\n";
+        ret.append("\n");
         return ret;
     }
 
