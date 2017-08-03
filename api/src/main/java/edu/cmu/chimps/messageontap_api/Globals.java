@@ -57,9 +57,10 @@ public class Globals {
 
     //Object Type
     public final static String TYPE_TRIGGER = "trigger";
-    public final static String TYPE_PARSETREE = "parseTree";
-    public final static String TYPE_TAGSET = "tagSet";
-    public final static String TYPE_TRIGGERSET = "triggerSet";
+    public final static String TYPE_PARSE_TREE = "parse_tree";
+    public final static String TYPE_TAG_SET = "tag_set";
+    public final static String TYPE_TRIGGER_SET = "trigger_set";
+    public final static String TYPE_CARD_LIST = "card_list";
 
 
 }

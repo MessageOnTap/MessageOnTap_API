@@ -173,16 +173,21 @@ public class JSONUtils {
                 type = new TypeToken<Trigger>() {
                 }.getType();
                 break;
-            case Globals.TYPE_PARSETREE:
+            case Globals.TYPE_PARSE_TREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAGSET:
+            case Globals.TYPE_TAG_SET:
                 type = new TypeToken<HashSet<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGERSET:
+            case Globals.TYPE_TRIGGER_SET:
                 type = new TypeToken<HashSet<Trigger>>() {
+                }.getType();
+                break;
+
+            case Globals.TYPE_CARD_LIST:
+                type = new TypeToken<ArrayList<HashMap<String,Object>>>(){
                 }.getType();
                 break;
             default:
@@ -206,21 +211,81 @@ public class JSONUtils {
                 type = new TypeToken<Trigger>() {
                 }.getType();
                 break;
-            case Globals.TYPE_PARSETREE:
+            case Globals.TYPE_PARSE_TREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAGSET:
+            case Globals.TYPE_TAG_SET:
                 type = new TypeToken<HashSet<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGERSET:
+            case Globals.TYPE_TRIGGER_SET:
                 type = new TypeToken<HashSet<Trigger>>() {
+                }.getType();
+                break;
+            case Globals.TYPE_CARD_LIST:
+                type = new TypeToken<ArrayList<HashMap<String,Object>>>(){
                 }.getType();
                 break;
             default:
                 return null;
         }
         return gson.fromJson(json, type);
+    }
+
+    public static HashMap<String, Object> refactorHashMap(HashMap<String, Object> mMap) {
+        return refactorHashMap(mMap, 0);
+    }
+
+    //-1: integer only mode
+    //0: smart mode
+    //1: long only mode
+    public static HashMap<String,Object> refactorHashMap(HashMap<String,Object> mMap, int mode){
+        for(String key:mMap.keySet()){
+            if(mMap.get(key)!=null && (mMap.get(key) instanceof Double||mMap.get(key) instanceof Float)){
+                Double mDouble = (Double) mMap.get(key);
+                long mLong = mDouble.longValue();
+                if(mDouble == mLong){
+                    if (mode == 1) {
+                        mMap.put(key, mLong);
+                        continue;
+                    }
+                    int mInt = (int) mLong;
+                    if (mode == -1) {
+                        mMap.put(key, mInt);
+                        continue;
+                    }
+                    if (mInt == mLong)
+                        mMap.put(key,mInt);
+                    else
+                        mMap.put(key, mLong);
+                }
+            }
+        }
+        return mMap;
+    }
+
+    public static Long longValue(Object num) throws UnsupportedOperationException{
+        if (num instanceof Long)
+            return (Long)num;
+        if (num instanceof Integer)
+            return Long.valueOf((int)num);
+        if (num instanceof Double)
+            return Long.valueOf((long)(double)num);
+        if (num instanceof Float)
+            return Long.valueOf((long)(float)num);
+        throw new UnsupportedOperationException();
+    }
+
+    public static Integer intValue(Object num) throws UnsupportedOperationException{
+        if (num instanceof Integer)
+            return (Integer) num;
+        if (num instanceof Long)
+            return Integer.valueOf((int)(long)num);
+        if (num instanceof Double)
+            return Integer.valueOf((int)(double)num);
+        if (num instanceof Float)
+            return Integer.valueOf((int)(float)num);
+        throw new UnsupportedOperationException();
     }
 }
