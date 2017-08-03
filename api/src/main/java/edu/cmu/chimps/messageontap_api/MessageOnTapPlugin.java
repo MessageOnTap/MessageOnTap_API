@@ -1,3 +1,19 @@
+/**
+ * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package edu.cmu.chimps.messageontap_api;
 
 import android.app.Service;
@@ -22,6 +38,11 @@ public abstract class MessageOnTapPlugin extends Service {
 
     private IBinder mBinder = new IPlugin.Stub() {
 
+        /**
+         * This is called when a task is received.
+         * @param data The data of the task
+         * @throws RemoteException
+         */
         @Override
         public void onTaskReceived(TaskData data) throws RemoteException {
 //            Log.e("extension","Receive message");
@@ -55,11 +76,21 @@ public abstract class MessageOnTapPlugin extends Service {
             }
         }
 
+        /**
+         * This is called when PMS asks the plugin for PluginData.
+         * @return the PluginData to be sent to PMS.
+         * @throws RemoteException
+         */
         @Override
         public PluginData getPluginData() throws RemoteException {
             return iPluginData();
         }
 
+        /**
+         * This is called when PMS asks to register itself.
+         * @param manager the PluginManager of PMS
+         * @throws RemoteException
+         */
         @Override
         public void registerManager(IPluginManager manager) throws RemoteException {
             String packageName = null;
@@ -74,6 +105,11 @@ public abstract class MessageOnTapPlugin extends Service {
             //mListenerList.register(listener);
         }
 
+        /**
+         * This is called when PMS asks to unregister itself.
+         * @param manager the PluginManager of PMS
+         * @throws RemoteException
+         */
         @Override
         public void unregisterManager(IPluginManager manager) throws RemoteException {
             String packageName = null;
@@ -125,6 +161,11 @@ public abstract class MessageOnTapPlugin extends Service {
         }
     }*/
 
+    /**
+     * A function to end an active session
+     *
+     * @param sid the ID of the session to be ended
+     */
     protected void endSession(long sid) {
         Session session = sessionList.get(sid);
         session.updateTaskResponse(0);
@@ -136,6 +177,9 @@ public abstract class MessageOnTapPlugin extends Service {
         }
     }
 
+    /**
+     * Initiate a new session.
+     */
     protected void createSession() {
         try {
             mManager.sendResponse(new TaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_NEW_SESSION).content("{}"));
@@ -144,6 +188,15 @@ public abstract class MessageOnTapPlugin extends Service {
         }
     }
 
+    /**
+     * Create a new task request.
+     *
+     * @param sid    the ID of the Session where the task belongs to
+     * @param type   the type of the task
+     * @param method the method of the task
+     * @param params the parameters of the task
+     * @return the ID of the task created
+     */
     protected long createTask(long sid, String type, String method, HashMap<String, Object> params) {
         Session session = sessionList.get(sid);
         String json = JSONUtils.hashMapToString(params);
@@ -158,6 +211,15 @@ public abstract class MessageOnTapPlugin extends Service {
         return task.getTaskData().tid();
     }
 
+    /**
+     * Handle a incoming task, type of which is PMS.
+     * Those tasks are used for internal task and session
+     * management.
+     *
+     * @param sid    ID of Session
+     * @param tid    ID of Task
+     * @param method Method of PMS task
+     */
     protected void handlePMSTask(long sid, long tid, String method) {
         Log.e(TAG, "In Handle PMS task");
         switch (method) {
@@ -186,9 +248,38 @@ public abstract class MessageOnTapPlugin extends Service {
         }
     }
 
+    /**
+     * This should be overridden by plugin developers.
+     * <p>
+     * Return the PluginData of the plugin.
+     *
+     * @return the PluginData of the plugin
+     */
     protected abstract PluginData iPluginData();
 
+    /**
+     * This should be overridden by plugin developers.
+     * <p>
+     * This is called when a new session is initiated
+     * by the PMS.
+     *
+     * @param sid  the ID of the session
+     * @param data the data of the session
+     * @throws Exception
+     */
     protected abstract void initNewSession(long sid, HashMap<String, Object> data) throws Exception;
 
+    /**
+     * This should be overridden by plugin developers.
+     * <p>
+     * This is called when PMS sends a response to a
+     * task request that the plugin has sent to the
+     * PMS.
+     *
+     * @param sid  the Session ID of the task
+     * @param tid  the Task ID of the task
+     * @param data the data of the response
+     * @throws Exception
+     */
     protected abstract void newTaskResponsed(long sid, long tid, HashMap<String, Object> data) throws Exception;
 }

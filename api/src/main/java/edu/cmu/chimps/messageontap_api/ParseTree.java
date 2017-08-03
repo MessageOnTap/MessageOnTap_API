@@ -1,26 +1,28 @@
+/**
+ * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package edu.cmu.chimps.messageontap_api;
 
-import android.content.Context;
-import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseArray;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import edu.cmu.chimps.messageontap_api.Tag;
 
 public class ParseTree {
 
@@ -298,10 +300,26 @@ public class ParseTree {
         return mNodeList.get(mRootId);
     }
 
+    /**
+     * Check if two nodes share the same parent
+     *
+     * @param a a node to be checked
+     * @param b a node to be checked
+     * @return boolean whether they share the same parent
+     */
     public boolean isConcatenation(Node a, Node b) {
         return a.getParentId() == b.getParentId();
     }
 
+    /**
+     * Check if one node is subordinate to another.
+     *
+     * @param a      the Node that is checked to be the father/ancestor of b
+     * @param b      a Node that is checked to be subordinate to a
+     * @param nested only allow the situation that b is the direct child
+     *               of a when set to false
+     * @return boolean whether b is subordinate to a
+     */
     public boolean isSubordinate(Node a, Node b, Boolean nested) {
         int parentId = b.getParentId(),
                 aId = a.getId();
@@ -318,7 +336,9 @@ public class ParseTree {
         return false;
     }
 
-    //Need to change to Mood
+    /**
+     * Analyze the tree and detect its mood.
+     */
     public void moodDetection() {
         for (int i = 0; i < mNodeList.size(); i++) {
             if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
@@ -405,7 +425,12 @@ public class ParseTree {
 
     }
 
-    public void reduce(int nodeId) {
+    /**
+     * Reduce the tree to keep only essential data
+     * This should not be called directly, but
+     * instead called from the other reduce function.
+     */
+    private void reduce(int nodeId) {
         if (getNodeById(nodeId).getChildrenIds() != null) {
             ArrayList<Integer> toDelete = new ArrayList<>();
             ArrayList<Integer> toAdd = new ArrayList<>();
@@ -520,6 +545,9 @@ public class ParseTree {
         return true;
     }
 
+    /**
+     * Reduce the tree to keep only essential data
+     */
     public void reduce() {
         Node root = mNodeList.get(mRootId);
         reduce(root.getId());            //root Node

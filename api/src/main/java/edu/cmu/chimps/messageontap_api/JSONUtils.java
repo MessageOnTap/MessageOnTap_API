@@ -1,10 +1,24 @@
+/**
+ * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
-import android.util.LongSparseArray;
 import android.util.SparseArray;
 
-import com.google.common.collect.HashBasedTable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -26,6 +40,12 @@ import java.util.Iterator;
 import java.util.List;
 
 public class JSONUtils {
+
+    /**
+     * Generate a new Gson instance with customized type adapters.
+     *
+     * @return A Gson instance
+     */
     public static Gson gson() {
         return new GsonBuilder()
                 .registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
@@ -52,10 +72,23 @@ public class JSONUtils {
                 }).create();
     }
 
+    /**
+     * Convert a hashmap to a JSON string
+     *
+     * @param map
+     * @return
+     */
     public static String hashMapToString(HashMap<String, Object> map) {
         return gson().toJson(map);
     }
 
+    /**
+     * Convert a JSONObject to a HashMap
+     *
+     * @param json the JSONObject
+     * @return the HashMap converted
+     * @throws JSONException
+     */
     public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
         HashMap<String, Object> retMap = new HashMap<String, Object>();
 
@@ -65,6 +98,13 @@ public class JSONUtils {
         return retMap;
     }
 
+    /**
+     * Convert a JSON string to a HashMap
+     *
+     * @param text the JSON string
+     * @return the HashMap converted
+     * @throws JSONException
+     */
     public static HashMap<String, Object> toMap(String text) throws JSONException {
         if (TextUtils.isEmpty(text))
             return new HashMap<>();
@@ -72,6 +112,13 @@ public class JSONUtils {
             return toMap(new JSONObject(text));
     }
 
+    /**
+     * Convert a JSONObject to a HashMap
+     *
+     * @param object the JSON Object
+     * @return the HashMap converted
+     * @throws JSONException
+     */
     public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -90,6 +137,13 @@ public class JSONUtils {
         return map;
     }
 
+    /**
+     * Convert a JSONArray to a list
+     *
+     * @param array the JSON Array
+     * @return the List converted
+     * @throws JSONException
+     */
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<Object>();
         for (int i = 0; i < array.length(); i++) {
@@ -104,6 +158,13 @@ public class JSONUtils {
         return list;
     }
 
+    /**
+     * Convert a simple object to JSON string
+     *
+     * @param object  the object to be converted
+     * @param typeKey a string stating the type of the object
+     * @return the JSON string
+     */
     public static String simpleObjectToJson(Object object, String typeKey) {
         Gson gson = gson();
         Type type;
@@ -121,6 +182,13 @@ public class JSONUtils {
         }
     }
 
+    /**
+     * Convert a JSON string to a simple object
+     *
+     * @param json    the JSON string to be converted
+     * @param typeKey a string stating the type of the object
+     * @return the Object
+     */
     public static Object jsonToSimpleObject(String json, String typeKey) {
         Gson gson = gson();
         Type type;
