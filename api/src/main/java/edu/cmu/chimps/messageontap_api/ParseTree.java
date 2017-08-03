@@ -149,6 +149,7 @@ public class ParseTree {
         public Node(Node another) {
             this.mId = another.mId;
             this.mType = another.mType;
+            this.mWord = another.mWord;
             this.mEntity = another.mEntity;
             this.mChildrenIds = new HashSet<>(another.mChildrenIds);
             this.mParentId = another.mParentId;
@@ -268,16 +269,22 @@ public class ParseTree {
 
     public ParseTree() {
         this.mNodeList = new SparseArray<>();
+        this.time = new long[2];
     }
 
     public ParseTree(ParseTree another) {
         this.mNodeList = new SparseArray<>();
-        for (int i = 0; i < another.mNodeList.size(); i++) {
-            mNodeList.put(another.mNodeList.keyAt(i),
-                    new Node(another.mNodeList.valueAt(i)));
+        if (another.mNodeList != null) {
+            for (int i = 0; i < another.mNodeList.size(); i++) {
+                mNodeList.put(another.mNodeList.keyAt(i),
+                        new Node(another.mNodeList.valueAt(i)));
+            }
         }
         this.mRootId = another.mRootId;
-        this.time = another.time.clone();
+        if (another.time != null)
+            this.time = another.time.clone();
+        else
+            this.time = new long[2];
         this.mood = another.mood;
         this.direction = another.direction;
     }
@@ -602,34 +609,36 @@ public class ParseTree {
         recursiveReduce(mRootId);            //root Node
         if (root.getFlag() == Flag.DELETE) {
             Iterator<Integer> it = root.getChildrenIds().iterator();
-            int firstId = it.next();
-            if (root.getChildrenIds().size() > 1) {
-                ArrayList<Integer> toDemote = new ArrayList<>();
-                int nodeId;
-                while (it.hasNext()) {
-                    nodeId = it.next();
-                    setNodeParentId(nodeId, root.getId());
-                    toDemote.add(nodeId);
-                }
-                addChildreById(firstId, toDemote);
-                removeChildrenById(root.getId(), toDemote);
-            }
-            if (getNodeById(firstId).getChildrenIds().size() > 0) {
-                ArrayList<Integer> toPromote = new ArrayList<>();
-                Iterator<Integer> cIt = getNodeById(firstId).getChildrenIds().iterator();
-                int cFirstId = cIt.next(), cNodeId = 0;
-                while (cIt.hasNext()) {
-                    cNodeId = cIt.next();
-                    if (getNodeById(cNodeId).getRelation().equals(DEP_CONJUNCTION) || getNodeById(cNodeId).getRelation().equals(DEP_COORDINATING_CONJUNCTION)) {
-                        setNodeParentId(cNodeId, root.getId());
-                        toPromote.add(cNodeId);
+            if (it.hasNext()) {
+                int firstId = it.next();
+                if (root.getChildrenIds().size() > 1) {
+                    ArrayList<Integer> toDemote = new ArrayList<>();
+                    int nodeId;
+                    while (it.hasNext()) {
+                        nodeId = it.next();
+                        setNodeParentId(nodeId, root.getId());
+                        toDemote.add(nodeId);
                     }
+                    addChildreById(firstId, toDemote);
+                    removeChildrenById(root.getId(), toDemote);
                 }
-                addChildreById(root.getId(), toPromote);
-                removeChildrenById(cFirstId, toPromote);
-            }
-            if (root.getChildrenIds().size() == 1) {
-                changeRoot(root.getChildrenIds().iterator().next());
+                if (getNodeById(firstId).getChildrenIds().size() > 0) {
+                    ArrayList<Integer> toPromote = new ArrayList<>();
+                    Iterator<Integer> cIt = getNodeById(firstId).getChildrenIds().iterator();
+                    int cFirstId = cIt.next(), cNodeId = 0;
+                    while (cIt.hasNext()) {
+                        cNodeId = cIt.next();
+                        if (getNodeById(cNodeId).getRelation().equals(DEP_CONJUNCTION) || getNodeById(cNodeId).getRelation().equals(DEP_COORDINATING_CONJUNCTION)) {
+                            setNodeParentId(cNodeId, root.getId());
+                            toPromote.add(cNodeId);
+                        }
+                    }
+                    addChildreById(root.getId(), toPromote);
+                    removeChildrenById(cFirstId, toPromote);
+                }
+                if (root.getChildrenIds().size() == 1) {
+                    changeRoot(root.getChildrenIds().iterator().next());
+                }
             }
         }
         // advmod
