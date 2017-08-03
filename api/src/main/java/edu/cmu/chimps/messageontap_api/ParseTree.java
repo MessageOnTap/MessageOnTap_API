@@ -146,6 +146,17 @@ public class ParseTree {
             this.mFlag = Flag.DELETE;
         }
 
+        public Node(Node another) {
+            this.mId = another.mId;
+            this.mType = another.mType;
+            this.mEntity = another.mEntity;
+            this.mChildrenIds = new HashSet<>(another.mChildrenIds);
+            this.mParentId = another.mParentId;
+            this.mRelation = another.mRelation;
+            this.mFlag = another.mFlag;
+            this.mTagSet = new HashSet<>(another.mTagSet);
+        }
+
         public void setValue(String type, String word) {
             this.mType = type;
             this.mWord = word;
@@ -257,6 +268,18 @@ public class ParseTree {
 
     public ParseTree() {
         this.mNodeList = new SparseArray<>();
+    }
+
+    public ParseTree(ParseTree another) {
+        this.mNodeList = new SparseArray<>();
+        for (int i = 0; i < another.mNodeList.size(); i++) {
+            mNodeList.put(another.mNodeList.keyAt(i),
+                    new Node(another.mNodeList.valueAt(i)));
+        }
+        this.mRootId = another.mRootId;
+        this.time = another.time.clone();
+        this.mood = another.mood;
+        this.direction = another.direction;
     }
 
     public void setNodeById(int id, Node node) {
