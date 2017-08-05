@@ -60,7 +60,7 @@ dependencies {
 // yiad.am jfrog repo
 def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
-def libraryVersion = '0.3.0-canary3'
+def libraryVersion = '0.3.0'
 
 publishing.publications {
     aar(MavenPublication) {

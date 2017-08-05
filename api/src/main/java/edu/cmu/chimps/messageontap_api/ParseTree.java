@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
 public class ParseTree {
 
@@ -472,7 +473,7 @@ public class ParseTree {
             int iobjNodeId = NOT_EXIST;
             for (int childId : getNodeById(nodeId).getChildrenIds()) {
                 recursiveReduce(childId);
-                switch (getNodeById(nodeId).getFlag()) {
+                switch (getNodeById(childId).getFlag()) {
                     case MERGE:
                         setNodeWordById(nodeId, getNodeById(childId).getWord() + " " + getNodeById(nodeId).getWord());   //???TODO: Or node.getWord() + child.getWord()
                     case DELETE:
@@ -483,7 +484,8 @@ public class ParseTree {
                             }
                         }
                         toDelete.add(childId);
-                        break;
+                        mNodeList.remove(childId);
+                        continue;
                 }
                 /* TODO check the relationship between Subjects (getRelation == "nsubj")
                    TODO and Objects (dobj and pobj)
@@ -567,13 +569,15 @@ public class ParseTree {
 
     }
 
-    public void changeRoot(int newRootId) {
+    @Deprecated
+    public void oldChangeRoot(int newRootId) {
         mRootId = newRootId;
         mNodeList.get(mRootId).setParentId(NOT_EXIST);
     }
 
     public void setRootId(int newRootId) {
         mRootId = newRootId;
+        mNodeList.get(newRootId).setParentId(NOT_EXIST);
     }
 
     /**
@@ -636,9 +640,9 @@ public class ParseTree {
                     addChildreById(root.getId(), toPromote);
                     removeChildrenById(cFirstId, toPromote);
                 }
-                if (root.getChildrenIds().size() == 1) {
-                    changeRoot(root.getChildrenIds().iterator().next());
-                }
+
+                changeRoot(root.getChildrenIds().iterator().next());
+                mNodeList.remove(root.getId());
             }
         }
         // advmod
@@ -668,8 +672,50 @@ public class ParseTree {
             }
         }
 
+        removeFlagDelete();
+
         // TODO: check for a case which *doesn't* use advmod (when or where) but still requires some special handling re. subject and object?
     }
+
+
+    private void removeFlagDelete() {
+        ArrayList<Integer> deleteFlagNodes = new ArrayList<>();
+        for (int i = mNodeList.size() - 1; i > -1; i--) {
+            if (mNodeList.valueAt(i).getFlag() == Flag.DELETE) {
+                mNodeList.removeAt(i);
+            }
+        }
+    }
+
+    /**
+     * Change the root of the tree
+     *
+     * @author adamyi
+     */
+    public void changeRoot(int nodeId) {
+        if (this.mRootId == nodeId)
+            return;
+        setRootId(nodeId);
+        Node currentNode = mNodeList.get(nodeId);
+        Stack<Node> ancestors = new Stack<>();
+        ancestors.push(currentNode);
+        while (currentNode.mParentId != NOT_EXIST) {
+            currentNode = mNodeList.get(currentNode.mParentId);
+            ancestors.push(currentNode);
+        }
+        Node nextNode = ancestors.pop();
+        while (!ancestors.isEmpty()) {
+            currentNode = nextNode;
+            if (ancestors.isEmpty()) {
+                currentNode.mParentId = NOT_EXIST;
+            } else {
+                nextNode = ancestors.pop();
+                currentNode.mParentId = nextNode.getId();
+                currentNode.mChildrenIds.remove(nextNode.getId());
+            }
+        }
+    }
+
 
     /**
      * @param tagList : A list of tags which are candidates may add to a node

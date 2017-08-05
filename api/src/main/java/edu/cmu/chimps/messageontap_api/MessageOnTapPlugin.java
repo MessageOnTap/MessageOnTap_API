@@ -67,6 +67,8 @@ public abstract class MessageOnTapPlugin extends Service {
                             newTaskResponsed(sid, tid, content);
                         }
                     } catch (Exception e) {
+                        Log.e(TAG, "Exception caught while running plugin code:");
+                        e.printStackTrace();
                         Session session = sessionList.get(sid);
                         session.failTask(tid);
                     }

@@ -5,7 +5,7 @@ package edu.cmu.chimps.messageontap_api;
  * @author: Adam Yi
  */
 
-import android.util.SparseArray;
+import android.util.LongSparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -18,45 +18,45 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
-public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
+public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T>> {
 
     private final Gson gson = new Gson();
     private final Class<T> classOfT;
     private final String type;
-    private final Type typeOfSparseArrayOfT = new TypeToken<SparseArray<T>>() {
+    private final Type typeOfLongSparseArrayOfT = new TypeToken<LongSparseArray<T>>() {
     }.getType();
-    private final Type typeOfSparseArrayOfObject = new TypeToken<SparseArray<Object>>() {
+    private final Type typeOfLongSparseArrayOfObject = new TypeToken<LongSparseArray<Object>>() {
     }.getType();
 
-    public SparseArrayTypeAdapter(Class<T> classOfT) {
+    public LongSparseArrayTypeAdapter(Class<T> classOfT) {
         this.classOfT = classOfT;
-        this.type = null;
+        type = null;
     }
 
-    public SparseArrayTypeAdapter(String type) {
+    public LongSparseArrayTypeAdapter(String type) {
         this.classOfT = null;
         this.type = type;
 
     }
 
     @Override
-    public void write(JsonWriter jsonWriter, SparseArray<T> tSparseArray) throws IOException {
-        if (tSparseArray == null) {
+    public void write(JsonWriter jsonWriter, LongSparseArray<T> tLongSparseArray) throws IOException {
+        if (tLongSparseArray == null) {
             jsonWriter.nullValue();
             return;
         }
-        gson.toJson(gson.toJsonTree(tSparseArray, typeOfSparseArrayOfT), jsonWriter);
+        gson.toJson(gson.toJsonTree(tLongSparseArray, typeOfLongSparseArrayOfT), jsonWriter);
     }
 
     @Override
-    public SparseArray<T> read(JsonReader jsonReader) throws IOException {
+    public LongSparseArray<T> read(JsonReader jsonReader) throws IOException {
         if (jsonReader.peek() == JsonToken.NULL) {
             jsonReader.nextNull();
             return null;
         }
-        SparseArray<Object> temp = gson.fromJson(jsonReader, typeOfSparseArrayOfObject);
-        SparseArray<T> result = new SparseArray<T>(temp.size());
-        int key;
+        LongSparseArray<Object> temp = gson.fromJson(jsonReader, typeOfLongSparseArrayOfObject);
+        LongSparseArray<T> result = new LongSparseArray<T>(temp.size());
+        long key;
         JsonElement tElement;
         for (int i = 0; i < temp.size(); i++) {
             key = temp.keyAt(i);

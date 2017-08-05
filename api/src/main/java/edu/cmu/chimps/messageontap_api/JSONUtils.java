@@ -17,6 +17,7 @@
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
+import android.util.LongSparseArray;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -38,6 +39,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class JSONUtils {
 
@@ -48,6 +50,32 @@ public class JSONUtils {
      */
     public static Gson gson() {
         return new GsonBuilder()
+                .registerTypeAdapter(ParseTree.Node.class, new JsonDeserializer<ParseTree.Node>() {
+                    @Override
+                    /**
+                     * Deserialize a node JSON to Tag class object.
+                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     */
+                    public ParseTree.Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        JsonObject nodeObj = json.getAsJsonObject();
+                        Gson gson = new Gson();
+                        ParseTree.Node node = gson.fromJson(json, ParseTree.Node.class);
+                        node.setChildrenIds((HashSet) gson.fromJson(nodeObj.get("mChildrenIds"), new TypeToken<HashSet<Integer>>() {
+                        }.getType()));
+                        Set<Object> oldTagSet = (HashSet) gson.fromJson(nodeObj.get("mTagSet"), new TypeToken<HashSet<Object>>() {
+                        }.getType());
+                        Set<Object> newTagSet = new HashSet<>();
+                        for (Object obj : oldTagSet) {
+                            if (obj instanceof Double)
+                                newTagSet.add((long) (double) obj);
+                            else
+                                newTagSet.add(obj);
+                        }
+
+                        node.setTagList(newTagSet);
+                        return node;
+                    }
+                })
                 .registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
                     @Override
                     /**
@@ -58,7 +86,7 @@ public class JSONUtils {
                         JsonObject treeObj = json.getAsJsonObject();
                         Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
                                 }.getType(),
-                                new SparseArrayTypeAdapter<ParseTree.Node>(ParseTree.Node.class))
+                                new SparseArrayTypeAdapter<ParseTree.Node>(Globals.TYPE_NODE))
                                 .create();
                         // Construct a tree (this shouldn't try to parse the sparseArray stuff
                         ParseTree tree = gson.fromJson(json, ParseTree.class);
@@ -69,7 +97,37 @@ public class JSONUtils {
                         tree.setNodeList(nodeList);
                         return tree;
                     }
-                }).create();
+                }).registerTypeAdapter(Tag.class, new JsonDeserializer<Tag>() {
+                    @Override
+                    /**
+                     * Deserialize a tag JSON to Tag class object.
+                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     */
+                    public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        JsonObject tagObj = json.getAsJsonObject();
+                        Gson gson = new Gson();
+                        Tag tag = gson.fromJson(json, Tag.class);
+                        tag.setKeywordList((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
+                        }.getType()));
+                        return tag;
+                    }
+                }).registerTypeAdapter(Trigger.class, new JsonDeserializer<Trigger>() {
+                    @Override
+                    /**
+                     * Deserialize a trigger JSON to Trigger class object.
+                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     */
+                    public Trigger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        JsonObject triggerObj = json.getAsJsonObject();
+                        Gson gson = new Gson();
+                        Trigger trigger = gson.fromJson(json, Trigger.class);
+                        trigger.setConstraints((HashSet) gson.fromJson(triggerObj.get("mConstraints"), new TypeToken<HashSet<Trigger.Constraint>>() {
+                        }.getType()));
+                        return trigger;
+                    }
+                }).registerTypeAdapter(new TypeToken<LongSparseArray<Tag>>() {
+                }.getType(), new LongSparseArrayTypeAdapter<Tag>(Globals.TYPE_TAG))
+                .create();
     }
 
     /**
@@ -169,8 +227,16 @@ public class JSONUtils {
         Gson gson = gson();
         Type type;
         switch (typeKey) {
+            case Globals.TYPE_TAG:
+                type = new TypeToken<Tag>() {
+                }.getType();
+                break;
             case Globals.TYPE_TRIGGER:
                 type = new TypeToken<Trigger>() {
+                }.getType();
+                break;
+            case Globals.TYPE_NODE:
+                type = new TypeToken<ParseTree.Node>() {
                 }.getType();
                 break;
             case Globals.TYPE_PARSE_TREE:
@@ -181,11 +247,14 @@ public class JSONUtils {
                 type = new TypeToken<HashSet<Tag>>() {
                 }.getType();
                 break;
+            case Globals.TYPE_TAG_ARRAY:
+                type = new TypeToken<LongSparseArray<Tag>>() {
+                }.getType();
+                break;
             case Globals.TYPE_TRIGGER_SET:
                 type = new TypeToken<HashSet<Trigger>>() {
                 }.getType();
                 break;
-
             case Globals.TYPE_CARD_LIST:
                 type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
                 }.getType();
@@ -207,8 +276,16 @@ public class JSONUtils {
         Gson gson = gson();
         Type type;
         switch (typeKey) {
+            case Globals.TYPE_TAG:
+                type = new TypeToken<Tag>() {
+                }.getType();
+                break;
             case Globals.TYPE_TRIGGER:
                 type = new TypeToken<Trigger>() {
+                }.getType();
+                break;
+            case Globals.TYPE_NODE:
+                type = new TypeToken<ParseTree.Node>() {
                 }.getType();
                 break;
             case Globals.TYPE_PARSE_TREE:
@@ -217,6 +294,10 @@ public class JSONUtils {
                 break;
             case Globals.TYPE_TAG_SET:
                 type = new TypeToken<HashSet<Tag>>() {
+                }.getType();
+                break;
+            case Globals.TYPE_TAG_ARRAY:
+                type = new TypeToken<LongSparseArray<Tag>>() {
                 }.getType();
                 break;
             case Globals.TYPE_TRIGGER_SET:

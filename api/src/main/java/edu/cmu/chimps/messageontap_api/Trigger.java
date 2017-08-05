@@ -198,7 +198,7 @@ public class Trigger {
         }
 
         if (!mMandatoryTags.isEmpty()) {
-            if (!tagNames.keySet().contains(mMandatoryTags)) {
+            if (!tagNames.keySet().containsAll(mMandatoryTags)) {
                 return false;
             }
         }
@@ -250,7 +250,7 @@ public class Trigger {
         Set<Object> result = new HashSet<Object>();
         result.clear();
         result.addAll(mMandatoryTags);
-        result.retainAll(mOptionalTags);
+        result.addAll(mOptionalTags);
         return result;
     }
 
