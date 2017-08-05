@@ -53,7 +53,7 @@ public class JSONUtils {
                 .registerTypeAdapter(ParseTree.Node.class, new JsonDeserializer<ParseTree.Node>() {
                     @Override
                     /**
-                     * Deserialize a node JSON to Tag class object.
+                     * Deserialize a node JSON to Node class object.
                      * @author: Adam Yi &lt;xuan@yiad.am&gt;
                      */
                     public ParseTree.Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
