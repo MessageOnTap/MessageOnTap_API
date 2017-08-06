@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class Trigger {
 
-    enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
+    public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
 
     public class Constraint {
         //TODO
