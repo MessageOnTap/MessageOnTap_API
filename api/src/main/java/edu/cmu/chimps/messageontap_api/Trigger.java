@@ -91,6 +91,10 @@ public class Trigger {
         mConstraints = new HashSet<Constraint>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
+        for (String t : pluginMandatoryTags) {
+            mMandatoryTags.add(t);
+
+        }
         for (String t : pluginOptionalTags) {
             mOptionalTags.add(t);
         }
