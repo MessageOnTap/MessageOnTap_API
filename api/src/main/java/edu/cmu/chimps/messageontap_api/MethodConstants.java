@@ -56,7 +56,6 @@ public class MethodConstants {
     /**
      * methods of action tasks
      */
-    public final static String ACTION_METHOD_SKIP_UI = "skip_ui";
     public final static String ACTION_METHOD_ALARM_NEW = "alarm_new";
     public final static String ACTION_METHOD_PHONE_CALL = "phone_call";
     public final static String ACTION_METHOD_CALENDAR_NEW = "calendar_new";

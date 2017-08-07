@@ -130,6 +130,9 @@ public class ServiceAttributes {
     }
 
     public class Action {
+        //TODO: move things that plugins do NOT use back
+        public final static String SKIP_UI = "skip_ui";
+
         public final static String ALARM_EXTRA_HOUR = "alarm_extra_hour";
         public final static String ALARM_EXTRA_MINUTE = "alarm_extra_minute";
         public final static String ALARM_EXTRA_LABEL = "alarm_extra_label";
