@@ -1,33 +1,31 @@
-/**
- * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+  Copyright 2017 CHIMPS Lab, Carnegie Mellon University
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
  */
 
 package edu.cmu.chimps.messageontap_api;
 
 import android.util.LongSparseArray;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import edu.cmu.chimps.messageontap_api.Task;
 
 /**
  * Created by adamyi on 23/07/2017.
  */
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Session {
     private String mPackageName; // For PMS ONLY
     private Set<Long> mUncompleted;
@@ -75,12 +73,12 @@ public class Session {
 
     public void updateTaskResponse(long tid) {
         mUncompleted.remove(tid);
-        mTasks.get(tid).updateStatus(1);
+        mTasks.get(tid).updateStatus(Task.STATUS_DONE);
     }
 
     public void updateTaskResponse(Task task) {
         long tid = task.getTaskData().tid();
-        task.updateStatus(1);
+        task.updateStatus(Task.STATUS_DONE);
         mUncompleted.remove(tid);
         mTasks.put(tid, task);
     }
@@ -91,7 +89,7 @@ public class Session {
 
     public void failTask(long tid) {
         mUncompleted.clear();
-        mTasks.get(tid).updateStatus(2);
-        mTasks.get(0).updateStatus(2);
+        mTasks.get(tid).updateStatus(Task.STATUS_FAILED);
+        mTasks.get(0).updateStatus(Task.STATUS_FAILED);
     }
 }

@@ -1,17 +1,17 @@
-/**
- * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/*
+  Copyright 2017 CHIMPS Lab, Carnegie Mellon University
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
  */
 
 package edu.cmu.chimps.messageontap_api;
@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class JSONUtils {
 
     /**
@@ -51,11 +52,11 @@ public class JSONUtils {
     public static Gson gson() {
         return new GsonBuilder()
                 .registerTypeAdapter(ParseTree.Node.class, new JsonDeserializer<ParseTree.Node>() {
-                    @Override
                     /**
                      * Deserialize a node JSON to Node class object.
-                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
+                    @Override
                     public ParseTree.Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject nodeObj = json.getAsJsonObject();
                         Gson gson = new Gson();
@@ -133,8 +134,8 @@ public class JSONUtils {
     /**
      * Convert a hashmap to a JSON string
      *
-     * @param map
-     * @return
+     * @param map the hash map
+     * @return the JSON string
      */
     public static String hashMapToString(HashMap<String, Object> map) {
         return gson().toJson(map);
@@ -148,7 +149,7 @@ public class JSONUtils {
      * @throws JSONException
      */
     public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
-        HashMap<String, Object> retMap = new HashMap<String, Object>();
+        HashMap<String, Object> retMap = new HashMap<>();
 
         if (json != JSONObject.NULL) {
             retMap = toMap(json);
@@ -178,7 +179,7 @@ public class JSONUtils {
      * @throws JSONException
      */
     public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
 
         Iterator<String> keysItr = object.keys();
         while (keysItr.hasNext()) {
@@ -203,7 +204,7 @@ public class JSONUtils {
      * @throws JSONException
      */
     public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
@@ -357,18 +358,18 @@ public class JSONUtils {
      *
      * @param num the object to be casted
      * @return the casted Long
-     * @throws UnsupportedOperationException
+     * @throws UnsupportedOperationException when num is not a number
      * @author Adam Yi &lt;xuan@yiad.am&gt;
      */
     public static Long longValue(Object num) throws UnsupportedOperationException {
         if (num instanceof Long)
             return (Long) num;
         if (num instanceof Integer)
-            return Long.valueOf((int) num);
+            return (long) num;
         if (num instanceof Double)
-            return Long.valueOf((long) (double) num);
+            return (long) (double) num;
         if (num instanceof Float)
-            return Long.valueOf((long) (float) num);
+            return (long) (float) num;
         throw new UnsupportedOperationException();
     }
 
@@ -377,18 +378,18 @@ public class JSONUtils {
      *
      * @param num the object to be casted
      * @return the casted Integer
-     * @throws UnsupportedOperationException
+     * @throws UnsupportedOperationException when num is not a number
      * @author Adam Yi &lt;xuan@yiad.am&gt;
      */
     public static Integer intValue(Object num) throws UnsupportedOperationException {
         if (num instanceof Integer)
             return (Integer) num;
         if (num instanceof Long)
-            return Integer.valueOf((int) (long) num);
+            return (int) (long) num;
         if (num instanceof Double)
-            return Integer.valueOf((int) (double) num);
+            return (int) (double) num;
         if (num instanceof Float)
-            return Integer.valueOf((int) (float) num);
+            return (int) (float) num;
         throw new UnsupportedOperationException();
     }
 }

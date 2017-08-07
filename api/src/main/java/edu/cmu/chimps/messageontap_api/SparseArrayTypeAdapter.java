@@ -1,10 +1,5 @@
 package edu.cmu.chimps.messageontap_api;
 
-/**
- * @author: Dario Marcato
- * @author: Adam Yi
- */
-
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -18,6 +13,10 @@ import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+/**
+ * @author Dario Marcato
+ * @author Adam Yi
+ */
 public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
 
     private final Gson gson = new Gson();

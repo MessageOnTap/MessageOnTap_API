@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
+/*
  * This is the data type for plugins to set up their triggers at message perception
  * 1. Tag List
  */
@@ -66,72 +66,63 @@ public class Trigger {
 
     public Trigger() {
         mName = "";
-        mMandatoryTags = new HashSet<Object>();
-        mOptionalTags = new HashSet<Object>();
-        mConstraints = new HashSet<Constraint>();
+        mMandatoryTags = new HashSet<>();
+        mOptionalTags = new HashSet<>();
+        mConstraints = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
     }
 
     public Trigger(String name, Set<String> pluginMandatoryTags) {
         this.mName = name;
-        mMandatoryTags = new HashSet<Object>();
-        mOptionalTags = new HashSet<Object>();
+        mMandatoryTags = new HashSet<>();
+        mOptionalTags = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
-        for (String t : pluginMandatoryTags) {
-            mMandatoryTags.add(t);
+        if (pluginMandatoryTags != null) {
+            mMandatoryTags.addAll(pluginMandatoryTags);
         }
     }
 
     public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags) {
         this.mName = name;
-        mMandatoryTags = new HashSet<Object>();
-        mOptionalTags = new HashSet<Object>();
-        mConstraints = new HashSet<Constraint>();
+        mMandatoryTags = new HashSet<>();
+        mOptionalTags = new HashSet<>();
+        mConstraints = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
-        for (String t : pluginMandatoryTags) {
-            mMandatoryTags.add(t);
-
+        if (pluginMandatoryTags != null) {
+            mMandatoryTags.addAll(pluginMandatoryTags);
         }
-        for (String t : pluginOptionalTags) {
-            mOptionalTags.add(t);
+        if (pluginOptionalTags != null) {
+            mOptionalTags.addAll(pluginOptionalTags);
         }
     }
 
     public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints) {
         this.mName = name;
-        mMandatoryTags = new HashSet<Object>();
-        mOptionalTags = new HashSet<Object>();
-        mConstraints = new HashSet<Constraint>();
+        mMandatoryTags = new HashSet<>();
+        mOptionalTags = new HashSet<>();
+        mConstraints = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
-        for (String t : pluginMandatoryTags) {
-            mMandatoryTags.add(t);
-
-        }
-        for (String t : pluginOptionalTags) {
-            mOptionalTags.add(t);
-
-        }
+        if (pluginMandatoryTags != null)
+            mMandatoryTags.addAll(pluginMandatoryTags);
+        if (pluginOptionalTags != null)
+            mOptionalTags.addAll(pluginOptionalTags);
         this.mConstraints = constraints;
     }
 
     public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints
             , ParseTree.Mood mood, ParseTree.Direction direction) {
         this.mName = name;
-        mMandatoryTags = new HashSet<Object>();
-        mOptionalTags = new HashSet<Object>();
-        mConstraints = new HashSet<Constraint>();
-        for (String t : pluginMandatoryTags) {
-            mMandatoryTags.add(t);
-
-        }
-        for (String t : pluginOptionalTags) {
-            mOptionalTags.add(t);
-
-        }
+        mMandatoryTags = new HashSet<>();
+        mOptionalTags = new HashSet<>();
+        mConstraints = new HashSet<>();
+        if (pluginMandatoryTags != null)
+            mMandatoryTags.addAll(pluginMandatoryTags);
+        if (pluginOptionalTags != null)
+            mOptionalTags.addAll(pluginOptionalTags);
         if (constraints != null)
             this.mConstraints = constraints;
         this.mMood = mood;
@@ -251,7 +242,7 @@ public class Trigger {
     }
 
     public Set<Object> getAllTags() {
-        Set<Object> result = new HashSet<Object>();
+        Set<Object> result = new HashSet<>();
         result.clear();
         result.addAll(mMandatoryTags);
         result.addAll(mOptionalTags);

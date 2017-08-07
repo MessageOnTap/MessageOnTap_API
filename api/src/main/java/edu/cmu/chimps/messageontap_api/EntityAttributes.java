@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package edu.cmu.chimps.messageontap_api;
 
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class EntityAttributes {
     public static class Graph {
         public static class Person {

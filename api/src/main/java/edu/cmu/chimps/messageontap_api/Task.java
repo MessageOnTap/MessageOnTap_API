@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,8 +23,12 @@ import java.util.HashMap;
  */
 
 public class Task {
+    public static final int STATUS_RUNNING = 0;
+    public static final int STATUS_DONE = 1;
+    public static final int STATUS_FAILED = 2;
+
     private TaskData data;
-    private int status = 0; //0:running; 1:done; 2:failed
+    private int status = STATUS_RUNNING;
     private long timestamp[];
 
     public Task(TaskData data) {
@@ -64,7 +68,7 @@ public class Task {
 
     public void prepareSendResponse(String json) {
         data = data.content(json);
-        this.updateStatus(1);
+        this.updateStatus(STATUS_DONE);
     }
 
 }

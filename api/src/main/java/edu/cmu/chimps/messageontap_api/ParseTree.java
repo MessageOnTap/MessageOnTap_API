@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,11 +25,12 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class ParseTree {
 
     public static final int NOT_EXIST = -1;
 
-    /**
+    /*
      * Universal POS tags by Stanford
      */
     public static final String POS_ADJECTIVE = "ADJ";
@@ -55,7 +56,7 @@ public class ParseTree {
 
     public static final String POS_UNKNOWN = "X";
 
-    /**
+    /*
      * Universal Dependencies
      */
     public static final String DEP_NOUN_SUBJECT = "NSUBJ";
@@ -113,7 +114,7 @@ public class ParseTree {
 
     public enum Flag {NORMAL, DELETE, MERGE}
 
-    /**
+    /*
      * Node of ParseTree
      * Variables:                                                Functions:
      * - mId                                                     + GETTER & SETTER
@@ -242,8 +243,8 @@ public class ParseTree {
 
         public void setTagList(Set tagSet) {
             mTagSet = new HashSet<>();
-            for (Object tag : tagSet)
-                mTagSet.add(tag);
+            if (tagSet != null)
+                mTagSet.addAll(tagSet);
         }
 
         public void addTag(String t) {
@@ -629,7 +630,7 @@ public class ParseTree {
                 if (getNodeById(firstId).getChildrenIds().size() > 0) {
                     ArrayList<Integer> toPromote = new ArrayList<>();
                     Iterator<Integer> cIt = getNodeById(firstId).getChildrenIds().iterator();
-                    int cFirstId = cIt.next(), cNodeId = 0;
+                    int cFirstId = cIt.next(), cNodeId;
                     while (cIt.hasNext()) {
                         cNodeId = cIt.next();
                         if (getNodeById(cNodeId).getRelation().equals(DEP_CONJUNCTION) || getNodeById(cNodeId).getRelation().equals(DEP_COORDINATING_CONJUNCTION)) {
@@ -648,10 +649,7 @@ public class ParseTree {
         // advmod
         if (root.getChildrenIds().size() > 0) {
             int advmodNodeId = NOT_EXIST;
-            int nodeId;
-            Iterator<Integer> it = root.getChildrenIds().iterator();
-            while (it.hasNext()) {
-                nodeId = it.next();
+            for (Integer nodeId : root.getChildrenIds()) {
                 if (getNodeById(nodeId).getRelation().equals(DEP_ADVERB_MODIFIER)) {
                     advmodNodeId = nodeId;
                     break;

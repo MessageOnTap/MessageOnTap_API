@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2017 CHIMPS Lab, Carnegie Mellon University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,11 @@ import android.text.TextUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.util.HashSet;
-import java.util.Set;
 
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class PluginData implements Parcelable {
-    /**
+    /*
      * We'll see what will be included in this class. Currently, it only contains a string
      * which contains serialized data for criteria to trigger this plugin.
      */
