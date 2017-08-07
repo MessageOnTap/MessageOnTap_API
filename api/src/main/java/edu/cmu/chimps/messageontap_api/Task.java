@@ -22,6 +22,7 @@ import java.util.HashMap;
  * Created by adamyi on 25/07/2017.
  */
 
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Task {
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_DONE = 1;
@@ -69,6 +70,10 @@ public class Task {
     public void prepareSendResponse(String json) {
         data = data.content(json);
         this.updateStatus(STATUS_DONE);
+    }
+
+    public String idString() {
+        return data.idString();
     }
 
 }

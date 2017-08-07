@@ -26,14 +26,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import org.json.JSONException;
+
 import java.util.HashMap;
 
-
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public abstract class MessageOnTapPlugin extends Service {
 
     private static final String TAG = "Plugin_API";
 
-    protected IPluginManager mManager;
+    protected IPluginManager mManager = null;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
 
     private IBinder mBinder = new IPlugin.Stub() {
@@ -50,30 +52,64 @@ public abstract class MessageOnTapPlugin extends Service {
             long sid = data.sid(),
                     tid = data.tid();
             String type = data.type();
+            HashMap content;
             if (sid != -100) { // Eastern eggs are always fun. Aren't they?
                 if (TextUtils.equals(type, MethodConstants.PMS_TYPE)) {
-                    handlePMSTask(tid, sid, data.method());
-                } else {
-                    Task task = new Task(data);
-                    try {
-                        HashMap<String, Object> content = JSONUtils.toMap(data.content());
-                        if (tid == 0) {
-                            sessionList.put(sid, new Session(task));
-                            initNewSession(sid, content);
-                        } else {
+
+                    //Check whether it's a new session request
+                    if (tid == 0 && TextUtils.equals(data.method(), MethodConstants.PMS_METHOD_NEW_SESSION)) {
+
+                        // Try to parse data JSON content
+                        try {
+                            content = JSONUtils.toMap(data.content());
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Exception caught while parsing JSON sent by PMS (new session init):");
+                            e.printStackTrace();
                             Session session = sessionList.get(sid);
-                            //session.newTask(task);
-                            session.updateTaskResponse(task);
-                            newTaskResponded(sid, tid, content);
+                            session.failTask(tid);
+                            return;
                         }
+
+                        // Call developer's function to handle new session
+                        try {
+                            sessionList.put(sid, new Session(new Task(data)));
+                            initNewSession(sid, content);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Exception caught while running plugin code (new session init):");
+                            e.printStackTrace();
+                            Session session = sessionList.get(sid);
+                            session.failTask(tid);
+                        }
+                    } else // otherwise, deal with session control related packets
+                        handlePMSTask(tid, sid, data.method());
+
+                } else {
+
+                    // Try to parse data JSON content
+                    try {
+                        content = JSONUtils.toMap(data.content());
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Exception caught while parsing JSON sent by PMS (task response, see below for details)");
+                        e.printStackTrace();
+                        Session session = sessionList.get(sid);
+                        session.failTask(tid);
+                        return;
+                    }
+
+                    // Call developer's function to handle new task response
+                    try {
+                        Session session = sessionList.get(sid);
+                        //session.newTask(task);
+                        session.updateTaskResponse(new Task(data));
+                        newTaskResponded(sid, tid, content);
                     } catch (Exception e) {
-                        Log.e(TAG, "Exception caught while running plugin code:");
+                        Log.e(TAG, "Exception caught while running plugin code (task response, see below for details)");
                         e.printStackTrace();
                         Session session = sessionList.get(sid);
                         session.failTask(tid);
                     }
                 }
-            } else {
+            } else { // They really are fun.
                 Log.e(TAG, "Hello Developer! Test plugin communication up! Isn't it a nice day? Hooray lol");
             }
         }
@@ -119,6 +155,7 @@ public abstract class MessageOnTapPlugin extends Service {
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
+            Log.e(TAG, "unregistering manager " + packageName);
             mManager = null;
             //plugins.remove(packageName);
             /*boolean success = mListenerList.unregister(listener);
@@ -151,17 +188,32 @@ public abstract class MessageOnTapPlugin extends Service {
         return mBinder;
     }
 
-    /*protected void sendSessionResponse(long sid, String type, String method, HashMap<String, Object> params) {
-        Session session = sessionList.get(sid);
-        Task task = session.getTask(new Long(0));
-        task.prepareSendResponse(params);
-        session.updateTaskResponse(0);
-        try {
-            mManager.sendResponse(task.getTaskData());
-        } catch (RemoteException e) {
-            e.printStackTrace();
+    protected boolean sendData(TaskData taskData, String humanReadableName) {
+        return sendData(taskData, humanReadableName, 3);
+    }
+
+    protected boolean sendData(TaskData taskData, String humanReadableName, int tryNum) {
+        //TODO: check mManager status and reconnect if necessary
+        String errMsg = null;
+        boolean fail = true;
+        for (int i = tryNum; (i > 0) && fail; i--) {
+            try {
+                mManager.sendResponse(taskData);
+                fail = false;
+                Log.e(TAG, "Successfully sent " + humanReadableName + "to PMS");
+            } catch (RemoteException e) {
+                if (errMsg == null) // just another optimization
+                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to PMS";
+                if (i != 1)
+                    Log.e(TAG, errMsg + ", retrying (see below for details).");
+                else
+                    Log.e(TAG, errMsg + ", giving up (see below for details).");
+                e.printStackTrace();
+            }
         }
-    }*/
+        return !fail;
+    }
+
 
     /**
      * A function to end an active session
@@ -172,22 +224,22 @@ public abstract class MessageOnTapPlugin extends Service {
         Session session = sessionList.get(sid);
         session.updateTaskResponse(0);
         Task task = session.getTask(0);
-        try {
-            mManager.sendResponse(task.getTaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_END_SESSION).content("{}"));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        sendData(task.getTaskData()
+                        .type(MethodConstants.PMS_TYPE)
+                        .method(MethodConstants.PMS_METHOD_END_SESSION)
+                        .content("{}"),
+                "session end packet");
     }
 
     /**
      * Initiate a new session.
      */
     protected void createSession() {
-        try {
-            mManager.sendResponse(new TaskData().type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_NEW_SESSION).content("{}"));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        sendData(new TaskData()
+                        .type(MethodConstants.PMS_TYPE)
+                        .method(MethodConstants.PMS_METHOD_NEW_SESSION)
+                        .content("{}"),
+                "new session request");
     }
 
     /**
@@ -205,11 +257,7 @@ public abstract class MessageOnTapPlugin extends Service {
         TaskData data = new TaskData().content(json).type(type).method(method);
         Task task = new Task(data);
         task = session.newTask(task);
-        try {
-            mManager.sendResponse(task.getTaskData());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        sendData(task.getTaskData(), "task creation request");
         return task.getTaskData().tid();
     }
 
@@ -226,27 +274,31 @@ public abstract class MessageOnTapPlugin extends Service {
         Log.e(TAG, "In Handle PMS task");
         switch (method) {
             case MethodConstants.PMS_METHOD_STATUS_QUERY:
-                try {
-                    mManager.sendResponse(new TaskData().sid(sid).tid(tid).type(MethodConstants.PMS_TYPE).method(MethodConstants.PMS_METHOD_STATUS_REPLY).content("{\"result\": " + sessionList.get(sid).getTask(tid).getStatus() + "}"));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                sendData(new TaskData()
+                                .sid(sid)
+                                .tid(tid)
+                                .type(MethodConstants.PMS_TYPE)
+                                .method(MethodConstants.PMS_METHOD_STATUS_REPLY)
+                                .content("{\"result\": "
+                                        + sessionList.get(sid).getTask(tid).getStatus()
+                                        + "}")
+                        , "status reply"
+                        , 1);
                 break;
             case MethodConstants.PMS_METHOD_RESPONSE_REFETCH:
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
                 if (task.getStatus() == 1) {
-                    try {
-                        mManager.sendResponse(task.getTaskData());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                    sendData(task.getTaskData(), "task response (resend)", 2);
                 } else {
                     // TODO:retry
                 }
                 break;
+            case MethodConstants.PMS_METHOD_NEW_SESSION:
+                Log.e(TAG, "Received new session request for non-zero task ID... Ignored");
+                break;
             default:
-                Log.e(TAG, "Unknown PMS task received.");
+                Log.e(TAG, "Unknown PMS task (" + method + ") received.");
         }
     }
 
@@ -267,7 +319,7 @@ public abstract class MessageOnTapPlugin extends Service {
      *
      * @param sid  the ID of the session
      * @param data the data of the session
-     * @throws Exception
+     * @throws Exception errors do happen huh
      */
     protected abstract void initNewSession(long sid, HashMap<String, Object> data) throws Exception;
 
@@ -281,7 +333,7 @@ public abstract class MessageOnTapPlugin extends Service {
      * @param sid  the Session ID of the task
      * @param tid  the Task ID of the task
      * @param data the data of the response
-     * @throws Exception
+     * @throws Exception errors do happen huh
      */
     protected abstract void newTaskResponded(long sid, long tid, HashMap<String, Object> data) throws Exception;
 }

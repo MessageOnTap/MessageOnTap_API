@@ -17,6 +17,7 @@
 package edu.cmu.chimps.messageontap_api;
 
 //TODO Change the Globals which could be downloaded from online server from PKG
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Globals {
 
     // These are the datatypes that would be used in the query service.

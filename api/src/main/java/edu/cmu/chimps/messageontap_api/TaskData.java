@@ -24,7 +24,7 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class TaskData implements Parcelable {
     private static final String KEY_SID = "flow_id";
     private static final String KEY_TID = "sequence_id";
@@ -270,12 +270,16 @@ public class TaskData implements Parcelable {
     }
 
     @Override
-    public String toString() {
+    public String toString() { // with content
         try {
             return serialize().toString();
         } catch (JSONException e) {
             return super.toString();
         }
+    }
+
+    public String idString() { // without content
+        return "(" + this.mSID + "," + this.mTID + "," + this.mType + ")";
     }
 
     @Override

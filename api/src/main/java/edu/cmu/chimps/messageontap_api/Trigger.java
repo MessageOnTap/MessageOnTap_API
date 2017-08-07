@@ -39,6 +39,7 @@ import java.util.Set;
  * <p>
  * + int direction
  */
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Trigger {
 
     public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
