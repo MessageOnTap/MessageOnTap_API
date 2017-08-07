@@ -17,8 +17,10 @@
 package edu.cmu.chimps.messageontap_api;
 
 
+import io.github.privacystreams.utils.AppUtils;
+
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
-public class EntityAttributes {
+public class ServiceAttributes {
     public static class Graph {
         public static class Person {
             public static final String TYPE = "person_type";
@@ -115,15 +117,65 @@ public class EntityAttributes {
 
     }
 
-
     public static class PMS {
         public static final String TRIGGER_SOURCE = "trigger";
+        public static final String QUERY_ID = "query_id";
+        public static final String METHOD = "method";
+        public static final String PARAMETERS = "params";
+        public static final String PARSE_TREE = "tree";
+        public static final String CURRENT_MESSAGE_CONTACT_NAME = "contact_name";
+        public static final String CURRENT_MESSAGE_RELATIVE_POSITION = "relative_position";
+        public static final String CURRENT_MESSAGE_EMBEDDED_TIME = "embedded_time";
+        public static final String CURRENT_MESSAGE_TEXT_BOX_ACCESSIBILITY_NODE_INFO = "text_box_node";
     }
 
-    public static final String CURRENT_MESSAGE_CONTACT_NAME = "current_message_contact_name";
+    public class Action {
+        public final static String ALARM_EXTRA_HOUR = "alarm_extra_hour";
+        public final static String ALARM_EXTRA_MINUTE = "alarm_extra_minute";
+        public final static String ALARM_EXTRA_LABEL = "alarm_extra_label";
 
-    public static final String CURRENT_MESSAGE_RELATIVE_POSITION = "current_message_relative_position";
-    public static final String CURRENT_MESSAGE_EMBEDDED_TIME = "current_message_embedded_time";
-    public static final String CURRENT_MESSAGE_TEXT_BOX_ACCESSIBILITY_NODE_INFO = "current_message_text_box_accessibility_node_info";
+        public final static String PHONE_EXTRA_TEL = "phone_extra_tel";
 
+        public final static String ACTION_CALENDAR_SEARCH = "action_calendar_search";
+
+        public final static String CAL_EXTRA_TITLE = "calendar_extra_title";
+        public final static String CAL_EXTRA_NOTE = "calendar_extra_note";
+        public final static String CAL_EXTRA_TIME_START = "calendar_extra_time_start";
+        public final static String CAL_EXTRA_TIME_END = "calendar_extra_time_end";
+        public final static String CAL_EXTRA_IS_ALLDAY = "calendar_extra_is_allday";
+        public final static String CAL_EXTRA_LOCATION = "calendar_extra_location";
+        public final static String CAL_EXTRA_INVITEE = "calendar_extra_invitee";
+
+        public final static String EMAIL_EXTRA_SUBJECT = "email_extra_subject";
+        public final static String EMAIL_EXTRA_BODY = "email_extra_body";
+        public final static String EMAIL_EXTRA_TO = "email_extra_to";
+        public final static String EMAIL_EXTRA_CC = "email_extra_cc";
+        public final static String EMAIL_EXTRA_BCC = "email_extra_bcc";
+        public final static String EMAIL_EXTRA_FILE = "email_extra_file";
+
+        public final static String MAP_SEARCH_EXTRA_QUERY = "map_search_extra_query";
+
+        public final static String SET_TEXT_EXTRA_NODEINFO = "set_text_extra_nodeinfo";
+        public final static String SET_TEXT_EXTRA_MESSAGE = "set_text_extra_message";
+        public final static String SET_TEXT_EXTRA_IS_REPLACED = "set_text_extra_is_replaced";
+
+        public final static String SHARE_EXTRA_MESSAGE = "share_extra_message";
+        public final static String SHARE_EXTRA_APP = "share_extra_app";
+        public final static String SHARE_EXTRA_REFERENCE_LIST = "share_extra_reference_list";
+        public final static String SHARE_EXTRA_TOAST = "share_extra_toast";
+        public static final String SHARE_PKGNAME_WAHTSAPP = AppUtils.APP_PACKAGE_WHATSAPP; //"com.whatsapp"
+        public static final String SHARE_PKGNAME_SNAPCHAT = "com.snapchat.android";
+        public static final String SHARE_PKGNAME_WECHAT = AppUtils.APP_PACKAGE_WECHAT; //"com.tencent.mm"
+
+        public static final String RESULT = "result";
+        public static final String RESULT_EXTRA = "result_extra";
+
+        public final static String SHARE_RESULT_LIST_NOTFOUND = "share_result_list_notfound";
+        public final static String SHARE_RESULT_LIST_DUPLICATE = "share_result_list_duplicate";
+        public final static String SHARE_RESULT_LIST_SELECTED = "share_result_list_selected";
+    }
+
+    public class UI {
+        //TODO
+    }
 }

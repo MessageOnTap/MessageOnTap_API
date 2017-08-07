@@ -24,6 +24,7 @@ import java.util.HashMap;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Task {
+    public static final int STATUS_NOT_EXIST = -1;
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_DONE = 1;
     public static final int STATUS_FAILED = 2;

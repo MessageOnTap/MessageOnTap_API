@@ -35,7 +35,7 @@ public abstract class MessageOnTapPlugin extends Service {
 
     private static final String TAG = "Plugin_API";
 
-    protected IPluginManager mManager = null;
+    private IPluginManager mManager = null;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
 
     private IBinder mBinder = new IPlugin.Stub() {
@@ -155,7 +155,7 @@ public abstract class MessageOnTapPlugin extends Service {
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
-            Log.e(TAG, "unregistering manager " + packageName);
+            Log.e(TAG, "Unregistering manager " + packageName);
             mManager = null;
             //plugins.remove(packageName);
             /*boolean success = mListenerList.unregister(listener);
@@ -188,12 +188,35 @@ public abstract class MessageOnTapPlugin extends Service {
         return mBinder;
     }
 
+    /**
+     * Send data packet to PMS with auto-retry function (max retry: 2 times).
+     *
+     * @param taskData          the data to be sent to PMS
+     * @param humanReadableName a human readable name for the data to be sent,
+     *                          which is used for log printing.
+     * @return boolean success or not
+     */
     protected boolean sendData(TaskData taskData, String humanReadableName) {
         return sendData(taskData, humanReadableName, 3);
     }
 
+    /**
+     * Send data packet to PMS with auto-retry function (max retry: 2 times).
+     *
+     * @param taskData          the data to be sent to PMS
+     * @param humanReadableName a human readable name for the data to be sent,
+     *                          which is used for log printing.
+     * @param tryNum            the maximum try times (including initial try, = max retry times + 1)
+     * @return success or not
+     */
     protected boolean sendData(TaskData taskData, String humanReadableName, int tryNum) {
         //TODO: check mManager status and reconnect if necessary
+
+        if (tryNum < 1) // WTF is the developer trying to do?
+            tryNum = 1;
+        else if (tryNum > 10) // too much for a packet, isn't it?
+            tryNum = 10;
+
         String errMsg = null;
         boolean fail = true;
         for (int i = tryNum; (i > 0) && fail; i--) {
@@ -280,7 +303,7 @@ public abstract class MessageOnTapPlugin extends Service {
                                 .type(MethodConstants.PMS_TYPE)
                                 .method(MethodConstants.PMS_METHOD_STATUS_REPLY)
                                 .content("{\"result\": "
-                                        + sessionList.get(sid).getTask(tid).getStatus()
+                                        + sessionList.get(sid).getTaskStatus(tid)
                                         + "}")
                         , "status reply"
                         , 1);
@@ -288,10 +311,14 @@ public abstract class MessageOnTapPlugin extends Service {
             case MethodConstants.PMS_METHOD_RESPONSE_REFETCH:
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
-                if (task.getStatus() == 1) {
-                    sendData(task.getTaskData(), "task response (resend)", 2);
+                if (task == null) {
+                    Log.e(TAG, "Received response refetch request for a task that does not exist... Ignored");
                 } else {
-                    // TODO:retry
+                    if (task.getStatus() == 1) {
+                        sendData(task.getTaskData(), "task response (resend)", 2);
+                    } else {
+                        // TODO:retry
+                    }
                 }
                 break;
             case MethodConstants.PMS_METHOD_NEW_SESSION:

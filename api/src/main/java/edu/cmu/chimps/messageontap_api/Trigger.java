@@ -63,7 +63,7 @@ public class Trigger {
 
     private ParseTree.Direction mDirection = ParseTree.Direction.UNKNOWN;
 
-    private String mPackageName; //TODO: Plugin Id
+    private String mPackageName;
 
     public Trigger() {
         mName = "";
@@ -147,11 +147,11 @@ public class Trigger {
     }
 
     public String getJson() {
-        return JSONUtils.simpleObjectToJson(this, Globals.TYPE_TRIGGER);
+        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_TRIGGER);
     }
 
     public String getTypeKey() {
-        return Globals.TYPE_TRIGGER;
+        return JSONUtils.TYPE_TRIGGER;
     }
 
     /**

@@ -593,13 +593,11 @@ public class ParseTree {
      * Mark all nodes untagged or without trigger tags as to be deleted
      */
     private void preReduce(Trigger matchedTrigger) {
-        Set<Object> tmp = new HashSet<>();
         for (int i = mNodeList.size() - 1; i > -1; i--) {
             Node node = mNodeList.get(i);
-            tmp.clear();
-            tmp.addAll(node.getTagList());
-            tmp.retainAll(matchedTrigger.getAllTags());
-            if (tmp.size() == 0)
+            Set<Object> tagList = node.getTagList();
+            tagList.retainAll(matchedTrigger.getAllTags());
+            if (tagList.size() == 0)
                 node.setFlag(Flag.DELETE);
         }
     }

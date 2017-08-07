@@ -43,6 +43,15 @@ import java.util.Set;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class JSONUtils {
+    
+    public final static String TYPE_TRIGGER = "trigger";
+    public final static String TYPE_TAG = "tag";
+    public final static String TYPE_NODE = "node";
+    public final static String TYPE_PARSE_TREE = "parse_tree";
+    public final static String TYPE_TAG_SET = "tag_set";
+    public final static String TYPE_TRIGGER_SET = "trigger_set";
+    public final static String TYPE_CARD_LIST = "card_list";
+    public final static String TYPE_TAG_ARRAY = "tag_array";
 
     /**
      * Generate a new Gson instance with customized type adapters.
@@ -87,7 +96,7 @@ public class JSONUtils {
                         JsonObject treeObj = json.getAsJsonObject();
                         Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
                                 }.getType(),
-                                new SparseArrayTypeAdapter<ParseTree.Node>(Globals.TYPE_NODE))
+                                new SparseArrayTypeAdapter<ParseTree.Node>(TYPE_NODE))
                                 .create();
                         // Construct a tree (this shouldn't try to parse the sparseArray stuff
                         ParseTree tree = gson.fromJson(json, ParseTree.class);
@@ -127,7 +136,7 @@ public class JSONUtils {
                         return trigger;
                     }
                 }).registerTypeAdapter(new TypeToken<LongSparseArray<Tag>>() {
-                }.getType(), new LongSparseArrayTypeAdapter<Tag>(Globals.TYPE_TAG))
+                }.getType(), new LongSparseArrayTypeAdapter<Tag>(TYPE_TAG))
                 .create();
     }
 
@@ -228,35 +237,35 @@ public class JSONUtils {
         Gson gson = gson();
         Type type;
         switch (typeKey) {
-            case Globals.TYPE_TAG:
+            case TYPE_TAG:
                 type = new TypeToken<Tag>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGER:
+            case TYPE_TRIGGER:
                 type = new TypeToken<Trigger>() {
                 }.getType();
                 break;
-            case Globals.TYPE_NODE:
+            case TYPE_NODE:
                 type = new TypeToken<ParseTree.Node>() {
                 }.getType();
                 break;
-            case Globals.TYPE_PARSE_TREE:
+            case TYPE_PARSE_TREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAG_SET:
+            case TYPE_TAG_SET:
                 type = new TypeToken<HashSet<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAG_ARRAY:
+            case TYPE_TAG_ARRAY:
                 type = new TypeToken<LongSparseArray<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGER_SET:
+            case TYPE_TRIGGER_SET:
                 type = new TypeToken<HashSet<Trigger>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_CARD_LIST:
+            case TYPE_CARD_LIST:
                 type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
                 }.getType();
                 break;
@@ -277,35 +286,35 @@ public class JSONUtils {
         Gson gson = gson();
         Type type;
         switch (typeKey) {
-            case Globals.TYPE_TAG:
+            case TYPE_TAG:
                 type = new TypeToken<Tag>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGER:
+            case TYPE_TRIGGER:
                 type = new TypeToken<Trigger>() {
                 }.getType();
                 break;
-            case Globals.TYPE_NODE:
+            case TYPE_NODE:
                 type = new TypeToken<ParseTree.Node>() {
                 }.getType();
                 break;
-            case Globals.TYPE_PARSE_TREE:
+            case TYPE_PARSE_TREE:
                 type = new TypeToken<ParseTree>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAG_SET:
+            case TYPE_TAG_SET:
                 type = new TypeToken<HashSet<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TAG_ARRAY:
+            case TYPE_TAG_ARRAY:
                 type = new TypeToken<LongSparseArray<Tag>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_TRIGGER_SET:
+            case TYPE_TRIGGER_SET:
                 type = new TypeToken<HashSet<Trigger>>() {
                 }.getType();
                 break;
-            case Globals.TYPE_CARD_LIST:
+            case TYPE_CARD_LIST:
                 type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
                 }.getType();
                 break;

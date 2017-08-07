@@ -56,6 +56,7 @@ public class MethodConstants {
     /**
      * methods of action tasks
      */
+    public final static String ACTION_METHOD_SKIP_UI = "skip_ui";
     public final static String ACTION_METHOD_ALARM_NEW = "alarm_new";
     public final static String ACTION_METHOD_PHONE_CALL = "phone_call";
     public final static String ACTION_METHOD_CALENDAR_NEW = "calendar_new";
@@ -63,7 +64,7 @@ public class MethodConstants {
     public final static String ACTION_METHOD_EMAIL_SEND = "email_send";
     public final static String ACTION_METHOD_MAP_SEARCH_G = "map_search_g";
     public final static String ACTION_METHOD_NOTIFICATION_NEW = "notification_new";
-    public final static String ACTION_METHOD_SETTEXT = "settext";
+    public final static String ACTION_METHOD_SET_TEXT = "set_text";
     public final static String ACTION_METHOD_AUTO_SHARE = "auto_share";
 
 }

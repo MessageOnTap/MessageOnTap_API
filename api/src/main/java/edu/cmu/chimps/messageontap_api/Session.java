@@ -92,4 +92,11 @@ public class Session {
         mTasks.get(tid).updateStatus(Task.STATUS_FAILED);
         mTasks.get(0).updateStatus(Task.STATUS_FAILED);
     }
+
+    public int getTaskStatus(long tid) {
+        Task task = mTasks.get(tid);
+        if (task == null)
+            return Task.STATUS_NOT_EXIST;
+        return task.getStatus();
+    }
 }
