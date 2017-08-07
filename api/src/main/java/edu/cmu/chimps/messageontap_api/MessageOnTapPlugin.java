@@ -64,7 +64,7 @@ public abstract class MessageOnTapPlugin extends Service {
                             Session session = sessionList.get(sid);
                             //session.newTask(task);
                             session.updateTaskResponse(task);
-                            newTaskResponsed(sid, tid, content);
+                            newTaskResponded(sid, tid, content);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Exception caught while running plugin code:");
@@ -283,5 +283,5 @@ public abstract class MessageOnTapPlugin extends Service {
      * @param data the data of the response
      * @throws Exception
      */
-    protected abstract void newTaskResponsed(long sid, long tid, HashMap<String, Object> data) throws Exception;
+    protected abstract void newTaskResponded(long sid, long tid, HashMap<String, Object> data) throws Exception;
 }
