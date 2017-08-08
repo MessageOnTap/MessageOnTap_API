@@ -45,10 +45,27 @@ public class Trigger {
     public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
 
     public class Constraint {
-        //TODO
-        String tagA_name = "";
-        String tagB_name = "";
-        Relation relation = Relation.UNKNOWN;
+        private String tagA_name = "";
+        private String tagB_name = "";
+        private Relation relation = Relation.UNKNOWN;
+
+        public Constraint(String tagA_name, String tagB_name, Relation relation) {
+            this.tagA_name = tagA_name;
+            this.tagB_name = tagB_name;
+            this.relation = relation;
+        }
+
+        public String getTagA() {
+            return tagA_name;
+        }
+
+        public String getTagB() {
+            return tagB_name;
+        }
+
+        public Relation getRelation() {
+            return relation;
+        }
     }
 
     private String mName = "null";
