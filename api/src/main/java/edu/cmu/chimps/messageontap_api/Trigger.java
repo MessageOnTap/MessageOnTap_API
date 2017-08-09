@@ -42,7 +42,7 @@ import java.util.Set;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Trigger {
 
-    public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORNIDATION}
+    public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORDINATION}
 
     public class Constraint {
         private String tagA_name = "";
@@ -232,7 +232,7 @@ public class Trigger {
                     if (!parseTree.isSubordinate(nodeA, nodeB, false)) {
                         return false;
                     }
-                } else if (relation == Relation.NESTED_SUBORNIDATION) { // A is B's ancestor
+                } else if (relation == Relation.NESTED_SUBORDINATION) { // A is B's ancestor
                     if (!parseTree.isSubordinate(nodeA, nodeB, true)) {
                         return false;
                     }
