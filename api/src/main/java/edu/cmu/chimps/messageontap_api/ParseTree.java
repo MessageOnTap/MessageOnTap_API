@@ -108,7 +108,7 @@ public class ParseTree {
     public static final String DEP_ROOT = "ROOT";
     public static final String DEP_UNKNOWN = "DEP";
 
-    public enum Mood {UNKNOWN, IMPERATIVE, INTERROGTIVE}
+    public enum Mood {UNKNOWN, IMPERATIVE, INTERROGATIVE}
 
     public enum Direction {UNKNOWN, INCOMING, OUTGOING}
 
@@ -375,14 +375,14 @@ public class ParseTree {
         for (int i = 0; i < mNodeList.size(); i++) {
             if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
                 if (mNodeList.get(i).getWord().equals("?")) {
-                    mood = Mood.INTERROGTIVE;
+                    mood = Mood.INTERROGATIVE;
                     return;
                 }
             }
             if (getRoot().getType().equals(POS_VERB)) {
                 for (int childId : getRoot().getChildrenIds()) {
                     if (getNodeById(childId).getType().equals(DEP_NOUN_SUBJECT)) {
-                        mood = Mood.INTERROGTIVE;
+                        mood = Mood.INTERROGATIVE;
                         return;
                     }
                 }

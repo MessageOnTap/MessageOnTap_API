@@ -18,10 +18,6 @@ package edu.cmu.chimps.messageontap_api;
 
 import java.util.HashMap;
 
-/**
- * Created by adamyi on 25/07/2017.
- */
-
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Task {
     public static final int STATUS_NOT_EXIST = -1;

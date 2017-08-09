@@ -191,7 +191,7 @@ public class Trigger {
         }
 
         //Mood Judge
-        //IMPERATIVE, INTERROGTIVE
+        //IMPERATIVE, INTERROGATIVE
         if (mMood != ParseTree.Mood.UNKNOWN) {
             if (parseTree.mood != mMood) {
                 return false;

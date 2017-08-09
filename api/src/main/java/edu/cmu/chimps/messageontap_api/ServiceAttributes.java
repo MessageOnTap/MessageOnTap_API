@@ -17,8 +17,6 @@
 package edu.cmu.chimps.messageontap_api;
 
 
-import io.github.privacystreams.utils.AppUtils;
-
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class ServiceAttributes {
     public static class Graph {
@@ -38,7 +36,6 @@ public class ServiceAttributes {
             public static final String URI = "image_uri";
             public static final String TAKEN_TIME = "image_taken_time";
             public static final String NODE_ID = "image_node_id";
-//        public static final String IMAGE_TIME = "image_image_time";
         }
 
         public static class Place {
@@ -158,7 +155,7 @@ public class ServiceAttributes {
 
         public final static String MAP_SEARCH_EXTRA_QUERY = "map_search_extra_query";
 
-        public final static String SET_TEXT_EXTRA_NODEINFO = "set_text_extra_nodeinfo";
+        public final static String SET_TEXT_EXTRA_NODE_INFO = "set_text_extra_nodeinfo";
         public final static String SET_TEXT_EXTRA_MESSAGE = "set_text_extra_message";
         public final static String SET_TEXT_EXTRA_IS_REPLACED = "set_text_extra_is_replaced";
 
@@ -166,9 +163,6 @@ public class ServiceAttributes {
         public final static String SHARE_EXTRA_APP = "share_extra_app";
         public final static String SHARE_EXTRA_REFERENCE_LIST = "share_extra_reference_list";
         public final static String SHARE_EXTRA_TOAST = "share_extra_toast";
-        public static final String SHARE_PKGNAME_WAHTSAPP = AppUtils.APP_PACKAGE_WHATSAPP; //"com.whatsapp"
-        public static final String SHARE_PKGNAME_SNAPCHAT = "com.snapchat.android";
-        public static final String SHARE_PKGNAME_WECHAT = AppUtils.APP_PACKAGE_WECHAT; //"com.tencent.mm"
 
         public static final String RESULT = "result";
         public static final String RESULT_EXTRA = "result_extra";

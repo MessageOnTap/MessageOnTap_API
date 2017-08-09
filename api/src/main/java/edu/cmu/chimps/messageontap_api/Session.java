@@ -21,10 +21,6 @@ import android.util.LongSparseArray;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by adamyi on 23/07/2017.
- */
-
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Session {
     private String mPackageName; // For PMS ONLY
