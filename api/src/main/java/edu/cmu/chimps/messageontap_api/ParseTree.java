@@ -328,6 +328,22 @@ public class ParseTree {
         mNodeList.get(advmodNodeId).setRelation(relation);
     }
 
+    public Mood getMood() {
+        return mood;
+    }
+
+    public void setMood(Mood mood) {
+        this.mood = mood;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     public Node getRoot() {
         return mNodeList.get(mRootId);
     }
