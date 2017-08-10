@@ -173,6 +173,10 @@ public class ServiceAttributes {
     }
 
     public class UI {
+        public final static String BUBBLE_FIRST_LINE = "first_line";
+        public final static String BUBBLE_SECOND_LINE = "second_line";
+        public final static String ICON_TYPE_STRING = "icon_type";
+        public final static String STATUS = "bubble_status";
         //TODO
     }
 }
