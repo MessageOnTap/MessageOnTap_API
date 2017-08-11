@@ -29,15 +29,25 @@ public class Tag {
     private Set<String> mRegularExpressions;
     private Integer usageCount;
 
-    public Tag(String name, Set<String> RegularExpressions) {
-        this.mName = name;
-        this.mRegularExpressions = RegularExpressions;
-        this.usageCount = 0;
-    }
+    // The following variable should be ignored by plugin developers
+    private String ENTITY_INTERNAL_KEY = "MessageOnTap_entity_INTERNAL_vimIsTheBestLOLbyAdamYi_hahaha";
 
-    public Tag(String name, String entityName) {
+    public Tag(String name, Set<String> regularExpressions) {
         this.mName = name;
-        this.mEntityName = entityName;
+        Boolean isCommonTag = false;
+        String entity = null;
+        if (regularExpressions.size() == 2) {
+            for (String re : regularExpressions) {
+                if (TextUtils.equals(re, ENTITY_INTERNAL_KEY))
+                    isCommonTag = true;
+                else
+                    entity = re;
+            }
+        }
+        if (isCommonTag && entity != null)
+            this.mEntityName = entity;
+        else
+            this.mRegularExpressions = regularExpressions;
         this.usageCount = 0;
     }
 
@@ -49,16 +59,12 @@ public class Tag {
         return mName;
     }
 
-    public void setKeywordList(Set keywordList) {
-        mRegularExpressions = keywordList;
+    public void setRegularExpressions(Set regularExpressions) {
+        mRegularExpressions = regularExpressions;
     }
 
-    public Set<String> getKeywordList() {
+    public Set<String> getRegularExpressions() {
         return mRegularExpressions;
-    }
-
-    public void setEntityName(String entityName) {
-        this.mEntityName = entityName;
     }
 
     public String getEntityName() {
@@ -72,9 +78,7 @@ public class Tag {
      * @return boolean whether it matches
      */
     private boolean matchRE(String word) {
-        Set<String> keywordList = getKeywordList();
-
-        for (String str : keywordList) {
+        for (String str : mRegularExpressions) {
             if (Pattern.matches(str, word))
                 return true;
         }
@@ -99,7 +103,7 @@ public class Tag {
      * @return boolean whether it matches
      */
     public boolean matchWord(String word, String entity) {
-        if (getKeywordList() != null)
+        if (getRegularExpressions() != null)
             if (matchRE(word))
                 return true;
         if (getEntityName() != null)
