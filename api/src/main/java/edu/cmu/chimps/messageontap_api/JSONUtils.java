@@ -117,7 +117,7 @@ public class JSONUtils {
                         JsonObject tagObj = json.getAsJsonObject();
                         Gson gson = new Gson();
                         Tag tag = gson.fromJson(json, Tag.class);
-                        tag.setKeywordList((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
+                        tag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
                         }.getType()));
                         return tag;
                     }
