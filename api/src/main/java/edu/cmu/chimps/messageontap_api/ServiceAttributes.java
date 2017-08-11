@@ -124,6 +124,14 @@ public class ServiceAttributes {
         public static final String CURRENT_MESSAGE_RELATIVE_POSITION = "relative_position";
         public static final String CURRENT_MESSAGE_EMBEDDED_TIME = "embedded_time";
         public static final String CURRENT_MESSAGE_TEXT_BOX_ACCESSIBILITY_NODE_INFO = "text_box_node";
+	public static final String TAG_PERSON = "tag_person";
+	public static final String TAG_LOCATION = "tag_location";
+	public static final String TAG_EVENT = "tag_event";
+	public static final String TAG_PHONE_NUMBER = "tag_phone_number";
+	public static final String TAG_EMAIL_ADDRESS = "tag_email_address";
+	public static final String TAG_STREET_ADDRESS = "tag_street_address";
+	public static final String TAG_WEB_URL = "tag_web_url";
+	
     }
 
     public class Action {
