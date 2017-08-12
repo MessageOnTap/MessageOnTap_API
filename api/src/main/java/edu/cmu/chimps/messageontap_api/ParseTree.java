@@ -391,14 +391,14 @@ public class ParseTree {
     public void moodDetection() {
         for (int i = 0; i < mNodeList.size(); i++) {
             Node node = mNodeList.valueAt(i);
-            if (!node.getType().isEmpty()){
+            if (!node.getType.isEmpty()){
                 if (TextUtils.equals(node.getType(), DEP_PUNCTUATION)
                         && TextUtils.equals(node.getWord(), "?")) {
                     mood = Mood.INTERROGATIVE;
                     return;
                 }
             }
-            if (!node.getType().isEmpty()){
+            if (!node.getType.isEmpty()){
                 if (TextUtils.equals(getRoot().getType(), POS_VERB)) {
                     for (int childId : getRoot().getChildrenIds()) {
                         if (TextUtils.equals(getNodeById(childId).getType(), DEP_NOUN_SUBJECT)) {
