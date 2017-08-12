@@ -16,6 +16,7 @@
 
 package edu.cmu.chimps.messageontap_api;
 
+import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseArray;
 
@@ -389,15 +390,15 @@ public class ParseTree {
      */
     public void moodDetection() {
         for (int i = 0; i < mNodeList.size(); i++) {
-            if (mNodeList.get(i).getType().equals(DEP_PUNCTUATION)) {
-                if (mNodeList.get(i).getWord().equals("?")) {
-                    mood = Mood.INTERROGATIVE;
-                    return;
-                }
+            Node node = mNodeList.valueAt(i);
+            if (TextUtils.equals(node.getType(), DEP_PUNCTUATION)
+                    && TextUtils.equals(node.getWord(), "?")) {
+                mood = Mood.INTERROGATIVE;
+                return;
             }
-            if (getRoot().getType().equals(POS_VERB)) {
+            if (TextUtils.equals(getRoot().getType(), POS_VERB)) {
                 for (int childId : getRoot().getChildrenIds()) {
-                    if (getNodeById(childId).getType().equals(DEP_NOUN_SUBJECT)) {
+                    if (TextUtils.equals(getNodeById(childId).getType(), DEP_NOUN_SUBJECT)) {
                         mood = Mood.INTERROGATIVE;
                         return;
                     }
@@ -586,13 +587,7 @@ public class ParseTree {
 
     }
 
-    @Deprecated
-    public void oldChangeRoot(int newRootId) {
-        mRootId = newRootId;
-        mNodeList.get(mRootId).setParentId(NOT_EXIST);
-    }
-
-    public void setRootId(int newRootId) {
+    private void setRootId(int newRootId) {
         mRootId = newRootId;
         mNodeList.get(newRootId).setParentId(NOT_EXIST);
     }
@@ -610,7 +605,7 @@ public class ParseTree {
      */
     private void preReduce(Trigger matchedTrigger) {
         for (int i = mNodeList.size() - 1; i > -1; i--) {
-            Node node = mNodeList.get(i);
+            Node node = mNodeList.valueAt(i);
             Set<Object> tagList = node.getTagList();
             tagList.retainAll(matchedTrigger.getAllTags());
             if (tagList.size() == 0)
