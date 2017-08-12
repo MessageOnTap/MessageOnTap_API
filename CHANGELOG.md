@@ -1,4 +1,15 @@
-### 0.3.1 (latest)
+### 0.3.2 (latest)
+#### August 11, 2017
+
+**Release Notes:**
+1. Variable names refactored and typos fixed;
+2. New getters/setters/constructors for Mood, Direction & Constraint;
+3. More ServiceAttributes added;
+4. Better way for PMS to deal with common tags with entity recognition.
+
+----------
+
+### 0.3.1
 #### August 7, 2017
 
 **Release Notes:**
