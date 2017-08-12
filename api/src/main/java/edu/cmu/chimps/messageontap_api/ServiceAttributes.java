@@ -138,46 +138,46 @@ public class ServiceAttributes {
         //TODO: move things that plugins do NOT use back
         public final static String SKIP_UI = "skip_ui";
 
-        public final static String ALARM_EXTRA_HOUR = "alarm_extra_hour";
-        public final static String ALARM_EXTRA_MINUTE = "alarm_extra_minute";
-        public final static String ALARM_EXTRA_LABEL = "alarm_extra_label";
+        public final static String ALARM_EXTRA_HOUR = "hour";
+        public final static String ALARM_EXTRA_MINUTE = "minute";
+        public final static String ALARM_EXTRA_LABEL = "label";
 
         public final static String PHONE_EXTRA_TEL = "phone_extra_tel";
 
         public final static String ACTION_CALENDAR_SEARCH = "action_calendar_search";
 
-        public final static String CAL_EXTRA_TITLE = "calendar_extra_title";
-        public final static String CAL_EXTRA_NOTE = "calendar_extra_note";
-        public final static String CAL_EXTRA_TIME_START = "calendar_extra_time_start";
-        public final static String CAL_EXTRA_TIME_END = "calendar_extra_time_end";
-        public final static String CAL_EXTRA_IS_ALLDAY = "calendar_extra_is_allday";
-        public final static String CAL_EXTRA_LOCATION = "calendar_extra_location";
-        public final static String CAL_EXTRA_INVITEE = "calendar_extra_invitee";
+        public final static String CAL_EXTRA_TITLE = "title";
+        public final static String CAL_EXTRA_NOTE = "note";
+        public final static String CAL_EXTRA_TIME_START = "time_start";
+        public final static String CAL_EXTRA_TIME_END = "time_end";
+        public final static String CAL_EXTRA_IS_ALLDAY = "allday";
+        public final static String CAL_EXTRA_LOCATION = "location";
+        public final static String CAL_EXTRA_INVITEE = "invitee";
 
-        public final static String EMAIL_EXTRA_SUBJECT = "email_extra_subject";
-        public final static String EMAIL_EXTRA_BODY = "email_extra_body";
-        public final static String EMAIL_EXTRA_TO = "email_extra_to";
-        public final static String EMAIL_EXTRA_CC = "email_extra_cc";
-        public final static String EMAIL_EXTRA_BCC = "email_extra_bcc";
-        public final static String EMAIL_EXTRA_FILE = "email_extra_file";
+        public final static String EMAIL_EXTRA_SUBJECT = "subject";
+        public final static String EMAIL_EXTRA_BODY = "body";
+        public final static String EMAIL_EXTRA_TO = "to";
+        public final static String EMAIL_EXTRA_CC = "cc";
+        public final static String EMAIL_EXTRA_BCC = "bcc";
+        public final static String EMAIL_EXTRA_FILE = "file";
 
-        public final static String MAP_SEARCH_EXTRA_QUERY = "map_search_extra_query";
+        public final static String MAP_SEARCH_EXTRA_QUERY = "query";
 
-        public final static String SET_TEXT_EXTRA_NODE_INFO = "set_text_extra_nodeinfo";
-        public final static String SET_TEXT_EXTRA_MESSAGE = "set_text_extra_message";
-        public final static String SET_TEXT_EXTRA_IS_REPLACED = "set_text_extra_is_replaced";
+        public final static String SET_TEXT_EXTRA_NODE_INFO = "node_info";
+        public final static String SET_TEXT_EXTRA_MESSAGE = "message";
+        public final static String SET_TEXT_EXTRA_IS_REPLACED = "is_replaced";
 
-        public final static String SHARE_EXTRA_MESSAGE = "share_extra_message";
-        public final static String SHARE_EXTRA_APP = "share_extra_app";
-        public final static String SHARE_EXTRA_REFERENCE_LIST = "share_extra_reference_list";
-        public final static String SHARE_EXTRA_TOAST = "share_extra_toast";
+        public final static String SHARE_EXTRA_MESSAGE = "message";
+        public final static String SHARE_EXTRA_APP = "app";
+        public final static String SHARE_EXTRA_REFERENCE_LIST = "reference_list";
+        public final static String SHARE_EXTRA_TOAST = "toast";
 
         public static final String RESULT = "result";
         public static final String RESULT_EXTRA = "result_extra";
 
-        public final static String SHARE_RESULT_LIST_NOTFOUND = "share_result_list_notfound";
-        public final static String SHARE_RESULT_LIST_DUPLICATE = "share_result_list_duplicate";
-        public final static String SHARE_RESULT_LIST_SELECTED = "share_result_list_selected";
+        public final static String SHARE_RESULT_LIST_NOT_FOUND = "not_found";
+        public final static String SHARE_RESULT_LIST_DUPLICATE = "duplicate";
+        public final static String SHARE_RESULT_LIST_SELECTED = "selected";
     }
 
     public class UI {

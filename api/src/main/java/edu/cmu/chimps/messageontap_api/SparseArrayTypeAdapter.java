@@ -17,6 +17,7 @@ import java.lang.reflect.Type;
  * @author Dario Marcato
  * @author Adam Yi
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
 
     private final Gson gson = new Gson();
@@ -54,16 +55,19 @@ public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
             return null;
         }
         SparseArray<Object> temp = gson.fromJson(jsonReader, typeOfSparseArrayOfObject);
-        SparseArray<T> result = new SparseArray<T>(temp.size());
+        SparseArray<T> result = new SparseArray<>(temp.size());
         int key;
         JsonElement tElement;
         for (int i = 0; i < temp.size(); i++) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
-            if (this.type == null)
+            if (this.type == null) {
+                assert classOfT != null;
                 result.put(key, gson.fromJson(tElement, classOfT));
-            else
+            } else {
+                //noinspection unchecked
                 result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), type));
+            }
         }
         return result;
     }

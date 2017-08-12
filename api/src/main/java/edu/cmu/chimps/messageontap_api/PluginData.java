@@ -196,7 +196,6 @@ public class PluginData implements Parcelable {
         throw new UnsupportedOperationException();
     }
 
-    public void clean() {
-        //TODO: length limit
-    }
+    //public void clean() {
+    //}
 }

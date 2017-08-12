@@ -24,7 +24,7 @@ import android.text.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class TaskData implements Parcelable {
     private static final String KEY_SID = "flow_id";
     private static final String KEY_TID = "sequence_id";
@@ -287,7 +287,6 @@ public class TaskData implements Parcelable {
         throw new UnsupportedOperationException();
     }
 
-    public void clean() {
-        //TODO: length limit
-    }
+    //public void clean() {
+    //}
 }

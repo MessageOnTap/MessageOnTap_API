@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class Tag {
 
     private String mName;
@@ -29,10 +30,8 @@ public class Tag {
     private Set<String> mRegularExpressions;
     private Integer usageCount;
 
-    // The following variable should be ignored by plugin developers
-    private String ENTITY_INTERNAL_KEY = "MessageOnTap_entity_INTERNAL_vimIsTheBestLOLbyAdamYi_hahaha";
-
     public Tag(String name, Set<String> regularExpressions) {
+        String ENTITY_INTERNAL_KEY = "MessageOnTap_entity_INTERNAL_vimIsTheBestLOLbyAdamYi_hahaha";
         this.mName = name;
         Boolean isCommonTag = false;
         String entity = null;
@@ -59,7 +58,7 @@ public class Tag {
         return mName;
     }
 
-    public void setRegularExpressions(Set regularExpressions) {
+    public void setRegularExpressions(Set<String> regularExpressions) {
         mRegularExpressions = regularExpressions;
     }
 
@@ -135,5 +134,9 @@ public class Tag {
 
     public void setPackageName(String packageName) {
         this.mPackageName = packageName;
+    }
+
+    public String toString() {
+        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_TAG);
     }
 }

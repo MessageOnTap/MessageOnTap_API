@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
-@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class ParseTree {
 
     public static final int NOT_EXIST = -1;
@@ -263,16 +263,14 @@ public class ParseTree {
     }
     // END Node Class
 
-    SparseArray<Node> mNodeList;
-    int mRootId;
-    public long[] time;
+    private SparseArray<Node> mNodeList;
+    private int mRootId;
 
     public Mood mood;
     public Direction direction;
 
     public ParseTree() {
         this.mNodeList = new SparseArray<>();
-        this.time = new long[2];
     }
 
     public ParseTree(ParseTree another) {
@@ -284,10 +282,6 @@ public class ParseTree {
             }
         }
         this.mRootId = another.mRootId;
-        if (another.time != null)
-            this.time = another.time.clone();
-        else
-            this.time = new long[2];
         this.mood = another.mood;
         this.direction = another.direction;
     }
@@ -295,6 +289,22 @@ public class ParseTree {
     public void setNodeById(int id, Node node) {
         node.setId(id);
         mNodeList.put(id, node);
+    }
+
+    public Node getNodeById(int id) {
+        return mNodeList.get(id);
+    }
+
+    public void setNodeByIndex(int index, Node node) {
+        mNodeList.setValueAt(index, node);
+    }
+
+    public Node getNodeByIndex(int index) {
+        return mNodeList.valueAt(index);
+    }
+
+    public int size() {
+        return mNodeList.size();
     }
 
     public void setNodeWordById(int id, String word) {
@@ -369,6 +379,7 @@ public class ParseTree {
      *               of a when set to false
      * @return boolean whether b is subordinate to a
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isSubordinate(Node a, Node b, Boolean nested) {
         int parentId = b.getParentId(),
                 aId = a.getId();
@@ -467,14 +478,6 @@ public class ParseTree {
                 return true;
         }
         return false;
-    }
-
-    public Node getNodeById(int id) {
-        return mNodeList.get(id);
-    }
-
-    public void setNodeById() {
-
     }
 
     /**
@@ -765,6 +768,10 @@ public class ParseTree {
         return ret;
     }
 
+    public String toJson() {
+        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_PARSE_TREE);
+    }
+
     public static ArrayList<ParseTree> split(ParseTree tree) {
         /*
         TODO: change this
@@ -780,7 +787,7 @@ public class ParseTree {
         return null;
     }
 
-    public void setNodeList(SparseArray nodeList) {
+    public void setNodeList(SparseArray<Node> nodeList) {
         mNodeList = nodeList;
     }
 

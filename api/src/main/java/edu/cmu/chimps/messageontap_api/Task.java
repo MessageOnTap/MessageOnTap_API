@@ -18,7 +18,7 @@ package edu.cmu.chimps.messageontap_api;
 
 import java.util.HashMap;
 
-@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class Task {
     public static final int STATUS_NOT_EXIST = -1;
     public static final int STATUS_RUNNING = 0;
@@ -48,12 +48,16 @@ public class Task {
     }
 
     public long getTimeStamp(int i) {
+        if (i < STATUS_NOT_EXIST || i > STATUS_FAILED)
+            throw new AssertionError("Wrong status to be used to get timestamp");
         if (i == -1)
             i = status;
         return timestamp[i];
     }
 
     public void updateStatus(int i) {
+        if (i < STATUS_NOT_EXIST || i > STATUS_FAILED)
+            throw new AssertionError("Wrong status to be set for task");
         if (status == i)
             return;
         status = i;

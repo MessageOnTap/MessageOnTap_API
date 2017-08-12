@@ -30,7 +30,7 @@ import org.json.JSONException;
 
 import java.util.HashMap;
 
-@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
+@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue", "UnusedReturnValue"})
 public abstract class MessageOnTapPlugin extends Service {
 
     private static final String TAG = "Plugin_API";
@@ -43,7 +43,7 @@ public abstract class MessageOnTapPlugin extends Service {
         /**
          * This is called when a task is received.
          * @param data The data of the task
-         * @throws RemoteException
+         * @throws RemoteException when AIDL goes wrong
          */
         @Override
         public void onTaskReceived(TaskData data) throws RemoteException {
@@ -117,7 +117,7 @@ public abstract class MessageOnTapPlugin extends Service {
         /**
          * This is called when PMS asks the plugin for PluginData.
          * @return the PluginData to be sent to PMS.
-         * @throws RemoteException
+         * @throws RemoteException when AIDL goes wrong
          */
         @Override
         public PluginData getPluginData() throws RemoteException {
@@ -127,7 +127,7 @@ public abstract class MessageOnTapPlugin extends Service {
         /**
          * This is called when PMS asks to register itself.
          * @param manager the PluginManager of PMS
-         * @throws RemoteException
+         * @throws RemoteException when AIDL goes wrong
          */
         @Override
         public void registerManager(IPluginManager manager) throws RemoteException {
@@ -146,7 +146,7 @@ public abstract class MessageOnTapPlugin extends Service {
         /**
          * This is called when PMS asks to unregister itself.
          * @param manager the PluginManager of PMS
-         * @throws RemoteException
+         * @throws RemoteException when AIDL goes wrong
          */
         @Override
         public void unregisterManager(IPluginManager manager) throws RemoteException {
@@ -166,21 +166,7 @@ public abstract class MessageOnTapPlugin extends Service {
             }*/
         }
 
-        public boolean onTransact(int code, android.os.Parcel data, android.os.Parcel reply, int flags) throws RemoteException {
-            return super.onTransact(code, data, reply, flags);
-
-        }
     };
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     @Nullable
     @Override

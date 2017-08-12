@@ -43,7 +43,7 @@ import java.util.Set;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class JSONUtils {
-    
+
     public final static String TYPE_TRIGGER = "trigger";
     public final static String TYPE_TAG = "tag";
     public final static String TYPE_NODE = "node";
@@ -87,11 +87,11 @@ public class JSONUtils {
                     }
                 })
                 .registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
-                    @Override
                     /**
                      * Deserialize a parse tree JSON to ParseTree class object.
-                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
+                    @Override
                     public ParseTree deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject treeObj = json.getAsJsonObject();
                         Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
@@ -108,11 +108,11 @@ public class JSONUtils {
                         return tree;
                     }
                 }).registerTypeAdapter(Tag.class, new JsonDeserializer<Tag>() {
-                    @Override
                     /**
                      * Deserialize a tag JSON to Tag class object.
-                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
+                    @Override
                     public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject tagObj = json.getAsJsonObject();
                         Gson gson = new Gson();
@@ -122,11 +122,11 @@ public class JSONUtils {
                         return tag;
                     }
                 }).registerTypeAdapter(Trigger.class, new JsonDeserializer<Trigger>() {
-                    @Override
                     /**
                      * Deserialize a trigger JSON to Trigger class object.
-                     * @author: Adam Yi &lt;xuan@yiad.am&gt;
+                     * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
+                    @Override
                     public Trigger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject triggerObj = json.getAsJsonObject();
                         Gson gson = new Gson();
@@ -141,7 +141,7 @@ public class JSONUtils {
     }
 
     /**
-     * Convert a hashmap to a JSON string
+     * Convert a hash map to a JSON string
      *
      * @param map the hash map
      * @return the JSON string
@@ -155,7 +155,7 @@ public class JSONUtils {
      *
      * @param json the JSONObject
      * @return the HashMap converted
-     * @throws JSONException
+     * @throws JSONException when json is wrong
      */
     public static HashMap<String, Object> jsonToMap(JSONObject json) throws JSONException {
         HashMap<String, Object> retMap = new HashMap<>();
@@ -171,7 +171,7 @@ public class JSONUtils {
      *
      * @param text the JSON string
      * @return the HashMap converted
-     * @throws JSONException
+     * @throws JSONException when json is wrong
      */
     public static HashMap<String, Object> toMap(String text) throws JSONException {
         if (TextUtils.isEmpty(text))
@@ -185,7 +185,7 @@ public class JSONUtils {
      *
      * @param object the JSON Object
      * @return the HashMap converted
-     * @throws JSONException
+     * @throws JSONException when json is wrong
      */
     public static HashMap<String, Object> toMap(JSONObject object) throws JSONException {
         HashMap<String, Object> map = new HashMap<>();
@@ -210,7 +210,7 @@ public class JSONUtils {
      *
      * @param array the JSON Array
      * @return the List converted
-     * @throws JSONException
+     * @throws JSONException when json is wrong
      */
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<>();

@@ -33,13 +33,13 @@ import java.util.Set;
  * <p>
  * + Set<String> optionalTags
  * <p>
- * + Set<Constraint> contraints
+ * + Set<Constraint> constraints
  * <p>
  * + int mood
  * <p>
  * + int direction
  */
-@SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
+@SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class Trigger {
 
     public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORDINATION}
@@ -151,6 +151,11 @@ public class Trigger {
         return mPackageName;
     }
 
+    /**
+     * Set the packageName the trigger belongs to (this should only be called by PMS, but never by plugins)
+     *
+     * @param packageName the packageName to be set
+     */
     public void setPackageName(String packageName) {
         mPackageName = packageName;
     }
@@ -163,12 +168,8 @@ public class Trigger {
         this.mName = name;
     }
 
-    public String getJson() {
+    public String toString() {
         return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_TRIGGER);
-    }
-
-    public String getTypeKey() {
-        return JSONUtils.TYPE_TRIGGER;
     }
 
     /**
@@ -182,62 +183,58 @@ public class Trigger {
         // 2. Tag Relation
         // 3. Mood? Direction?
 
-        //Direction Judge
+        //Direction Check
         //Incoming or Outgoing?
         if (mDirection != ParseTree.Direction.UNKNOWN) {
-            if (parseTree.direction != mDirection) {
+            if (parseTree.direction != mDirection)
                 return false;
-            }
         }
 
-        //Mood Judge
+        //Mood Check
         //IMPERATIVE, INTERROGATIVE
         if (mMood != ParseTree.Mood.UNKNOWN) {
-            if (parseTree.mood != mMood) {
+            if (parseTree.mood != mMood)
                 return false;
-            }
         }
 
-        //Tag Judge Contains
+        //Tags Check
 
         //Add Tags from ParseTree
+
         HashMap<Object, Integer> tagNames = new HashMap<>();
-        for (int i = 0; i < parseTree.mNodeList.size(); i++) {
-            if (!parseTree.getNodeById(i).getTagList().isEmpty()) {
-                for (Object t : parseTree.mNodeList.get(i).getTagList()) {
+        for (int i = parseTree.size() - 1; i > -1; i--) {
+            Set tagList = parseTree.getNodeByIndex(i).getTagList();
+            if (tagList != null) {
+                for (Object t : tagList)
                     tagNames.put(t, i);
-                }
             }
         }
 
-        if (!mMandatoryTags.isEmpty()) {
-            if (!tagNames.keySet().containsAll(mMandatoryTags)) {
-                return false;
-            }
+        if (!tagNames.keySet().containsAll(mMandatoryTags)) {
+            return false;
         }
 
         //A -> B
-        if (!mConstraints.isEmpty()) {
-            for (Constraint c : mConstraints) {
-                String tagA = c.tagA_name;
-                String tagB = c.tagB_name;
-                Relation relation = c.relation;
-                ParseTree.Node nodeA = parseTree.mNodeList.get(tagNames.get(tagA));
-                ParseTree.Node nodeB = parseTree.mNodeList.get(tagNames.get(tagB));
-                if (relation == Relation.CONCATENATION) {
-                    if (!parseTree.isConcatenation(nodeA, nodeB)) {
-                        return false;
-                    }
-                } else if (relation == Relation.DIRECT_SUBORDINATION) { // A is B's direct father
-                    if (!parseTree.isSubordinate(nodeA, nodeB, false)) {
-                        return false;
-                    }
-                } else if (relation == Relation.NESTED_SUBORDINATION) { // A is B's ancestor
-                    if (!parseTree.isSubordinate(nodeA, nodeB, true)) {
-                        return false;
-                    }
-                }
+        for (Constraint c : mConstraints) {
+            String tagA = c.tagA_name;
+            String tagB = c.tagB_name;
+            Relation relation = c.relation;
+            ParseTree.Node nodeA = parseTree.getNodeByIndex(tagNames.get(tagA));
+            ParseTree.Node nodeB = parseTree.getNodeByIndex(tagNames.get(tagB));
+            Boolean match = false;
+            switch (relation) {
+                case CONCATENATION:
+                    match = parseTree.isConcatenation(nodeA, nodeB);
+                    break;
+                case DIRECT_SUBORDINATION: // A is B's direct father
+                    match = parseTree.isSubordinate(nodeA, nodeB, false);
+                    break;
+                case NESTED_SUBORDINATION: // A is B's ancestor
+                    match = parseTree.isSubordinate(nodeA, nodeB, true);
+                    break;
             }
+            if (!match)
+                return false;
         }
 
         return true;
@@ -259,9 +256,13 @@ public class Trigger {
         this.mOptionalTags = optionalTags;
     }
 
+    /**
+     * Get a set of all (mandatory + optional) tags of the trigger
+     *
+     * @return the set of all tags
+     */
     public Set<Object> getAllTags() {
         Set<Object> result = new HashSet<>();
-        result.clear();
         result.addAll(mMandatoryTags);
         result.addAll(mOptionalTags);
         return result;

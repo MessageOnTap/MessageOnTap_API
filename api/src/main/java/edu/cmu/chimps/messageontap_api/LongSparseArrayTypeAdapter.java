@@ -1,7 +1,6 @@
 package edu.cmu.chimps.messageontap_api;
 
 
-
 import android.util.LongSparseArray;
 
 import com.google.gson.Gson;
@@ -19,6 +18,7 @@ import java.lang.reflect.Type;
  * @author Dario Marcato
  * @author Adam Yi
  */
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T>> {
 
     private final Gson gson = new Gson();
@@ -56,16 +56,19 @@ public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T
             return null;
         }
         LongSparseArray<Object> temp = gson.fromJson(jsonReader, typeOfLongSparseArrayOfObject);
-        LongSparseArray<T> result = new LongSparseArray<T>(temp.size());
+        LongSparseArray<T> result = new LongSparseArray<>(temp.size());
         long key;
         JsonElement tElement;
         for (int i = 0; i < temp.size(); i++) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
-            if (this.type == null)
+            if (this.type == null) {
+                assert classOfT != null;
                 result.put(key, gson.fromJson(tElement, classOfT));
-            else
+            } else {
+                //noinspection unchecked
                 result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), type));
+            }
         }
         return result;
     }
