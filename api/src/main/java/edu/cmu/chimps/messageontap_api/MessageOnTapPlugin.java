@@ -245,6 +245,7 @@ public abstract class MessageOnTapPlugin extends Service {
      */
     protected void createSession() {
         sendData(new TaskData()
+                        .sid(-100)
                         .type(MethodConstants.PMS_TYPE)
                         .method(MethodConstants.PMS_METHOD_NEW_SESSION)
                         .content("{}"),
@@ -263,7 +264,7 @@ public abstract class MessageOnTapPlugin extends Service {
     protected long createTask(long sid, String type, String method, HashMap<String, Object> params) {
         Session session = sessionList.get(sid);
         String json = JSONUtils.hashMapToString(params);
-        TaskData data = new TaskData().content(json).type(type).method(method);
+        TaskData data = new TaskData().sid(sid).content(json).type(type).method(method);
         Task task = new Task(data);
         task = session.newTask(task);
         sendData(task.getTaskData(), "task creation request");
