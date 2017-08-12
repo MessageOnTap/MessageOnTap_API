@@ -52,6 +52,9 @@ public class MethodConstants {
     public static final String UI_METHOD_SHOW_BUBBLE = "show_bubble";
     public static final String UI_METHOD_SHOW_DRAWER = "show_drawer";
     public static final String UI_METHOD_LOAD_WEBVIEW = "load_webview";
+    public static final String UI_METHOD_DELETE_BUBBLES = "delete_bubbles";
+    public static final String UI_METHOD_UPDATE_BUBBLES = "update_bubbles";
+
 
     /**
      * methods of action tasks
