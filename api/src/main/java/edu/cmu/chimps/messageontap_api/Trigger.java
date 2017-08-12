@@ -44,7 +44,7 @@ public class Trigger {
 
     public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORDINATION}
 
-    public class Constraint {
+    public static class Constraint {
         private String tagA_name = "";
         private String tagB_name = "";
         private Relation relation = Relation.UNKNOWN;
