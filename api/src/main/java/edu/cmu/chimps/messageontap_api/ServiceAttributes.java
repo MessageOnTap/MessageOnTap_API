@@ -185,6 +185,8 @@ public class ServiceAttributes {
         public final static String BUBBLE_SECOND_LINE = "second_line";
         public final static String ICON_TYPE_STRING = "icon_type";
         public final static String STATUS = "bubble_status";
+        public final static String HTML_STRING = "html_string";
+
         //TODO
     }
 }
