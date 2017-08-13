@@ -1,4 +1,12 @@
-### 0.3.2 (latest)
+### 0.3.3 (latest)
+#### August 13, 2017
+
+**Release Notes:**
+1. Bugs fixed;
+2. Constants updated;
+3. Dependencies upgraded.
+
+### 0.3.2
 #### August 11, 2017
 
 **Release Notes:**
