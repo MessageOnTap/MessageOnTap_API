@@ -142,15 +142,17 @@ public class ServiceAttributes {
         public final static String ALARM_EXTRA_MINUTE = "minute";
         public final static String ALARM_EXTRA_LABEL = "label";
 
-        public final static String PHONE_EXTRA_TEL = "phone_extra_tel";
+        public final static String CONTACT_EXTRA_NAME = "name";
+        public final static String CONTACT_EXTRA_PHONE = "phone";
+        public final static String CONTACT_EXTRA_EMAIL = "email";
 
-        public final static String ACTION_CALENDAR_SEARCH = "action_calendar_search";
+        public final static String PHONE_EXTRA_TEL = "phone_extra_tel";
 
         public final static String CAL_EXTRA_TITLE = "title";
         public final static String CAL_EXTRA_NOTE = "note";
         public final static String CAL_EXTRA_TIME_START = "time_start";
         public final static String CAL_EXTRA_TIME_END = "time_end";
-        public final static String CAL_EXTRA_IS_ALLDAY = "allday";
+        public final static String CAL_EXTRA_IS_ALL_DAY = "all_day";
         public final static String CAL_EXTRA_LOCATION = "location";
         public final static String CAL_EXTRA_INVITEE = "invitee";
 
@@ -168,11 +170,18 @@ public class ServiceAttributes {
         public final static String SET_TEXT_EXTRA_IS_REPLACED = "is_replaced";
 
         public final static String SHARE_EXTRA_MESSAGE = "message";
+        public final static String SHARE_EXTRA_MESSAGE_TYPE = "type";
         public final static String SHARE_EXTRA_APP = "app";
         public final static String SHARE_EXTRA_REFERENCE_LIST = "reference_list";
         public final static String SHARE_EXTRA_TOAST = "toast";
+        public final static String SHARE_EXTRA_MESSAGE_TYPE_TEXT = "text";
+        public final static String SHARE_EXTRA_MESSAGE_TYPE_IMAGE = "image";
+        public final static String SHARE_EXTRA_MESSAGE_TYPE_DOCUMENT = "document";
 
-        public static final String RESULT = "result";
+        public static final String RESULT_STATUS = "result_status";
+        public static final int RESULT_STATUS_MISSING_MANDATORY_DATA = 0;
+        public static final int RESULT_STATUS_PERFORMED = 1;
+        public static final int RESULT_STATUS_FAILED = 2;
         public static final String RESULT_EXTRA = "result_extra";
 
         public final static String SHARE_RESULT_LIST_NOT_FOUND = "not_found";

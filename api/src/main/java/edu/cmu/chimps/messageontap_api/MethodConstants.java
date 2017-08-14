@@ -60,6 +60,7 @@ public class MethodConstants {
      * methods of action tasks
      */
     public final static String ACTION_METHOD_ALARM_NEW = "alarm_new";
+    public final static String ACTION_METHOD_CONTACT_NEW = "contact_new";
     public final static String ACTION_METHOD_PHONE_CALL = "phone_call";
     public final static String ACTION_METHOD_CALENDAR_NEW = "calendar_new";
     public final static String ACTION_METHOD_CALENDAR_SEARCH = "calendar_search";
