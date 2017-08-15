@@ -4,6 +4,8 @@
 **Release Notes:**
 1. Utils updated;
 2. Constants (for action shortcuts) updated;
+3. Naming of JSON parameters fixed.
+
 ----------
 
 ### 0.3.3
@@ -13,6 +15,7 @@
 1. Bugs fixed;
 2. Constants updated;
 3. Dependencies upgraded.
+
 ----------
 
 ### 0.3.2

@@ -5,7 +5,7 @@ IPC (Interprocess Communication) library powering plugins for MessageOnTap, a de
 
 **Change Log**
 
-The newest version of MessageOnTap API is <u>0.3.3</u>, release date of which is <u>August 13, 2017</u>.
+The newest version of MessageOnTap API is <u>0.3.4</u>, release date of which is <u>August 15, 2017</u>.
 
 [Click here](CHANGELOG.md) to see full change log history.
 
