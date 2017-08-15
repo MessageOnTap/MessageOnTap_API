@@ -1,10 +1,19 @@
-### 0.3.3 (latest)
+### 0.3.4 (latest)
+#### August 15, 2017
+
+**Release Notes:**
+1. Utils updated;
+2. Constants (for action shortcuts) updated;
+----------
+
+### 0.3.3
 #### August 13, 2017
 
 **Release Notes:**
 1. Bugs fixed;
 2. Constants updated;
 3. Dependencies upgraded.
+----------
 
 ### 0.3.2
 #### August 11, 2017
