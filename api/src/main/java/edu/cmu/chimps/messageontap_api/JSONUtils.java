@@ -325,11 +325,11 @@ public class JSONUtils {
     }
 
     public static String singleIntegerToSimpleJSON(String name, int value) {
-        return "{\"" + name + "\":" + Integer.toString(value) + "}";
+        return "{\"" + name.replaceAll("\"", "\\\"") + "\":" + Integer.toString(value) + "}";
     }
 
     public static String singleStringToSimpleJSON(String name, String value) {
-        return "{\"" + name + "\":\"" + value.replaceAll("\"", "\\\"") + "\"}";
+        return "{\"" + name.replaceAll("\"", "\\\"") + "\":\"" + value.replaceAll("\"", "\\\"") + "\"}";
     }
 
     public static HashMap<String, Object> refactorHashMap(HashMap<String, Object> mMap) {
