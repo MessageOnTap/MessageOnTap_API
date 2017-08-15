@@ -26,8 +26,8 @@ import org.json.JSONObject;
 
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class TaskData implements Parcelable {
-    private static final String KEY_SID = "flow_id";
-    private static final String KEY_TID = "sequence_id";
+    private static final String KEY_SID = "sid";
+    private static final String KEY_TID = "tid";
     private static final String KEY_CONTENT = "content";
     private static final String KEY_TYPE = "type";
     private static final String KEY_METHOD = "method";
