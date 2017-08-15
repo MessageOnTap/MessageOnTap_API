@@ -324,6 +324,14 @@ public class JSONUtils {
         return gson.fromJson(json, type);
     }
 
+    public static String singleIntegerToSimpleJSON(String name, int value) {
+        return "{\"" + name + "\":" + Integer.toString(value) + "}";
+    }
+
+    public static String singleStringToSimpleJSON(String name, String value) {
+        return "{\"" + name + "\":\"" + value.replaceAll("\"", "\\\"") + "\"}";
+    }
+
     public static HashMap<String, Object> refactorHashMap(HashMap<String, Object> mMap) {
         return refactorHashMap(mMap, 0);
     }
