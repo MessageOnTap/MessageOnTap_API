@@ -202,7 +202,7 @@ public class Trigger {
         //Add Tags from ParseTree
 
         HashMap<Object, Integer> tagNames = new HashMap<>();
-        for (int i = parseTree.size() - 1; i > -1; i--) {
+        for (int i = parseTree.size() - 1; i > -1; --i) {
             Set tagList = parseTree.getNodeByIndex(i).getTagList();
             if (tagList != null) {
                 for (Object t : tagList)

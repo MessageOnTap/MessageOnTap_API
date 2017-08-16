@@ -205,7 +205,7 @@ public abstract class MessageOnTapPlugin extends Service {
 
         String errMsg = null;
         boolean fail = true;
-        for (int i = tryNum; (i > 0) && fail; i--) {
+        for (int i = tryNum; (i > 0) && fail; --i) {
             try {
                 mManager.sendResponse(taskData);
                 fail = false;

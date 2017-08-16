@@ -276,7 +276,7 @@ public class ParseTree {
     public ParseTree(ParseTree another) {
         this.mNodeList = new SparseArray<>();
         if (another.mNodeList != null) {
-            for (int i = 0; i < another.mNodeList.size(); i++) {
+            for (int i = another.mNodeList.size() - 1; i > -1; --i) {
                 mNodeList.put(another.mNodeList.keyAt(i),
                         new Node(another.mNodeList.valueAt(i)));
             }
@@ -400,7 +400,7 @@ public class ParseTree {
      * Analyze the tree and detect its mood.
      */
     public void moodDetection() {
-        for (int i = 0; i < mNodeList.size(); i++) {
+        for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             if (TextUtils.equals(node.getType(), DEP_PUNCTUATION)
                     && TextUtils.equals(node.getWord(), "?")) {
@@ -607,7 +607,7 @@ public class ParseTree {
      * Mark all nodes untagged or without trigger tags as to be deleted
      */
     private void preReduce(Trigger matchedTrigger) {
-        for (int i = mNodeList.size() - 1; i > -1; i--) {
+        for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             Set<Object> tagList = node.getTagList();
             tagList.retainAll(matchedTrigger.getAllTags());
@@ -690,7 +690,7 @@ public class ParseTree {
 
     private void removeFlagDelete() {
         ArrayList<Integer> deleteFlagNodes = new ArrayList<>();
-        for (int i = mNodeList.size() - 1; i > -1; i--) {
+        for (int i = mNodeList.size() - 1; i > -1; --i) {
             if (mNodeList.valueAt(i).getFlag() == Flag.DELETE) {
                 mNodeList.removeAt(i);
             }
@@ -732,9 +732,9 @@ public class ParseTree {
      *                Add Tag to Every Tree Node
      */
     public void addTag(LongSparseArray<Tag> tagList) {
-        for (int i = mNodeList.size() - 1; i > -1; i--) {
+        for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
-            for (int j = tagList.size() - 1; j > -1; j--) {
+            for (int j = tagList.size() - 1; j > -1; --j) {
                 Tag tag = tagList.valueAt(j);
                 if (tag.matchWord(node.getWord(), node.getEntity()))
                     node.addTag(tagList.keyAt(j));

@@ -214,7 +214,7 @@ public class JSONUtils {
      */
     public static List<Object> toList(JSONArray array) throws JSONException {
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < array.length(); i++) {
+        for (int i = 0, len = array.length(); i < len; ++i) {
             Object value = array.get(i);
             if (value instanceof JSONArray) {
                 value = toList((JSONArray) value);

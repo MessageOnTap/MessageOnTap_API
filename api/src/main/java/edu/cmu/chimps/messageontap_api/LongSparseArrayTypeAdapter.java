@@ -59,7 +59,7 @@ public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T
         LongSparseArray<T> result = new LongSparseArray<>(temp.size());
         long key;
         JsonElement tElement;
-        for (int i = 0; i < temp.size(); i++) {
+        for (int i = 0, size = temp.size(); i < size; ++i) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
             if (this.type == null) {

@@ -58,7 +58,7 @@ public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
         SparseArray<T> result = new SparseArray<>(temp.size());
         int key;
         JsonElement tElement;
-        for (int i = 0; i < temp.size(); i++) {
+        for (int i = 0, size = temp.size(); i < size; ++i) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
             if (this.type == null) {
