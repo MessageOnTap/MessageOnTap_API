@@ -18,7 +18,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url 'http://www.idescout.com/maven/repo/' }
+        //maven { url 'http://www.idescout.com/maven/repo/' }
+        maven {
+            url "https://maven.google.com"
+        }
         maven {
             url 'https://jitpack.io'
             credentials { username '2187bd0393c236c0d58fbf94fecff2a8d1c3c50b' }
@@ -43,9 +46,6 @@ allprojects {
                 username = "${yiadam_jfrog_username}"
                 password = "${yiadam_jfrog_password}"
             }
-        }
-        maven {
-            url "https://maven.google.com"
         }
     }
 }
