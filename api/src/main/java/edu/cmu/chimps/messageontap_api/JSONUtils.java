@@ -107,36 +107,36 @@ public class JSONUtils {
                         tree.setNodeList(nodeList);
                         return tree;
                     }
-                }).registerTypeAdapter(Tag.class, new JsonDeserializer<Tag>() {
+                }).registerTypeAdapter(InternalTag.class, new JsonDeserializer<InternalTag>() {
                     /**
-                     * Deserialize a tag JSON to Tag class object.
+                     * Deserialize a tag JSON to InternalTag class object.
                      * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
                     @Override
-                    public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    public InternalTag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject tagObj = json.getAsJsonObject();
                         Gson gson = new Gson();
-                        Tag tag = gson.fromJson(json, Tag.class);
-                        tag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
+                        InternalTag internalTag = gson.fromJson(json, InternalTag.class);
+                        internalTag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
                         }.getType()));
-                        return tag;
+                        return internalTag;
                     }
-                }).registerTypeAdapter(Trigger.class, new JsonDeserializer<Trigger>() {
+                }).registerTypeAdapter(SemanticTemplate.class, new JsonDeserializer<SemanticTemplate>() {
                     /**
-                     * Deserialize a trigger JSON to Trigger class object.
+                     * Deserialize a trigger JSON to SemanticTemplate class object.
                      * @author Adam Yi &lt;xuan@yiad.am&gt;
                      */
                     @Override
-                    public Trigger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    public SemanticTemplate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                         JsonObject triggerObj = json.getAsJsonObject();
                         Gson gson = new Gson();
-                        Trigger trigger = gson.fromJson(json, Trigger.class);
-                        trigger.setConstraints((HashSet) gson.fromJson(triggerObj.get("mConstraints"), new TypeToken<HashSet<Trigger.Constraint>>() {
+                        SemanticTemplate semanticTemplate = gson.fromJson(json, SemanticTemplate.class);
+                        semanticTemplate.setConstraints((HashSet) gson.fromJson(triggerObj.get("mConstraints"), new TypeToken<HashSet<SemanticTemplate.Constraint>>() {
                         }.getType()));
-                        return trigger;
+                        return semanticTemplate;
                     }
-                }).registerTypeAdapter(new TypeToken<LongSparseArray<Tag>>() {
-                }.getType(), new LongSparseArrayTypeAdapter<Tag>(TYPE_TAG))
+                }).registerTypeAdapter(new TypeToken<LongSparseArray<InternalTag>>() {
+                }.getType(), new LongSparseArrayTypeAdapter<InternalTag>(TYPE_TAG))
                 .create();
     }
 
@@ -238,11 +238,11 @@ public class JSONUtils {
         Type type;
         switch (typeKey) {
             case TYPE_TAG:
-                type = new TypeToken<Tag>() {
+                type = new TypeToken<InternalTag>() {
                 }.getType();
                 break;
             case TYPE_TRIGGER:
-                type = new TypeToken<Trigger>() {
+                type = new TypeToken<SemanticTemplate>() {
                 }.getType();
                 break;
             case TYPE_NODE:
@@ -254,15 +254,15 @@ public class JSONUtils {
                 }.getType();
                 break;
             case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<Tag>>() {
+                type = new TypeToken<HashSet<InternalTag>>() {
                 }.getType();
                 break;
             case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<Tag>>() {
+                type = new TypeToken<LongSparseArray<InternalTag>>() {
                 }.getType();
                 break;
             case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<Trigger>>() {
+                type = new TypeToken<HashSet<SemanticTemplate>>() {
                 }.getType();
                 break;
             case TYPE_CARD_LIST:
@@ -287,11 +287,11 @@ public class JSONUtils {
         Type type;
         switch (typeKey) {
             case TYPE_TAG:
-                type = new TypeToken<Tag>() {
+                type = new TypeToken<InternalTag>() {
                 }.getType();
                 break;
             case TYPE_TRIGGER:
-                type = new TypeToken<Trigger>() {
+                type = new TypeToken<SemanticTemplate>() {
                 }.getType();
                 break;
             case TYPE_NODE:
@@ -303,15 +303,15 @@ public class JSONUtils {
                 }.getType();
                 break;
             case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<Tag>>() {
+                type = new TypeToken<HashSet<InternalTag>>() {
                 }.getType();
                 break;
             case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<Tag>>() {
+                type = new TypeToken<LongSparseArray<InternalTag>>() {
                 }.getType();
                 break;
             case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<Trigger>>() {
+                type = new TypeToken<HashSet<SemanticTemplate>>() {
                 }.getType();
                 break;
             case TYPE_CARD_LIST:

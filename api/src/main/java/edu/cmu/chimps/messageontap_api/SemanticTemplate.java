@@ -23,11 +23,11 @@ import java.util.Set;
 
 /*
  * This is the data type for plugins to set up their triggers at message perception
- * 1. Tag List
+ * 1. InternalTag List
  */
 
 /**
- * Trigger
+ * SemanticTemplate
  * <p>
  * + Set<String> mandatoryTags
  * <p>
@@ -40,7 +40,7 @@ import java.util.Set;
  * + int direction
  */
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
-public class Trigger {
+public class SemanticTemplate {
 
     public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORDINATION}
 
@@ -82,7 +82,7 @@ public class Trigger {
 
     private String mPackageName;
 
-    public Trigger() {
+    public SemanticTemplate() {
         mName = "";
         mMandatoryTags = new HashSet<>();
         mOptionalTags = new HashSet<>();
@@ -91,60 +91,16 @@ public class Trigger {
         mDirection = ParseTree.Direction.UNKNOWN;
     }
 
-    public Trigger(String name, Set<String> pluginMandatoryTags) {
+    public SemanticTemplate(String name, Set<Tag> pluginMandatoryTags) {
         this.mName = name;
         mMandatoryTags = new HashSet<>();
         mOptionalTags = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
+        //TODO
         if (pluginMandatoryTags != null) {
             mMandatoryTags.addAll(pluginMandatoryTags);
         }
-    }
-
-    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags) {
-        this.mName = name;
-        mMandatoryTags = new HashSet<>();
-        mOptionalTags = new HashSet<>();
-        mConstraints = new HashSet<>();
-        mMood = ParseTree.Mood.UNKNOWN;
-        mDirection = ParseTree.Direction.UNKNOWN;
-        if (pluginMandatoryTags != null) {
-            mMandatoryTags.addAll(pluginMandatoryTags);
-        }
-        if (pluginOptionalTags != null) {
-            mOptionalTags.addAll(pluginOptionalTags);
-        }
-    }
-
-    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints) {
-        this.mName = name;
-        mMandatoryTags = new HashSet<>();
-        mOptionalTags = new HashSet<>();
-        mConstraints = new HashSet<>();
-        mMood = ParseTree.Mood.UNKNOWN;
-        mDirection = ParseTree.Direction.UNKNOWN;
-        if (pluginMandatoryTags != null)
-            mMandatoryTags.addAll(pluginMandatoryTags);
-        if (pluginOptionalTags != null)
-            mOptionalTags.addAll(pluginOptionalTags);
-        this.mConstraints = constraints;
-    }
-
-    public Trigger(String name, Set<String> pluginMandatoryTags, Set<String> pluginOptionalTags, Set<Constraint> constraints
-            , ParseTree.Mood mood, ParseTree.Direction direction) {
-        this.mName = name;
-        mMandatoryTags = new HashSet<>();
-        mOptionalTags = new HashSet<>();
-        mConstraints = new HashSet<>();
-        if (pluginMandatoryTags != null)
-            mMandatoryTags.addAll(pluginMandatoryTags);
-        if (pluginOptionalTags != null)
-            mOptionalTags.addAll(pluginOptionalTags);
-        if (constraints != null)
-            this.mConstraints = constraints;
-        this.mMood = mood;
-        this.mDirection = direction;
     }
 
     public String getPackageName() {
@@ -179,8 +135,8 @@ public class Trigger {
      * @return boolean whether it matches or not
      */
     public boolean matchTrigger(ParseTree parseTree) {
-        // 1. Tag List
-        // 2. Tag Relation
+        // 1. InternalTag List
+        // 2. InternalTag Relation
         // 3. Mood? Direction?
 
         //Direction Check

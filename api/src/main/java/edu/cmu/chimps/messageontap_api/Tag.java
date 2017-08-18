@@ -16,38 +16,23 @@
 
 package edu.cmu.chimps.messageontap_api;
 
-import android.text.TextUtils;
-
 import java.util.Set;
-import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class Tag {
 
-    private String mName;
-    private String mEntityName;
-    private String mPackageName;
-    private Set<String> mRegularExpressions;
-    private Integer usageCount;
+    public enum Type {MANDATORY, OPTIONAL}
 
-    public Tag(String name, Set<String> regularExpressions) {
-        String ENTITY_INTERNAL_KEY = "MessageOnTap_entity_INTERNAL_vimIsTheBestLOLbyAdamYi_hahaha";
+    private String mName;
+    private Set<String> mRegularExpressions;
+    private Type mType;
+
+
+    public Tag(String name, Set<String> regularExpressions, Type type) {
+        //TODO: check if it is a preserved keyword (common tag) with re set. If so, throw exception.
         this.mName = name;
-        Boolean isCommonTag = false;
-        String entity = null;
-        if (regularExpressions.size() == 2) {
-            for (String re : regularExpressions) {
-                if (TextUtils.equals(re, ENTITY_INTERNAL_KEY))
-                    isCommonTag = true;
-                else
-                    entity = re;
-            }
-        }
-        if (isCommonTag && entity != null)
-            this.mEntityName = entity;
-        else
-            this.mRegularExpressions = regularExpressions;
-        this.usageCount = 0;
+        this.mRegularExpressions = regularExpressions;
+        this.mType = type;
     }
 
     public void setName(String name) {
@@ -66,77 +51,7 @@ public class Tag {
         return mRegularExpressions;
     }
 
-    public String getEntityName() {
-        return mEntityName;
-    }
-
-    /**
-     * Check whether this tag matches a word using regular expressions
-     *
-     * @param word the word to be checked
-     * @return boolean whether it matches
-     */
-    private boolean matchRE(String word) {
-        for (String str : mRegularExpressions) {
-            if (Pattern.matches(str, word))
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * Check whether this tag matches a word using entity recognition
-     *
-     * @param entity the entity to be checked
-     * @return boolean whether it matches
-     */
-    private boolean matchEntity(String entity) {
-        return TextUtils.equals(entity, getEntityName());
-    }
-
-    /**
-     * Check whether this tag matches a word
-     *
-     * @param word   the word to be checked
-     * @param entity the entity of the word to be checked
-     * @return boolean whether it matches
-     */
-    public boolean matchWord(String word, String entity) {
-        if (getRegularExpressions() != null)
-            if (matchRE(word))
-                return true;
-        if (getEntityName() != null)
-            if (getEntityName() != null && matchEntity(entity))
-                return true;
-
-        return false;
-    }
-
-    public void increaseUsageCount() {
-        usageCount++;
-    }
-
-    public void decreaseUsageCount() {
-        usageCount--;
-    }
-
-    public void resetUsageCount() {
-        usageCount = 0;
-    }
-
-    public Integer getUsageCount() {
-        return usageCount;
-    }
-
-    public String getPackageName() {
-        return mPackageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.mPackageName = packageName;
-    }
-
     public String toString() {
-        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_TAG);
+        return mName + " (" + mType + ')';
     }
 }

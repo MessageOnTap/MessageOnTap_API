@@ -598,19 +598,19 @@ public class ParseTree {
     /**
      * Reduce the tree to keep only essential data
      */
-    public void reduce(Trigger matchedTrigger) {
-        preReduce(matchedTrigger);
+    public void reduce(SemanticTemplate matchedSemanticTemplate) {
+        preReduce(matchedSemanticTemplate);
         doReduce();
     }
 
     /**
      * Mark all nodes untagged or without trigger tags as to be deleted
      */
-    private void preReduce(Trigger matchedTrigger) {
+    private void preReduce(SemanticTemplate matchedSemanticTemplate) {
         for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             Set<Object> tagList = node.getTagList();
-            tagList.retainAll(matchedTrigger.getAllTags());
+            tagList.retainAll(matchedSemanticTemplate.getAllTags());
             if (tagList.size() == 0)
                 node.setFlag(Flag.DELETE);
         }
@@ -729,14 +729,14 @@ public class ParseTree {
 
     /**
      * @param tagList : A list of tags which are candidates may add to a node
-     *                Add Tag to Every Tree Node
+     *                Add InternalTag to Every Tree Node
      */
-    public void addTag(LongSparseArray<Tag> tagList) {
+    public void addTag(LongSparseArray<InternalTag> tagList) {
         for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             for (int j = tagList.size() - 1; j > -1; --j) {
-                Tag tag = tagList.valueAt(j);
-                if (tag.matchWord(node.getWord(), node.getEntity()))
+                InternalTag internalTag = tagList.valueAt(j);
+                if (internalTag.matchWord(node.getWord(), node.getEntity()))
                     node.addTag(tagList.keyAt(j));
             }
         }
