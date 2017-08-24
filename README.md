@@ -17,8 +17,7 @@ Official plug-ins of MessageOnTap can be found here: [MessageOnTap_Plugins](http
 
 ## How to Develop a MessageOnTap Plug-In?
 ### How Plug-Ins Work?
-<!--![Workflow](images/chrysanthemum.jpeg)-->
-![Architecture](images/core_plugin_architecture.jpg)
+![Architecture](images/motsystem.png)
 
 In MessageOnTap development framework, while plugins are in charge of the logical flow (what to do after users receive certain messages), MessageOnTap-Core does the heavy lifting to offer message acquisition, message understanding, common action shortcuts, and personal graph operations.
 
