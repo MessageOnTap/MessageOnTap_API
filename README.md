@@ -1,38 +1,22 @@
 **This repo is not completed yet.**
 
-# MessageOnTap_API
-IPC (Interprocess Communication) library powering plugins for MessageOnTap, a development framework for personal-data-powered messaging assistants.
+# About MessageOnTap
+[MessageOnTap](https://github.com/MessageOnTap) is a development framework for personal-data-powered messaging assistants. MessageOnTap is designed for developers to implement intelligent plugins for instant messaging apps to extend their basic functionalities. MessageOnTap streamlines instant messaging experiences by eliminating costly and repetitive tasks raised in conversation. These tasks could be adding events to the calendar or looking up the flight booking number for a friend. By surfacing useful prompts and actions, MessageOnTap squeezes tasks which normally takes minutes to complete into just a few taps. The key idea of MessageOnTap is to capture user needs through the message semantics and connect the observed needs to users' personal data.
 
-**Change Log**
+Using the MessageOnTap framework, developers can create plugins for instant messaging apps such as Facebook Messenger, WhatsApp, WeChat, etc to extend basic messaging functionalities. Given easy access to both users instant messages and other types of personal data through MessageOnTap, MessageOnTap plugins can choose to either simply present a related piece of personal data for users to take a quick glimpse or offer users quick action shortcuts of functionalities if more user inputs are involved.
 
-The newest version of MessageOnTap API is <u>0.3.4</u>, release date of which is <u>August 15, 2017</u>.
+## MessageOnTap API 
+MessageOnTap API ([CHANGE LOG](CHANGELOG.md), lastest version: <u>0.3.4</u>) is an IPC ([Interprocess Communication](https://en.wikipedia.org/wiki/Inter-process_communication)) library for MessageOnTap-powered plugins to communicate to MessageOnTap Core. Some example IM plug-ins developed by MessageOnTap framework can be found [here](https://github.com/MessageOnTap/MessageOnTap_Plugins). 
 
-[Click here](CHANGELOG.md) to see full change log history.
-
-## About MessageOnTap
-[MessageOnTap](https://github.com/chentc/MessageOnTap) is a development framework for personal-data-powered messaging assistants.
-
-## Official Plug-Ins
-Official plug-ins of MessageOnTap can be found here: [MessageOnTap_Plugins](https://github.com/adamyi/MessageOnTap_Plugins).
-
-## How to Develop a MessageOnTap Plug-In?
-### How Plug-Ins Work?
+## Plugin-Core Communication Overview
 ![Architecture](images/motsystem.png)
 
 In MessageOnTap development framework, while plugins are in charge of the logical flow (what to do after users receive certain messages), MessageOnTap-Core does the heavy lifting to offer message acquisition, message understanding, common action shortcuts, and personal graph operations.
 
-When a plugin is enabled by the user, MessageOnTap-Core will ask plugins to set up custom tags to classify words in users' instant messages and triggers to set what kind of messages this plugin deals with. When user receives a message, MessageOnTap-core will analyze it and store it as a ParseTree with tags matched, and will then match all the triggers set by plugins.
+When a plugin is enabled by the user, MessageOnTap-Core will ask the plugin to set up a few [semantic templates](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Semantic-Templates) to specify what kind of messages this plugin deals with. When user receives a message, MessageOnTap-core will analyze it and store it as a ParseTree with tags matched, and will then match all the semantic templates set by plugins.
 
-![Loop of Session](images/session.jpg)
+If one registered semantic template matches an instant message, MessageOnTap-Core will initiate a new session with a tagged tree. A tagged tree represents a dependency tree with all essential linguistic components of a message. The tagged tree can serve as the basis for plugin to perform a series of following tasks over the communication:
 
-If one trigger is matched, MessageOnTap-Core will initiate a new session and send the ParseTree to the plugin, to which the trigger belongs. The default task is therefore created (Task ID = 0). When the plugin has done responding to that message, plugin has to send a response back to MessageOnTap-Core so that it can acknowledge the end of the default task, which also mean the end of the session. Besides the default task which is initiated by MessageOnTap-Core, plugins can initiate their own tasks as well (Task ID > 0) to inform MessageOnTap-Core to perform different things. When those requests are completed, a response packet will be sent back to the plugin from MessageOnTap-Core. Those tasks are classified to the following types:
-
-* **UI**, showing bubbles or HTML modals;
-* **Action**, performing all sorts of actions that need to call other applications, like sending an email;
-* **Graph**, queries and updates of the Personal Graph;
-* **PMS**, related to session management. These are automatically created by API. Developers can ignore this.
-
-### Web Development Portal
-*TBA...*
-### Development Document
-*TBA...*
+* **[UI](https://github.com/MessageOnTap/MessageOnTap_API/wiki/MessageOnTap-UI)**, to display bubbles or HTML detailed views;
+* **[Action](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Action-Shortcuts)**, to perform all sorts of action shortcuts of existing features or services on phone, like redirecting users to the default Gmail app to compose email;
+* **[Graph Operations](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Personal-Graph)**, to query (retrieve or update) a piece of personal knowledge graph.
