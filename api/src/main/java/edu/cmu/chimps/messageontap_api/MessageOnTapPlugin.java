@@ -26,9 +26,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue", "UnusedReturnValue"})
 public abstract class MessageOnTapPlugin extends Service {
@@ -36,7 +42,11 @@ public abstract class MessageOnTapPlugin extends Service {
     private static final String TAG = "Plugin_API";
 
     private IPluginManager mManager = null;
+    private String mManagerVersion = null;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
+
+    public static final List<String> RESERVED_KEYWORDS = Arrays.asList("phone", "address", "email", "location", "person", "event");
+
 
     private IBinder mBinder = new IPlugin.Stub() {
 
@@ -54,16 +64,16 @@ public abstract class MessageOnTapPlugin extends Service {
             String type = data.type();
             HashMap content;
             if (sid != -100) { // Eastern eggs are always fun. Aren't they?
-                if (TextUtils.equals(type, MethodConstants.PMS_TYPE)) {
+                if (TextUtils.equals(type, MethodConstants.PM_TYPE)) {
 
                     //Check whether it's a new session request
-                    if (tid == 0 && TextUtils.equals(data.method(), MethodConstants.PMS_METHOD_NEW_SESSION)) {
+                    if (tid == 0 && TextUtils.equals(data.method(), MethodConstants.PM_METHOD_NEW_SESSION)) {
 
                         // Try to parse data JSON content
                         try {
                             content = JSONUtils.toMap(data.content());
                         } catch (JSONException e) {
-                            Log.e(TAG, "Exception caught while parsing JSON sent by PMS (new session init):");
+                            Log.e(TAG, "Exception caught while parsing JSON sent by core - plugin manager (new session init):");
                             e.printStackTrace();
                             Session session = sessionList.get(sid);
                             session.failTask(tid);
@@ -81,7 +91,7 @@ public abstract class MessageOnTapPlugin extends Service {
                             session.failTask(tid);
                         }
                     } else // otherwise, deal with session control related packets
-                        handlePMSTask(tid, sid, data.method());
+                        handlePluginManagerTask(tid, sid, data.method());
 
                 } else {
 
@@ -89,7 +99,7 @@ public abstract class MessageOnTapPlugin extends Service {
                     try {
                         content = JSONUtils.toMap(data.content());
                     } catch (JSONException e) {
-                        Log.e(TAG, "Exception caught while parsing JSON sent by PMS (task response, see below for details)");
+                        Log.e(TAG, "Exception caught while parsing JSON sent by core - plugin manager (task response, see below for details)");
                         e.printStackTrace();
                         Session session = sessionList.get(sid);
                         session.failTask(tid);
@@ -120,25 +130,44 @@ public abstract class MessageOnTapPlugin extends Service {
          * @throws RemoteException when AIDL goes wrong
          */
         @Override
-        public PluginData getPluginData() throws RemoteException {
-            return iPluginData();
+        public String getSemanticTemplates() throws RemoteException {
+            Set<SemanticTemplate> templates = semanticTemplates();
+            Set<String> templateNames = new HashSet<>(RESERVED_KEYWORDS);
+            for (SemanticTemplate template : templates) {
+                if (templateNames.contains(template.name()))
+                    throw new UnsupportedOperationException("Duplicate semantic templates!");
+                Set<String> tagNames = new HashSet<>(RESERVED_KEYWORDS);
+                for (Tag tag : template.tags()) {
+                    if (tagNames.contains(tag.getName()))
+                        throw new UnsupportedOperationException("Duplicate or reserved tag!");
+                    tagNames.add(tag.getName());
+                }
+            }
+            return JSONUtils.simpleObjectToJson(templates, new TypeToken<HashSet<SemanticTemplate>>() {
+            }.getType());
+        }
+
+        @Override
+        public String getAPIVersion() throws RemoteException {
+            return ServiceAttributes.PM.API_VERSION;
         }
 
         /**
          * This is called when PMS asks to register itself.
          * @param manager the PluginManager of PMS
-         * @throws RemoteException when AIDL goes wrong
+         * @throws RemoteException when AJKIDL goes wrong
          */
         @Override
-        public void registerManager(IPluginManager manager) throws RemoteException {
+        public void registerManager(IPluginManager manager, String apiVersion) throws RemoteException {
             String packageName = null;
             String[] packages = getPackageManager().getPackagesForUid(Binder.getCallingUid());
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
-            Log.e(TAG, "registering manager " + packageName);
+            Log.e(TAG, "registering manager " + packageName + " with API version " + apiVersion);
 
             mManager = manager;
+            mManagerVersion = apiVersion;
             //plugins.put(packageName, listener);
             //mListenerList.register(listener);
         }
@@ -209,10 +238,10 @@ public abstract class MessageOnTapPlugin extends Service {
             try {
                 mManager.sendResponse(taskData);
                 fail = false;
-                Log.e(TAG, "Successfully sent " + humanReadableName + "to PMS");
+                Log.e(TAG, "Successfully sent " + humanReadableName + "to core - plugin manager");
             } catch (RemoteException e) {
                 if (errMsg == null) // just another optimization
-                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to PMS";
+                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to core - plugin manager";
                 if (i != 1)
                     Log.e(TAG, errMsg + ", retrying (see below for details).");
                 else
@@ -234,8 +263,8 @@ public abstract class MessageOnTapPlugin extends Service {
         session.updateTaskResponse(0);
         Task task = session.getTask(0);
         sendData(task.getTaskData()
-                        .type(MethodConstants.PMS_TYPE)
-                        .method(MethodConstants.PMS_METHOD_END_SESSION)
+                        .type(MethodConstants.PM_TYPE)
+                        .method(MethodConstants.PM_METHOD_END_SESSION)
                         .content("{}"),
                 "session end packet");
     }
@@ -246,10 +275,19 @@ public abstract class MessageOnTapPlugin extends Service {
     protected void createSession() {
         sendData(new TaskData()
                         .sid(-100)
-                        .type(MethodConstants.PMS_TYPE)
-                        .method(MethodConstants.PMS_METHOD_NEW_SESSION)
+                        .type(MethodConstants.PM_TYPE)
+                        .method(MethodConstants.PM_METHOD_NEW_SESSION)
                         .content("{}"),
                 "new session request");
+    }
+
+    /**
+     * Get the API version of Plugin Manager (MessageOnTap-Core)
+     *
+     * @return the API version of Plugin Manager (MessageOnTap-Core)
+     */
+    protected String getManagerVersion() {
+        return mManagerVersion;
     }
 
     /**
@@ -280,22 +318,22 @@ public abstract class MessageOnTapPlugin extends Service {
      * @param tid    ID of Task
      * @param method Method of PMS task
      */
-    protected void handlePMSTask(long sid, long tid, String method) {
-        Log.e(TAG, "In Handle PMS task");
+    protected void handlePluginManagerTask(long sid, long tid, String method) {
+        Log.e(TAG, "In Handle PM task");
         switch (method) {
-            case MethodConstants.PMS_METHOD_STATUS_QUERY:
+            case MethodConstants.PM_METHOD_STATUS_QUERY:
                 sendData(new TaskData()
                                 .sid(sid)
                                 .tid(tid)
-                                .type(MethodConstants.PMS_TYPE)
-                                .method(MethodConstants.PMS_METHOD_STATUS_REPLY)
+                                .type(MethodConstants.PM_TYPE)
+                                .method(MethodConstants.PM_METHOD_STATUS_REPLY)
                                 .content("{\"result\": "
                                         + sessionList.get(sid).getTaskStatus(tid)
                                         + "}")
                         , "status reply"
                         , 1);
                 break;
-            case MethodConstants.PMS_METHOD_RESPONSE_REFETCH:
+            case MethodConstants.PM_METHOD_RESPONSE_REFETCH:
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
                 if (task == null) {
@@ -308,11 +346,11 @@ public abstract class MessageOnTapPlugin extends Service {
                     }
                 }
                 break;
-            case MethodConstants.PMS_METHOD_NEW_SESSION:
+            case MethodConstants.PM_METHOD_NEW_SESSION:
                 Log.e(TAG, "Received new session request for non-zero task ID... Ignored");
                 break;
             default:
-                Log.e(TAG, "Unknown PMS task (" + method + ") received.");
+                Log.e(TAG, "Unknown PM task (" + method + ") received.");
         }
     }
 
@@ -323,7 +361,7 @@ public abstract class MessageOnTapPlugin extends Service {
      *
      * @return the PluginData of the plugin
      */
-    protected abstract PluginData iPluginData();
+    protected abstract Set<SemanticTemplate> semanticTemplates();
 
     /**
      * This should be overridden by plugin developers.

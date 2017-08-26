@@ -17,6 +17,8 @@
 package edu.cmu.chimps.messageontap_api;
 
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,37 +44,9 @@ import java.util.Set;
 @SuppressWarnings({"WeakerAccess", "unused", "SameParameterValue"})
 public class SemanticTemplate {
 
-    public enum Relation {UNKNOWN, CONCATENATION, DIRECT_SUBORDINATION, NESTED_SUBORDINATION}
-
-    public static class Constraint {
-        private String tagA_name = "";
-        private String tagB_name = "";
-        private Relation relation = Relation.UNKNOWN;
-
-        public Constraint(String tagA_name, String tagB_name, Relation relation) {
-            this.tagA_name = tagA_name;
-            this.tagB_name = tagB_name;
-            this.relation = relation;
-        }
-
-        public String getTagA() {
-            return tagA_name;
-        }
-
-        public String getTagB() {
-            return tagB_name;
-        }
-
-        public Relation getRelation() {
-            return relation;
-        }
-    }
-
     private String mName = "null";
 
-    private Set<Object> mMandatoryTags = new HashSet<>();
-
-    private Set<Object> mOptionalTags = new HashSet<>();
+    private Set<Tag> mTags = new HashSet<>();
 
     private Set<Constraint> mConstraints = new HashSet<>();
 
@@ -80,52 +54,61 @@ public class SemanticTemplate {
 
     private ParseTree.Direction mDirection = ParseTree.Direction.UNKNOWN;
 
-    private String mPackageName;
-
     public SemanticTemplate() {
         mName = "";
-        mMandatoryTags = new HashSet<>();
-        mOptionalTags = new HashSet<>();
+        mTags = new HashSet<>();
         mConstraints = new HashSet<>();
         mMood = ParseTree.Mood.UNKNOWN;
         mDirection = ParseTree.Direction.UNKNOWN;
     }
 
-    public SemanticTemplate(String name, Set<Tag> pluginMandatoryTags) {
-        this.mName = name;
-        mMandatoryTags = new HashSet<>();
-        mOptionalTags = new HashSet<>();
-        mMood = ParseTree.Mood.UNKNOWN;
-        mDirection = ParseTree.Direction.UNKNOWN;
-        //TODO
-        if (pluginMandatoryTags != null) {
-            mMandatoryTags.addAll(pluginMandatoryTags);
-        }
-    }
-
-    public String getPackageName() {
-        return mPackageName;
-    }
-
-    /**
-     * Set the packageName the trigger belongs to (this should only be called by PMS, but never by plugins)
-     *
-     * @param packageName the packageName to be set
-     */
-    public void setPackageName(String packageName) {
-        mPackageName = packageName;
-    }
-
-    public String getName() {
+    public String name() {
         return mName;
     }
 
-    public void setName(String name) {
-        this.mName = name;
+    public SemanticTemplate name(String name) {
+        mName = name;
+        return this;
+    }
+
+    public Set<Tag> tags() {
+        return mTags;
+    }
+
+    public SemanticTemplate tags(Set tags) {
+        mTags = tags;
+        return this;
+    }
+
+    public Set<Constraint> constraints() {
+        return mConstraints;
+    }
+
+    public SemanticTemplate constraints(Set constraints) {
+        mConstraints = constraints;
+        return this;
+    }
+
+    public ParseTree.Mood mood() {
+        return mMood;
+    }
+
+    public SemanticTemplate mood(ParseTree.Mood mood) {
+        mMood = mood;
+        return this;
+    }
+
+    public ParseTree.Direction direction() {
+        return mDirection;
+    }
+
+    public SemanticTemplate direction(ParseTree.Direction direction) {
+        mDirection = direction;
+        return this;
     }
 
     public String toString() {
-        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_TRIGGER);
+        return JSONUtils.simpleObjectToJson(this, new TypeToken<SemanticTemplate>(){}.getType());
     }
 
     /**
@@ -134,7 +117,7 @@ public class SemanticTemplate {
      * @param parseTree the parse tree to be checked
      * @return boolean whether it matches or not
      */
-    public boolean matchTrigger(ParseTree parseTree) {
+    /*public boolean matchTrigger(ParseTree parseTree) {
         // 1. InternalTag List
         // 2. InternalTag Relation
         // 3. Mood? Direction?
@@ -194,41 +177,5 @@ public class SemanticTemplate {
         }
 
         return true;
-    }
-
-    public Set<Object> getMandatoryTags() {
-        return mMandatoryTags;
-    }
-
-    public void setMandatoryTags(Set<Object> mandatoryTags) {
-        this.mMandatoryTags = mandatoryTags;
-    }
-
-    public Set<Object> getOptionalTags() {
-        return mOptionalTags;
-    }
-
-    public void setOptionalTags(Set<Object> optionalTags) {
-        this.mOptionalTags = optionalTags;
-    }
-
-    /**
-     * Get a set of all (mandatory + optional) tags of the trigger
-     *
-     * @return the set of all tags
-     */
-    public Set<Object> getAllTags() {
-        Set<Object> result = new HashSet<>();
-        result.addAll(mMandatoryTags);
-        result.addAll(mOptionalTags);
-        return result;
-    }
-
-    public Set<Constraint> getConstraints() {
-        return mConstraints;
-    }
-
-    public void setConstraints(Set<Constraint> constraints) {
-        this.mConstraints = constraints;
-    }
+    }*/
 }

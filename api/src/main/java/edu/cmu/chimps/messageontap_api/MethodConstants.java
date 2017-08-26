@@ -24,19 +24,19 @@ public class MethodConstants {
     /**
      * types of tasks
      */
-    public static final String PMS_TYPE = "PMS";
+    public static final String PM_TYPE = "manager";
     public static final String GRAPH_TYPE = "graph";
     public static final String UI_TYPE = "ui";
     public static final String ACTION_TYPE = "action";
 
     /**
-     * methods of PMS tasks
+     * methods of PM tasks
      */
-    public static final String PMS_METHOD_NEW_SESSION = "session_new";
-    public static final String PMS_METHOD_END_SESSION = "session_end";
-    public static final String PMS_METHOD_STATUS_QUERY = "status_query";
-    public static final String PMS_METHOD_STATUS_REPLY = "status_reply";
-    public static final String PMS_METHOD_RESPONSE_REFETCH = "response_refetch";
+    public static final String PM_METHOD_NEW_SESSION = "session_new";
+    public static final String PM_METHOD_END_SESSION = "session_end";
+    public static final String PM_METHOD_STATUS_QUERY = "status_query";
+    public static final String PM_METHOD_STATUS_REPLY = "status_reply";
+    public static final String PM_METHOD_RESPONSE_REFETCH = "response_refetch";
 
     /**
      * methods of graph tasks

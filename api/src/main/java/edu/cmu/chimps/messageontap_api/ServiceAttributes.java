@@ -114,7 +114,7 @@ public class ServiceAttributes {
 
     }
 
-    public static class PMS {
+    public static class PM {
         public static final String TRIGGER_SOURCE = "trigger";
         public static final String QUERY_ID = "query_id";
         public static final String METHOD = "method";
@@ -131,6 +131,7 @@ public class ServiceAttributes {
         public static final String TAG_EMAIL_ADDRESS = "email";
         public static final String TAG_STREET_ADDRESS = "street_address";
         public static final String TAG_WEB_URL = "url";
+        public static final String API_VERSION = BuildConfig.API_VERSION;
 
     }
 

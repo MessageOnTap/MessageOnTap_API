@@ -27,35 +27,20 @@ import org.json.JSONObject;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class PluginData implements Parcelable {
-    /*
-     * We'll see what will be included in this class. Currently, it only contains a string
-     * which contains serialized data for criteria to trigger this plugin.
-     */
 
-    private static final String KEY_TAG = "tags";
     private static final String KEY_TRIGGER = "triggers";
 
-    private String mTagSet = null;
     private String mTriggerSet = null;
 
     public PluginData() {
     }
 
-    public String tagSet() {
-        return mTagSet;
-    }
-
-    public PluginData tagSet(String tagSet) {
-        mTagSet = tagSet;
-        return this;
-    }
-
-    public String triggerSet() {
+    public String semanticTemplates() {
         return mTriggerSet;
     }
 
-    public PluginData triggerSet(String triggerSet) {
-        mTriggerSet = triggerSet;
+    public PluginData semanticTemplates(String semanticTemplates) {
+        mTriggerSet = semanticTemplates;
         return this;
     }
 
@@ -64,7 +49,6 @@ public class PluginData implements Parcelable {
      */
     public JSONObject serialize() throws JSONException {
         JSONObject data = new JSONObject();
-        data.put(KEY_TAG, mTagSet);
         data.put(KEY_TRIGGER, mTriggerSet);
         return data;
     }
@@ -74,7 +58,6 @@ public class PluginData implements Parcelable {
      * object.
      */
     public void deserialize(JSONObject data) throws JSONException {
-        this.mTagSet = data.optString(KEY_TAG);
         this.mTriggerSet = data.optString(KEY_TRIGGER);
     }
 
@@ -83,7 +66,6 @@ public class PluginData implements Parcelable {
      */
     public Bundle toBundle() {
         Bundle data = new Bundle();
-        data.putString(KEY_TAG, mTagSet);
         data.putString(KEY_TRIGGER, mTriggerSet);
         return data;
     }
@@ -93,7 +75,6 @@ public class PluginData implements Parcelable {
      * object.
      */
     public void fromBundle(Bundle src) {
-        this.mTagSet = src.getString(KEY_TRIGGER);
         this.mTriggerSet = src.getString(KEY_TRIGGER);
     }
 
@@ -114,12 +95,8 @@ public class PluginData implements Parcelable {
     private PluginData(Parcel in) {
         int parcelableSize = in.readInt();
         int startPosition = in.dataPosition();
-        this.mTagSet = in.readString();
         this.mTriggerSet = in.readString();
 
-        if (TextUtils.isEmpty(this.mTagSet)) {
-            this.mTagSet = null;
-        }
         if (TextUtils.isEmpty(this.mTriggerSet)) {
             this.mTriggerSet = null;
         }
@@ -132,7 +109,6 @@ public class PluginData implements Parcelable {
         int sizePosition = parcel.dataPosition();
         parcel.writeInt(0);
         int startPosition = parcel.dataPosition();
-        parcel.writeString(TextUtils.isEmpty(mTagSet) ? "" : mTagSet);
         parcel.writeString(TextUtils.isEmpty(mTriggerSet) ? "" : mTriggerSet);
         // Go back and write the size
         int parcelableSize = parcel.dataPosition() - startPosition;
@@ -155,8 +131,7 @@ public class PluginData implements Parcelable {
 
         try {
             PluginData other = (PluginData) o;
-            return TextUtils.equals(other.mTagSet, mTagSet)
-                    && TextUtils.equals(other.mTriggerSet, mTriggerSet);
+            return TextUtils.equals(other.mTriggerSet, mTriggerSet);
 
         } catch (ClassCastException e) {
             return false;

@@ -44,14 +44,14 @@ import java.util.Set;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class JSONUtils {
 
-    public final static String TYPE_TRIGGER = "trigger";
+    /*public final static String TYPE_TRIGGER = "trigger";
     public final static String TYPE_TAG = "tag";
     public final static String TYPE_NODE = "node";
     public final static String TYPE_PARSE_TREE = "parse_tree";
     public final static String TYPE_TAG_SET = "tag_set";
     public final static String TYPE_TRIGGER_SET = "trigger_set";
     public final static String TYPE_CARD_LIST = "card_list";
-    public final static String TYPE_TAG_ARRAY = "tag_array";
+    public final static String TYPE_TAG_ARRAY = "tag_array";*/
 
     /**
      * Generate a new Gson instance with customized type adapters.
@@ -96,7 +96,7 @@ public class JSONUtils {
                         JsonObject treeObj = json.getAsJsonObject();
                         Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
                                 }.getType(),
-                                new SparseArrayTypeAdapter<ParseTree.Node>(TYPE_NODE))
+                                new SparseArrayTypeAdapter<ParseTree.Node>())
                                 .create();
                         // Construct a tree (this shouldn't try to parse the sparseArray stuff
                         ParseTree tree = gson.fromJson(json, ParseTree.class);
@@ -107,20 +107,6 @@ public class JSONUtils {
                         tree.setNodeList(nodeList);
                         return tree;
                     }
-                }).registerTypeAdapter(InternalTag.class, new JsonDeserializer<InternalTag>() {
-                    /**
-                     * Deserialize a tag JSON to InternalTag class object.
-                     * @author Adam Yi &lt;xuan@yiad.am&gt;
-                     */
-                    @Override
-                    public InternalTag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject tagObj = json.getAsJsonObject();
-                        Gson gson = new Gson();
-                        InternalTag internalTag = gson.fromJson(json, InternalTag.class);
-                        internalTag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
-                        }.getType()));
-                        return internalTag;
-                    }
                 }).registerTypeAdapter(SemanticTemplate.class, new JsonDeserializer<SemanticTemplate>() {
                     /**
                      * Deserialize a trigger JSON to SemanticTemplate class object.
@@ -128,15 +114,15 @@ public class JSONUtils {
                      */
                     @Override
                     public SemanticTemplate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject triggerObj = json.getAsJsonObject();
                         Gson gson = new Gson();
-                        SemanticTemplate semanticTemplate = gson.fromJson(json, SemanticTemplate.class);
-                        semanticTemplate.setConstraints((HashSet) gson.fromJson(triggerObj.get("mConstraints"), new TypeToken<HashSet<SemanticTemplate.Constraint>>() {
-                        }.getType()));
-                        return semanticTemplate;
+                        JsonObject obj = json.getAsJsonObject();
+                        return gson.fromJson(json, SemanticTemplate.class)
+                                .tags((HashSet) gson.fromJson(obj.get("mTags"), new TypeToken<HashSet<Tag>>() {
+                                }.getType()))
+                                .constraints((HashSet) gson.fromJson(obj.get("mConstraints"), new TypeToken<HashSet<Constraint>>() {
+                                }.getType()));
                     }
-                }).registerTypeAdapter(new TypeToken<LongSparseArray<InternalTag>>() {
-                }.getType(), new LongSparseArrayTypeAdapter<InternalTag>(TYPE_TAG))
+                })
                 .create();
     }
 
@@ -229,99 +215,23 @@ public class JSONUtils {
     /**
      * Convert a simple object to JSON string
      *
-     * @param object  the object to be converted
-     * @param typeKey a string stating the type of the object
+     * @param object the object to be converted
+     * @param type   the type of the subject to be converted
      * @return the JSON string
      */
-    public static String simpleObjectToJson(Object object, String typeKey) {
-        Gson gson = gson();
-        Type type;
-        switch (typeKey) {
-            case TYPE_TAG:
-                type = new TypeToken<InternalTag>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER:
-                type = new TypeToken<SemanticTemplate>() {
-                }.getType();
-                break;
-            case TYPE_NODE:
-                type = new TypeToken<ParseTree.Node>() {
-                }.getType();
-                break;
-            case TYPE_PARSE_TREE:
-                type = new TypeToken<ParseTree>() {
-                }.getType();
-                break;
-            case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<InternalTag>>() {
-                }.getType();
-                break;
-            case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<InternalTag>>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<SemanticTemplate>>() {
-                }.getType();
-                break;
-            case TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
-                }.getType();
-                break;
-            default:
-                return "";
-        }
-        return gson.toJson(object, type);
+    public static String simpleObjectToJson(Object object, Type type) {
+        return gson().toJson(object, type);
     }
 
     /**
      * Convert a JSON string to a simple object
      *
-     * @param json    the JSON string to be converted
-     * @param typeKey a string stating the type of the object
+     * @param json the JSON string to be converted
+     * @param type the type of the object
      * @return the Object
      */
-    public static Object jsonToSimpleObject(String json, String typeKey) {
-        Gson gson = gson();
-        Type type;
-        switch (typeKey) {
-            case TYPE_TAG:
-                type = new TypeToken<InternalTag>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER:
-                type = new TypeToken<SemanticTemplate>() {
-                }.getType();
-                break;
-            case TYPE_NODE:
-                type = new TypeToken<ParseTree.Node>() {
-                }.getType();
-                break;
-            case TYPE_PARSE_TREE:
-                type = new TypeToken<ParseTree>() {
-                }.getType();
-                break;
-            case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<InternalTag>>() {
-                }.getType();
-                break;
-            case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<InternalTag>>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<SemanticTemplate>>() {
-                }.getType();
-                break;
-            case TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
-                }.getType();
-                break;
-            default:
-                return null;
-        }
-        return gson.fromJson(json, type);
+    public static Object jsonToSimpleObject(String json, Type type) {
+        return gson().fromJson(json, type);
     }
 
     public static String singleIntegerToSimpleJSON(String name, int value) {

@@ -3,6 +3,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.android.library'
 
 group = 'com.github.adamyi'
+def libraryGroupId = 'messageontap'
+def libraryArtifactId = 'api'
+def libraryVersion = "1.0.0-nightly-1"
 
 android {
     compileSdkVersion 26
@@ -21,6 +24,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        buildTypes.each {
+            it.buildConfigField 'String', 'API_VERSION', '\"' + libraryVersion + '\"'
         }
     }
     packagingOptions {
@@ -50,10 +56,6 @@ dependencies {
 }
 
 // yiad.am jfrog repo
-def libraryGroupId = 'messageontap'
-def libraryArtifactId = 'api'
-def libraryVersion = '1.0.0-nightly-1'
-
 publishing.publications {
     aar(MavenPublication) {
         groupId libraryGroupId

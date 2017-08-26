@@ -20,6 +20,8 @@ import android.text.TextUtils;
 import android.util.LongSparseArray;
 import android.util.SparseArray;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -598,15 +600,15 @@ public class ParseTree {
     /**
      * Reduce the tree to keep only essential data
      */
-    public void reduce(SemanticTemplate matchedSemanticTemplate) {
+    /*public void reduce(SemanticTemplate matchedSemanticTemplate) {
         preReduce(matchedSemanticTemplate);
         doReduce();
-    }
+    }*/
 
     /**
      * Mark all nodes untagged or without trigger tags as to be deleted
      */
-    private void preReduce(SemanticTemplate matchedSemanticTemplate) {
+    /*private void preReduce(SemanticTemplate matchedSemanticTemplate) {
         for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             Set<Object> tagList = node.getTagList();
@@ -614,14 +616,14 @@ public class ParseTree {
             if (tagList.size() == 0)
                 node.setFlag(Flag.DELETE);
         }
-    }
+    }*/
 
     /**
      * Reduce the tree to keep only essential data
      * This should not be called directly, but
      * instead called from the other reduce function.
      */
-    private void doReduce() {
+    /*private void doReduce() {
         Node root = mNodeList.get(mRootId);
         recursiveReduce(mRootId);            //root Node
         if (root.getFlag() == Flag.DELETE) {
@@ -695,7 +697,7 @@ public class ParseTree {
                 mNodeList.removeAt(i);
             }
         }
-    }
+    }*/
 
     /**
      * Change the root of the tree
@@ -731,7 +733,7 @@ public class ParseTree {
      * @param tagList : A list of tags which are candidates may add to a node
      *                Add InternalTag to Every Tree Node
      */
-    public void addTag(LongSparseArray<InternalTag> tagList) {
+    /*public void addTag(LongSparseArray<InternalTag> tagList) {
         for (int i = mNodeList.size() - 1; i > -1; --i) {
             Node node = mNodeList.valueAt(i);
             for (int j = tagList.size() - 1; j > -1; --j) {
@@ -740,7 +742,7 @@ public class ParseTree {
                     node.addTag(tagList.keyAt(j));
             }
         }
-    }
+    }*/
 
     /**
      * Override Function toString()
@@ -769,7 +771,8 @@ public class ParseTree {
     }
 
     public String toJson() {
-        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_PARSE_TREE);
+        return JSONUtils.simpleObjectToJson(this, new TypeToken<ParseTree>() {
+        }.getType());
     }
 
     public static ArrayList<ParseTree> split(ParseTree tree) {
