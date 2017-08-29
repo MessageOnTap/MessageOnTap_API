@@ -21,14 +21,14 @@ import java.lang.reflect.Type;
 public class SparseArrayTypeAdapter<T> extends TypeAdapter<SparseArray<T>> {
 
     private final Gson gson = new Gson();
-    private final Type typeOfT = new TypeToken<T>() {
-    }.getType();
+    private final Type typeOfT;
     private final Type typeOfSparseArrayOfT = new TypeToken<SparseArray<T>>() {
     }.getType();
     private final Type typeOfSparseArrayOfObject = new TypeToken<SparseArray<Object>>() {
     }.getType();
 
-    public SparseArrayTypeAdapter() {
+    public SparseArrayTypeAdapter(Type t) {
+        typeOfT = t;
     }
 
     @Override

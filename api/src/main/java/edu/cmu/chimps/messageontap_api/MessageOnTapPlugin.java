@@ -238,10 +238,10 @@ public abstract class MessageOnTapPlugin extends Service {
             try {
                 mManager.sendResponse(taskData);
                 fail = false;
-                Log.e(TAG, "Successfully sent " + humanReadableName + "to core - plugin manager");
+                Log.e(TAG, "Successfully sent " + humanReadableName + " to core - plugin manager");
             } catch (RemoteException e) {
                 if (errMsg == null) // just another optimization
-                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to core - plugin manager";
+                    errMsg = taskData.idString() + " Error sending " + humanReadableName + " to core - plugin manager";
                 if (i != 1)
                     Log.e(TAG, errMsg + ", retrying (see below for details).");
                 else

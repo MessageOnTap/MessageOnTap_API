@@ -22,14 +22,14 @@ import java.lang.reflect.Type;
 public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T>> {
 
     private final Gson gson = new Gson();
-    private final Type type = new TypeToken<T>() {
-    }.getType();
+    private final Type typeOfT;
     private final Type typeOfLongSparseArrayOfT = new TypeToken<LongSparseArray<T>>() {
     }.getType();
     private final Type typeOfLongSparseArrayOfObject = new TypeToken<LongSparseArray<Object>>() {
     }.getType();
 
-    public LongSparseArrayTypeAdapter() {
+    public LongSparseArrayTypeAdapter(Type t) {
+        typeOfT = t;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T
         for (int i = 0, size = temp.size(); i < size; ++i) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
-            result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), type));
+            result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), typeOfT));
         }
         return result;
     }

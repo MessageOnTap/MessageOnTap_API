@@ -16,10 +16,6 @@
 
 package edu.cmu.chimps.messageontap_api;
 
-
-import com.google.gson.reflect.TypeToken;
-
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -108,7 +104,7 @@ public class SemanticTemplate {
     }
 
     public String toString() {
-        return JSONUtils.simpleObjectToJson(this, new TypeToken<SemanticTemplate>(){}.getType());
+        return JSONUtils.simpleObjectToJson(this, SemanticTemplate.class);
     }
 
     /**

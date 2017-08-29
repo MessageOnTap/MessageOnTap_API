@@ -553,8 +553,7 @@ public class ParseTree {
     }
 
     public String toJson() {
-        return JSONUtils.simpleObjectToJson(this, new TypeToken<ParseTree>() {
-        }.getType());
+        return JSONUtils.simpleObjectToJson(this, ParseTree.class);
     }
 
     public static ArrayList<ParseTree> split(ParseTree tree) {
