@@ -5,7 +5,7 @@ apply plugin: 'com.android.library'
 group = 'com.github.adamyi'
 def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
-def libraryVersion = "1.0.0-nightly-1"
+def libraryVersion = "1.0.0-nightly-2"
 
 android {
     compileSdkVersion 26

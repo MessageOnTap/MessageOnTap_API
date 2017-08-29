@@ -43,6 +43,10 @@ public class Tag {
         return mName;
     }
 
+    public Type getType() {
+        return mType;
+    }
+
     public void setRegularExpressions(Set<String> regularExpressions) {
         mRegularExpressions = regularExpressions;
     }
