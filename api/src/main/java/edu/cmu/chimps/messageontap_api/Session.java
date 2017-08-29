@@ -23,12 +23,12 @@ import java.util.Set;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class Session {
-    private String mPackageName; // For PMS ONLY
+    private String mPackageName; // For Plugin Manager ONLY
     private Set<Long> mUncompleted;
     private LongSparseArray<Task> mTasks;
     private long lastTID;
 
-    public Session(String packageName, Task data) { // For PMS
+    public Session(String packageName, Task data) { // For Plugin Manager
         mPackageName = packageName;
         mUncompleted = new HashSet<>();
         mTasks = new LongSparseArray<>();

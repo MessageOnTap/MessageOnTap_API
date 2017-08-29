@@ -54,16 +54,16 @@ public abstract class MessageOnTapPlugin extends Service {
             String type = data.type();
             HashMap content;
             if (sid != -100) { // Eastern eggs are always fun. Aren't they?
-                if (TextUtils.equals(type, MethodConstants.PMS_TYPE)) {
+                if (TextUtils.equals(type, MethodConstants.INTERNAL_TYPE)) {
 
                     //Check whether it's a new session request
-                    if (tid == 0 && TextUtils.equals(data.method(), MethodConstants.PMS_METHOD_NEW_SESSION)) {
+                    if (tid == 0 && TextUtils.equals(data.method(), MethodConstants.INTERNAL_METHOD_NEW_SESSION)) {
 
                         // Try to parse data JSON content
                         try {
                             content = JSONUtils.toMap(data.content());
                         } catch (JSONException e) {
-                            Log.e(TAG, "Exception caught while parsing JSON sent by PMS (new session init):");
+                            Log.e(TAG, "Exception caught while parsing JSON sent by INTERNAL (new session init):");
                             e.printStackTrace();
                             Session session = sessionList.get(sid);
                             session.failTask(tid);
@@ -81,7 +81,7 @@ public abstract class MessageOnTapPlugin extends Service {
                             session.failTask(tid);
                         }
                     } else // otherwise, deal with session control related packets
-                        handlePMSTask(tid, sid, data.method());
+                        handleInternalTask(tid, sid, data.method());
 
                 } else {
 
@@ -89,7 +89,7 @@ public abstract class MessageOnTapPlugin extends Service {
                     try {
                         content = JSONUtils.toMap(data.content());
                     } catch (JSONException e) {
-                        Log.e(TAG, "Exception caught while parsing JSON sent by PMS (task response, see below for details)");
+                        Log.e(TAG, "Exception caught while parsing JSON sent by INTERNAL (task response, see below for details)");
                         e.printStackTrace();
                         Session session = sessionList.get(sid);
                         session.failTask(tid);
@@ -115,8 +115,8 @@ public abstract class MessageOnTapPlugin extends Service {
         }
 
         /**
-         * This is called when PMS asks the plugin for PluginData.
-         * @return the PluginData to be sent to PMS.
+         * This is called when plugin manager asks the plugin for PluginData.
+         * @return the PluginData to be sent to plugin manager.
          * @throws RemoteException when AIDL goes wrong
          */
         @Override
@@ -125,8 +125,8 @@ public abstract class MessageOnTapPlugin extends Service {
         }
 
         /**
-         * This is called when PMS asks to register itself.
-         * @param manager the PluginManager of PMS
+         * This is called when PluginManager asks to register itself.
+         * @param manager the PluginManager
          * @throws RemoteException when AIDL goes wrong
          */
         @Override
@@ -144,8 +144,8 @@ public abstract class MessageOnTapPlugin extends Service {
         }
 
         /**
-         * This is called when PMS asks to unregister itself.
-         * @param manager the PluginManager of PMS
+         * This is called when plugin manager asks to unregister itself.
+         * @param manager the PluginManager
          * @throws RemoteException when AIDL goes wrong
          */
         @Override
@@ -175,9 +175,9 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Send data packet to PMS with auto-retry function (max retry: 2 times).
+     * Send data packet to plugin manager with auto-retry function (max retry: 2 times).
      *
-     * @param taskData          the data to be sent to PMS
+     * @param taskData          the data to be sent to plugin manager
      * @param humanReadableName a human readable name for the data to be sent,
      *                          which is used for log printing.
      * @return boolean success or not
@@ -187,9 +187,9 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Send data packet to PMS with auto-retry function (max retry: 2 times).
+     * Send data packet to plugin manager with auto-retry function (max retry: 2 times).
      *
-     * @param taskData          the data to be sent to PMS
+     * @param taskData          the data to be sent to plugin manager
      * @param humanReadableName a human readable name for the data to be sent,
      *                          which is used for log printing.
      * @param tryNum            the maximum try times (including initial try, = max retry times + 1)
@@ -209,10 +209,10 @@ public abstract class MessageOnTapPlugin extends Service {
             try {
                 mManager.sendResponse(taskData);
                 fail = false;
-                Log.e(TAG, "Successfully sent " + humanReadableName + "to PMS");
+                Log.e(TAG, "Successfully sent " + humanReadableName + "to Plugin Manager");
             } catch (RemoteException e) {
                 if (errMsg == null) // just another optimization
-                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to PMS";
+                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to Plugin Manager";
                 if (i != 1)
                     Log.e(TAG, errMsg + ", retrying (see below for details).");
                 else
@@ -234,8 +234,8 @@ public abstract class MessageOnTapPlugin extends Service {
         session.updateTaskResponse(0);
         Task task = session.getTask(0);
         sendData(task.getTaskData()
-                        .type(MethodConstants.PMS_TYPE)
-                        .method(MethodConstants.PMS_METHOD_END_SESSION)
+                        .type(MethodConstants.INTERNAL_TYPE)
+                        .method(MethodConstants.INTERNAL_METHOD_END_SESSION)
                         .content("{}"),
                 "session end packet");
     }
@@ -246,8 +246,8 @@ public abstract class MessageOnTapPlugin extends Service {
     protected void createSession() {
         sendData(new TaskData()
                         .sid(-100)
-                        .type(MethodConstants.PMS_TYPE)
-                        .method(MethodConstants.PMS_METHOD_NEW_SESSION)
+                        .type(MethodConstants.INTERNAL_TYPE)
+                        .method(MethodConstants.INTERNAL_METHOD_NEW_SESSION)
                         .content("{}"),
                 "new session request");
     }
@@ -272,30 +272,30 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Handle a incoming task, type of which is PMS.
+     * Handle a incoming task, type of which is internal.
      * Those tasks are used for internal task and session
      * management.
      *
      * @param sid    ID of Session
      * @param tid    ID of Task
-     * @param method Method of PMS task
+     * @param method Method of internal task
      */
-    protected void handlePMSTask(long sid, long tid, String method) {
-        Log.e(TAG, "In Handle PMS task");
+    protected void handleInternalTask(long sid, long tid, String method) {
+        Log.e(TAG, "In Handle Internal task");
         switch (method) {
-            case MethodConstants.PMS_METHOD_STATUS_QUERY:
+            case MethodConstants.INTERNAL_METHOD_STATUS_QUERY:
                 sendData(new TaskData()
                                 .sid(sid)
                                 .tid(tid)
-                                .type(MethodConstants.PMS_TYPE)
-                                .method(MethodConstants.PMS_METHOD_STATUS_REPLY)
+                                .type(MethodConstants.INTERNAL_TYPE)
+                                .method(MethodConstants.INTERNAL_METHOD_STATUS_REPLY)
                                 .content("{\"result\": "
                                         + sessionList.get(sid).getTaskStatus(tid)
                                         + "}")
                         , "status reply"
                         , 1);
                 break;
-            case MethodConstants.PMS_METHOD_RESPONSE_REFETCH:
+            case MethodConstants.INTERNAL_METHOD_RESPONSE_REFETCH:
                 Session session = sessionList.get(sid);
                 Task task = session.getTask(tid);
                 if (task == null) {
@@ -308,11 +308,11 @@ public abstract class MessageOnTapPlugin extends Service {
                     }
                 }
                 break;
-            case MethodConstants.PMS_METHOD_NEW_SESSION:
+            case MethodConstants.INTERNAL_METHOD_NEW_SESSION:
                 Log.e(TAG, "Received new session request for non-zero task ID... Ignored");
                 break;
             default:
-                Log.e(TAG, "Unknown PMS task (" + method + ") received.");
+                Log.e(TAG, "Unknown internal task (" + method + ") received.");
         }
     }
 
@@ -329,7 +329,7 @@ public abstract class MessageOnTapPlugin extends Service {
      * This should be overridden by plugin developers.
      * <p>
      * This is called when a new session is initiated
-     * by the PMS.
+     * by the Plugin Manager.
      *
      * @param sid  the ID of the session
      * @param data the data of the session
@@ -340,7 +340,7 @@ public abstract class MessageOnTapPlugin extends Service {
     /**
      * This should be overridden by plugin developers.
      * <p>
-     * This is called when PMS sends a response to a
+     * This is called when plugin manager sends a response to a
      * task request that the plugin has sent to the
      * PMS.
      *

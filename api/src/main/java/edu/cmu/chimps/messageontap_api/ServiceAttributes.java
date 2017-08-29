@@ -114,7 +114,7 @@ public class ServiceAttributes {
 
     }
 
-    public static class PMS {
+    public static class Internal {
         public static final String TRIGGER_SOURCE = "trigger";
         public static final String QUERY_ID = "query_id";
         public static final String METHOD = "method";
