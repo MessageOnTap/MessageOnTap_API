@@ -149,7 +149,7 @@ public abstract class MessageOnTapPlugin extends Service {
 
         @Override
         public String getAPIVersion() throws RemoteException {
-            return ServiceAttributes.PM.API_VERSION;
+            return ServiceAttributes.Internal.API_VERSION;
         }
 
         /**
