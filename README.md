@@ -1,4 +1,4 @@
-**The master branch is currently used for 1.x development. For 0.x stable releases, please check out [0.x-dev branch](https://github.com/MessageOnTap/MessageOnTap_API/tree/0.x-dev).**
+**The master branch is currently used for 1.x development. For 0.x stable releases, please check out the [0.x-dev branch](https://github.com/MessageOnTap/MessageOnTap_API/tree/0.x-dev).**
 
 # About MessageOnTap
 [MessageOnTap](https://github.com/MessageOnTap) is a development framework for personal-data-powered messaging assistants. MessageOnTap is designed for developers to implement intelligent plugins for instant messaging apps to extend their basic functionalities. MessageOnTap streamlines instant messaging experiences by eliminating costly and repetitive tasks raised in conversation. These tasks could be adding events to the calendar or looking up the flight booking number for a friend. By surfacing useful prompts and actions, MessageOnTap squeezes tasks which normally takes minutes to complete into just a few taps. The key idea of MessageOnTap is to capture user needs through the message semantics and connect the observed needs to users' personal data.
