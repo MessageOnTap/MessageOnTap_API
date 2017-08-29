@@ -45,7 +45,7 @@ public abstract class MessageOnTapPlugin extends Service {
     private String mManagerVersion = null;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
 
-    public static final List<String> RESERVED_KEYWORDS = Arrays.asList("phone", "address", "email", "location", "person", "event");
+    public static final List<String> RESERVED_KEYWORDS = Arrays.asList("phone", "address", "email", "url", "location", "person", "event");
 
 
     private IBinder mBinder = new IPlugin.Stub() {
