@@ -124,6 +124,8 @@ public class ServiceAttributes {
         public static final String CURRENT_MESSAGE_RELATIVE_POSITION = "relative_position";
         public static final String CURRENT_MESSAGE_EMBEDDED_TIME = "embedded_time";
         public static final String CURRENT_MESSAGE_TEXT_BOX_ACCESSIBILITY_NODE_INFO = "text_box_node";
+
+        public static final String TAG_TIME = "time";
         public static final String TAG_PERSON = "person";
         public static final String TAG_LOCATION = "location";
         public static final String TAG_EVENT = "event";
@@ -193,9 +195,15 @@ public class ServiceAttributes {
         public final static String BUBBLE_FIRST_LINE = "first_line";
         public final static String BUBBLE_SECOND_LINE = "second_line";
         public final static String ICON_TYPE_STRING = "icon_type";
-        public final static String STATUS = "bubble_status";
+        public final static String STATUS = "status";
         public final static String HTML_STRING = "html_string";
         public final static String UPDATE_OFFSET = "update_offset";
 
+        public class Status{
+            public final static String CLICKED = "clicked";
+            public final static String DISMISSED = "dismissed";
+            public final static String TIME_OUT = "time_out";
+            public final static String LEFT_APP = "left_app";
+        }
     }
 }
