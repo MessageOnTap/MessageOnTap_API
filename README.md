@@ -1,12 +1,15 @@
 **The master branch is currently used for 1.x development. For 0.x stable releases, please check out the [0.x-dev branch](https://github.com/MessageOnTap/MessageOnTap_API/tree/0.x-dev).**
 
-# About MessageOnTap
+
+# MessageOnTap API 
+[![Build Status](https://jenkins.yiad.am/buildStatus/icon?job=MessageOnTap_API)](https://jenkins.yiad.am/job/MessageOnTap_API)
+
+MessageOnTap API ([CHANGE LOG](CHANGELOG.md), lastest version: <u>0.3.4</u>) is an IPC ([Interprocess Communication](https://en.wikipedia.org/wiki/Inter-process_communication)) library for MessageOnTap-powered plugins to communicate to MessageOnTap Core. MessageOnTap team has already develoepd several example IM plug-ins, which can be found [here](https://github.com/MessageOnTap/MessageOnTap_Plugins). 
+
+## About MessageOnTap
 [MessageOnTap](https://github.com/MessageOnTap) is a development framework for personal-data-powered messaging assistants. MessageOnTap is designed for developers to implement intelligent plugins for instant messaging apps to extend their basic functionalities. MessageOnTap streamlines instant messaging experiences by eliminating costly and repetitive tasks raised in conversation. These tasks could be adding events to the calendar or looking up the flight booking number for a friend. By surfacing useful prompts and actions, MessageOnTap squeezes tasks which normally takes minutes to complete into just a few taps. The key idea of MessageOnTap is to capture user needs through the message semantics and connect the observed needs to users' personal data.
 
 Using the MessageOnTap framework, developers can create plugins for instant messaging apps such as Facebook Messenger, WhatsApp, WeChat, etc to extend basic messaging functionalities. Given easy access to both users instant messages and other types of personal data through MessageOnTap, MessageOnTap plugins can choose to either simply present a related piece of personal data for users to take a quick glimpse or offer users quick action shortcuts of functionalities if more user inputs are involved.
-
-## MessageOnTap API 
-MessageOnTap API ([CHANGE LOG](CHANGELOG.md), lastest version: <u>0.3.4</u>) is an IPC ([Interprocess Communication](https://en.wikipedia.org/wiki/Inter-process_communication)) library for MessageOnTap-powered plugins to communicate to MessageOnTap Core. MessageOnTap team has already develoepd several example IM plug-ins, which can be found [here](https://github.com/MessageOnTap/MessageOnTap_Plugins). 
 
 ## Plugin-Core Communication Overview
 ![Architecture](images/motsystem.png)
