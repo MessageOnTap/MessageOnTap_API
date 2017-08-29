@@ -26,9 +26,15 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue", "UnusedReturnValue"})
 public abstract class MessageOnTapPlugin extends Service {
@@ -36,7 +42,11 @@ public abstract class MessageOnTapPlugin extends Service {
     private static final String TAG = "Plugin_API";
 
     private IPluginManager mManager = null;
+    private String mManagerVersion = null;
     private LongSparseArray<Session> sessionList = new LongSparseArray<>();
+
+    public static final List<String> RESERVED_KEYWORDS = Arrays.asList("phone", "address", "email", "url", "location", "person", "event");
+
 
     private IBinder mBinder = new IPlugin.Stub() {
 
@@ -63,7 +73,7 @@ public abstract class MessageOnTapPlugin extends Service {
                         try {
                             content = JSONUtils.toMap(data.content());
                         } catch (JSONException e) {
-                            Log.e(TAG, "Exception caught while parsing JSON sent by INTERNAL (new session init):");
+                            Log.e(TAG, "Exception caught while parsing JSON sent by core - plugin manager (new session init):");
                             e.printStackTrace();
                             Session session = sessionList.get(sid);
                             session.failTask(tid);
@@ -89,7 +99,7 @@ public abstract class MessageOnTapPlugin extends Service {
                     try {
                         content = JSONUtils.toMap(data.content());
                     } catch (JSONException e) {
-                        Log.e(TAG, "Exception caught while parsing JSON sent by INTERNAL (task response, see below for details)");
+                        Log.e(TAG, "Exception caught while parsing JSON sent by core - plugin manager (task response, see below for details)");
                         e.printStackTrace();
                         Session session = sessionList.get(sid);
                         session.failTask(tid);
@@ -115,36 +125,55 @@ public abstract class MessageOnTapPlugin extends Service {
         }
 
         /**
-         * This is called when plugin manager asks the plugin for PluginData.
+         * This is called when the plugin manager asks the plugin for semantic templates.
          * @return the PluginData to be sent to plugin manager.
          * @throws RemoteException when AIDL goes wrong
          */
         @Override
-        public PluginData getPluginData() throws RemoteException {
-            return iPluginData();
+        public String getSemanticTemplates() throws RemoteException {
+            Set<SemanticTemplate> templates = semanticTemplates();
+            Set<String> templateNames = new HashSet<>(RESERVED_KEYWORDS);
+            for (SemanticTemplate template : templates) {
+                if (templateNames.contains(template.name()))
+                    throw new UnsupportedOperationException("Duplicate semantic templates!");
+                Set<String> tagNames = new HashSet<>(RESERVED_KEYWORDS);
+                for (Tag tag : template.tags()) {
+                    if (tagNames.contains(tag.getName()))
+                        throw new UnsupportedOperationException("Duplicate or reserved tag!");
+                    tagNames.add(tag.getName());
+                }
+            }
+            return JSONUtils.simpleObjectToJson(templates, new TypeToken<HashSet<SemanticTemplate>>() {
+            }.getType());
+        }
+
+        @Override
+        public String getAPIVersion() throws RemoteException {
+            return ServiceAttributes.Internal.API_VERSION;
         }
 
         /**
-         * This is called when PluginManager asks to register itself.
+         * This is called when the plugin manager asks to register itself.
          * @param manager the PluginManager
-         * @throws RemoteException when AIDL goes wrong
+         * @throws RemoteException when AJKIDL goes wrong
          */
         @Override
-        public void registerManager(IPluginManager manager) throws RemoteException {
+        public void registerManager(IPluginManager manager, String apiVersion) throws RemoteException {
             String packageName = null;
             String[] packages = getPackageManager().getPackagesForUid(Binder.getCallingUid());
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
-            Log.e(TAG, "registering manager " + packageName);
+            Log.e(TAG, "registering manager " + packageName + " with API version " + apiVersion);
 
             mManager = manager;
+            mManagerVersion = apiVersion;
             //plugins.put(packageName, listener);
             //mListenerList.register(listener);
         }
 
         /**
-         * This is called when plugin manager asks to unregister itself.
+         * This is called when the plugin manager asks to unregister itself.
          * @param manager the PluginManager
          * @throws RemoteException when AIDL goes wrong
          */
@@ -175,9 +204,9 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Send data packet to plugin manager with auto-retry function (max retry: 2 times).
+     * Send data packet to core (plugin manager) with auto-retry function (max retry: 2 times).
      *
-     * @param taskData          the data to be sent to plugin manager
+     * @param taskData          the data to be sent to core
      * @param humanReadableName a human readable name for the data to be sent,
      *                          which is used for log printing.
      * @return boolean success or not
@@ -187,9 +216,9 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Send data packet to plugin manager with auto-retry function (max retry: 2 times).
+     * Send data packet to core (plugin manager) with auto-retry function (max retry: 2 times).
      *
-     * @param taskData          the data to be sent to plugin manager
+     * @param taskData          the data to be sent to core
      * @param humanReadableName a human readable name for the data to be sent,
      *                          which is used for log printing.
      * @param tryNum            the maximum try times (including initial try, = max retry times + 1)
@@ -209,10 +238,10 @@ public abstract class MessageOnTapPlugin extends Service {
             try {
                 mManager.sendResponse(taskData);
                 fail = false;
-                Log.e(TAG, "Successfully sent " + humanReadableName + "to Plugin Manager");
+                Log.e(TAG, "Successfully sent " + humanReadableName + " to core - plugin manager");
             } catch (RemoteException e) {
                 if (errMsg == null) // just another optimization
-                    errMsg = taskData.idString() + " Error sending " + humanReadableName + "to Plugin Manager";
+                    errMsg = taskData.idString() + " Error sending " + humanReadableName + " to core - plugin manager";
                 if (i != 1)
                     Log.e(TAG, errMsg + ", retrying (see below for details).");
                 else
@@ -253,6 +282,15 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
+     * Get the API version of Plugin Manager (MessageOnTap-Core)
+     *
+     * @return the API version of Plugin Manager (MessageOnTap-Core)
+     */
+    protected String getManagerVersion() {
+        return mManagerVersion;
+    }
+
+    /**
      * Create a new task request.
      *
      * @param sid    the ID of the Session where the task belongs to
@@ -272,7 +310,7 @@ public abstract class MessageOnTapPlugin extends Service {
     }
 
     /**
-     * Handle a incoming task, type of which is internal.
+     * Handle a incoming internal task.
      * Those tasks are used for internal task and session
      * management.
      *
@@ -323,7 +361,7 @@ public abstract class MessageOnTapPlugin extends Service {
      *
      * @return the PluginData of the plugin
      */
-    protected abstract PluginData iPluginData();
+    protected abstract Set<SemanticTemplate> semanticTemplates();
 
     /**
      * This should be overridden by plugin developers.
@@ -340,9 +378,9 @@ public abstract class MessageOnTapPlugin extends Service {
     /**
      * This should be overridden by plugin developers.
      * <p>
-     * This is called when plugin manager sends a response to a
+     * This is called when core sends a response to a
      * task request that the plugin has sent to the
-     * PMS.
+     * plugin manager.
      *
      * @param sid  the Session ID of the task
      * @param tid  the Task ID of the task

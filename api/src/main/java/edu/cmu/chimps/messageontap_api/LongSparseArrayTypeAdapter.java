@@ -22,22 +22,14 @@ import java.lang.reflect.Type;
 public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T>> {
 
     private final Gson gson = new Gson();
-    private final Class<T> classOfT;
-    private final String type;
+    private final Type typeOfT;
     private final Type typeOfLongSparseArrayOfT = new TypeToken<LongSparseArray<T>>() {
     }.getType();
     private final Type typeOfLongSparseArrayOfObject = new TypeToken<LongSparseArray<Object>>() {
     }.getType();
 
-    public LongSparseArrayTypeAdapter(Class<T> classOfT) {
-        this.classOfT = classOfT;
-        type = null;
-    }
-
-    public LongSparseArrayTypeAdapter(String type) {
-        this.classOfT = null;
-        this.type = type;
-
+    public LongSparseArrayTypeAdapter(Type t) {
+        typeOfT = t;
     }
 
     @Override
@@ -62,13 +54,7 @@ public class LongSparseArrayTypeAdapter<T> extends TypeAdapter<LongSparseArray<T
         for (int i = 0, size = temp.size(); i < size; ++i) {
             key = temp.keyAt(i);
             tElement = gson.toJsonTree(temp.get(key));
-            if (this.type == null) {
-                assert classOfT != null;
-                result.put(key, gson.fromJson(tElement, classOfT));
-            } else {
-                //noinspection unchecked
-                result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), type));
-            }
+            result.put(key, (T) JSONUtils.jsonToSimpleObject(tElement.toString(), typeOfT));
         }
         return result;
     }

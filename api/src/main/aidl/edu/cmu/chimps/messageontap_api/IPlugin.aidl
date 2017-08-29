@@ -18,13 +18,13 @@
 package edu.cmu.chimps.messageontap_api;
 
 import edu.cmu.chimps.messageontap_api.IPluginManager;
-import edu.cmu.chimps.messageontap_api.PluginData;
 import edu.cmu.chimps.messageontap_api.TaskData;
 
 interface IPlugin {
     void onTaskReceived(in TaskData data);
-    PluginData getPluginData();
+    String getSemanticTemplates();
+    String getAPIVersion();
 
-    void registerManager(IPluginManager cb);
+    void registerManager(IPluginManager cb, String apiVersion);
     void unregisterManager(IPluginManager cb);
 }

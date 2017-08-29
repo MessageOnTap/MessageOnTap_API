@@ -17,7 +17,6 @@
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
-import android.util.LongSparseArray;
 import android.util.SparseArray;
 
 import com.google.gson.Gson;
@@ -44,14 +43,15 @@ import java.util.Set;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class JSONUtils {
 
-    public final static String TYPE_TRIGGER = "trigger";
+    /*public final static String TYPE_TRIGGER = "trigger";
     public final static String TYPE_TAG = "tag";
     public final static String TYPE_NODE = "node";
     public final static String TYPE_PARSE_TREE = "parse_tree";
     public final static String TYPE_TAG_SET = "tag_set";
     public final static String TYPE_TRIGGER_SET = "trigger_set";
     public final static String TYPE_CARD_LIST = "card_list";
-    public final static String TYPE_TAG_ARRAY = "tag_array";
+    public final static String TYPE_TAG_ARRAY = "tag_array";*/
+
 
     /**
      * Generate a new Gson instance with customized type adapters.
@@ -59,85 +59,119 @@ public class JSONUtils {
      * @return A Gson instance
      */
     public static Gson gson() {
-        return new GsonBuilder()
-                .registerTypeAdapter(ParseTree.Node.class, new JsonDeserializer<ParseTree.Node>() {
-                    /**
-                     * Deserialize a node JSON to Node class object.
-                     * @author Adam Yi &lt;xuan@yiad.am&gt;
-                     */
-                    @Override
-                    public ParseTree.Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject nodeObj = json.getAsJsonObject();
-                        Gson gson = new Gson();
-                        ParseTree.Node node = gson.fromJson(json, ParseTree.Node.class);
-                        node.setChildrenIds((HashSet) gson.fromJson(nodeObj.get("mChildrenIds"), new TypeToken<HashSet<Integer>>() {
-                        }.getType()));
-                        Set<Object> oldTagSet = (HashSet) gson.fromJson(nodeObj.get("mTagSet"), new TypeToken<HashSet<Object>>() {
-                        }.getType());
-                        Set<Object> newTagSet = new HashSet<>();
-                        for (Object obj : oldTagSet) {
-                            if (obj instanceof Double)
-                                newTagSet.add((long) (double) obj);
-                            else
-                                newTagSet.add(obj);
-                        }
+        return gson(JSONUtils.class);
+    }
 
-                        node.setTagList(newTagSet);
-                        return node;
+    public static Gson gson(Type type) {
+        Set<Type> types = new HashSet<>();
+        types.add(type);
+        return gson(types);
+    }
+
+    public static Gson gson(Set<Type> enabledOnes) {
+        GsonBuilder gson = new GsonBuilder();
+
+        if (enabledOnes.contains(JSONUtils.class) || enabledOnes.contains(Tag.class)) {
+            gson = gson.registerTypeAdapter(Tag.class, new JsonDeserializer<Tag>() {
+                /**
+                 * Deserialize a tag JSON to Tag class object.
+                 *
+                 * @author Adam Yi &lt;xuan@yiad.am&gt;
+                 */
+                @Override
+                public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    JsonObject tagObj = json.getAsJsonObject();
+                    Gson gson = new Gson();
+                    Tag tag = gson.fromJson(json, Tag.class);
+                    tag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
+                    }.getType()));
+                    return tag;
+                }
+            });
+        }
+
+        if (enabledOnes.contains(JSONUtils.class) || enabledOnes.contains(ParseTree.Node.class)) {
+            gson = gson.registerTypeAdapter(ParseTree.Node.class, new JsonDeserializer<ParseTree.Node>() {
+                /**
+                 * Deserialize a node JSON to Node class object.
+                 *
+                 * @author Adam Yi &lt;xuan@yiad.am&gt;
+                 */
+                @Override
+                public ParseTree.Node deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    JsonObject nodeObj = json.getAsJsonObject();
+                    Gson gson = new Gson();
+                    ParseTree.Node node = gson.fromJson(json, ParseTree.Node.class);
+                    node.setChildrenIds((HashSet) gson.fromJson(nodeObj.get("mChildrenIds"), new TypeToken<HashSet<Integer>>() {
+                    }.getType()));
+                    Set<Object> oldTagSet = (HashSet) gson.fromJson(nodeObj.get("mTagSet"), new TypeToken<HashSet<Object>>() {
+                    }.getType());
+                    Set<Object> newTagSet = new HashSet<>();
+                    for (Object obj : oldTagSet) {
+                        if (obj instanceof Double)
+                            newTagSet.add((int) (double) obj);
+                        else
+                            newTagSet.add(obj);
                     }
-                })
-                .registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
-                    /**
-                     * Deserialize a parse tree JSON to ParseTree class object.
-                     * @author Adam Yi &lt;xuan@yiad.am&gt;
-                     */
-                    @Override
-                    public ParseTree deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject treeObj = json.getAsJsonObject();
-                        Gson gson = new GsonBuilder().registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
-                                }.getType(),
-                                new SparseArrayTypeAdapter<ParseTree.Node>(TYPE_NODE))
-                                .create();
-                        // Construct a tree (this shouldn't try to parse the sparseArray stuff
-                        ParseTree tree = gson.fromJson(json, ParseTree.class);
-                        SparseArray<ParseTree.Node> nodeList = gson.fromJson(treeObj.get("mNodeList"),
-                                new TypeToken<SparseArray<ParseTree.Node>>() {
-                                }.getType());
-                        // set the correct node list
-                        tree.setNodeList(nodeList);
-                        return tree;
-                    }
-                }).registerTypeAdapter(Tag.class, new JsonDeserializer<Tag>() {
-                    /**
-                     * Deserialize a tag JSON to Tag class object.
-                     * @author Adam Yi &lt;xuan@yiad.am&gt;
-                     */
-                    @Override
-                    public Tag deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject tagObj = json.getAsJsonObject();
-                        Gson gson = new Gson();
-                        Tag tag = gson.fromJson(json, Tag.class);
-                        tag.setRegularExpressions((HashSet) gson.fromJson(tagObj.get("mRegularExpressions"), new TypeToken<HashSet<String>>() {
-                        }.getType()));
-                        return tag;
-                    }
-                }).registerTypeAdapter(Trigger.class, new JsonDeserializer<Trigger>() {
-                    /**
-                     * Deserialize a trigger JSON to Trigger class object.
-                     * @author Adam Yi &lt;xuan@yiad.am&gt;
-                     */
-                    @Override
-                    public Trigger deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                        JsonObject triggerObj = json.getAsJsonObject();
-                        Gson gson = new Gson();
-                        Trigger trigger = gson.fromJson(json, Trigger.class);
-                        trigger.setConstraints((HashSet) gson.fromJson(triggerObj.get("mConstraints"), new TypeToken<HashSet<Trigger.Constraint>>() {
-                        }.getType()));
-                        return trigger;
-                    }
-                }).registerTypeAdapter(new TypeToken<LongSparseArray<Tag>>() {
-                }.getType(), new LongSparseArrayTypeAdapter<Tag>(TYPE_TAG))
-                .create();
+
+                    node.setTagList(newTagSet);
+                    return node;
+                }
+            });
+        }
+
+        //if (enabledOnes.contains(JSONUtils.class) || enabledOnes.contains(ParseTree.class)) {
+        // gson = gson.registerTypeAdapter(ParseTree.class, new JsonDeserializer<ParseTree>() {
+        /**
+         * Deserialize a parse tree JSON to ParseTree class object.
+         *
+         * @author Adam Yi &lt;xuan@yiad.am&gt;
+         */
+                /*@Override
+                public ParseTree deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    JsonObject treeObj = json.getAsJsonObject();
+                    Gson gson = gson(new TypeToken<SparseArray<ParseTree.Node>>() {
+                    }.getType());
+                    // Construct a tree (this shouldn't try to parse the sparseArray stuff
+                    ParseTree tree = gson.fromJson(json, ParseTree.class);
+                    SparseArray<ParseTree.Node> nodeList = gson.fromJson(treeObj.get("mNodeList"),
+                            new TypeToken<SparseArray<ParseTree.Node>>() {
+                            }.getType());
+                    // set the correct node list
+                    tree.setNodeList(nodeList);
+                    return tree;
+                }
+            });*/
+        //}
+
+        if (enabledOnes.contains(JSONUtils.class) || enabledOnes.contains(SemanticTemplate.class)) {
+            gson = gson.registerTypeAdapter(SemanticTemplate.class, new JsonDeserializer<SemanticTemplate>() {
+                /**
+                 * Deserialize a trigger JSON to SemanticTemplate class object.
+                 *
+                 * @author Adam Yi &lt;xuan@yiad.am&gt;
+                 */
+                @Override
+                public SemanticTemplate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    Gson gson = gson(Tag.class);
+                    JsonObject obj = json.getAsJsonObject();
+                    return gson.fromJson(json, SemanticTemplate.class)
+                            .tags((HashSet) gson.fromJson(obj.get("mTags"), new TypeToken<HashSet<Tag>>() {
+                            }.getType()))
+                            .constraints((HashSet) gson.fromJson(obj.get("mConstraints"), new TypeToken<HashSet<Constraint>>() {
+                            }.getType()));
+                }
+            });
+        }
+
+        if (enabledOnes.contains(JSONUtils.class) || enabledOnes.contains(new TypeToken<SparseArray<ParseTree.Node>>() {
+        }.getType())) {
+            gson = gson.registerTypeAdapter(new TypeToken<SparseArray<ParseTree.Node>>() {
+                    }.getType(),
+                    new SparseArrayTypeAdapter<ParseTree.Node>(ParseTree.Node.class));
+        }
+
+        return gson.create();
     }
 
     /**
@@ -230,99 +264,23 @@ public class JSONUtils {
     /**
      * Convert a simple object to JSON string
      *
-     * @param object  the object to be converted
-     * @param typeKey a string stating the type of the object
+     * @param object the object to be converted
+     * @param type   the type of the subject to be converted
      * @return the JSON string
      */
-    public static String simpleObjectToJson(Object object, String typeKey) {
-        Gson gson = gson();
-        Type type;
-        switch (typeKey) {
-            case TYPE_TAG:
-                type = new TypeToken<Tag>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER:
-                type = new TypeToken<Trigger>() {
-                }.getType();
-                break;
-            case TYPE_NODE:
-                type = new TypeToken<ParseTree.Node>() {
-                }.getType();
-                break;
-            case TYPE_PARSE_TREE:
-                type = new TypeToken<ParseTree>() {
-                }.getType();
-                break;
-            case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<Tag>>() {
-                }.getType();
-                break;
-            case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<Tag>>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<Trigger>>() {
-                }.getType();
-                break;
-            case TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
-                }.getType();
-                break;
-            default:
-                return "";
-        }
-        return gson.toJson(object, type);
+    public static String simpleObjectToJson(Object object, Type type) {
+        return gson().toJson(object, type);
     }
 
     /**
      * Convert a JSON string to a simple object
      *
-     * @param json    the JSON string to be converted
-     * @param typeKey a string stating the type of the object
+     * @param json the JSON string to be converted
+     * @param type the type of the object
      * @return the Object
      */
-    public static Object jsonToSimpleObject(String json, String typeKey) {
-        Gson gson = gson();
-        Type type;
-        switch (typeKey) {
-            case TYPE_TAG:
-                type = new TypeToken<Tag>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER:
-                type = new TypeToken<Trigger>() {
-                }.getType();
-                break;
-            case TYPE_NODE:
-                type = new TypeToken<ParseTree.Node>() {
-                }.getType();
-                break;
-            case TYPE_PARSE_TREE:
-                type = new TypeToken<ParseTree>() {
-                }.getType();
-                break;
-            case TYPE_TAG_SET:
-                type = new TypeToken<HashSet<Tag>>() {
-                }.getType();
-                break;
-            case TYPE_TAG_ARRAY:
-                type = new TypeToken<LongSparseArray<Tag>>() {
-                }.getType();
-                break;
-            case TYPE_TRIGGER_SET:
-                type = new TypeToken<HashSet<Trigger>>() {
-                }.getType();
-                break;
-            case TYPE_CARD_LIST:
-                type = new TypeToken<ArrayList<HashMap<String, Object>>>() {
-                }.getType();
-                break;
-            default:
-                return null;
-        }
-        return gson.fromJson(json, type);
+    public static Object jsonToSimpleObject(String json, Type type) {
+        return gson().fromJson(json, type);
     }
 
     public static String singleIntegerToSimpleJSON(String name, int value) {

@@ -17,12 +17,12 @@
 package edu.cmu.chimps.messageontap_api;
 
 import android.text.TextUtils;
-import android.util.LongSparseArray;
 import android.util.SparseArray;
+
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
@@ -252,7 +252,7 @@ public class ParseTree {
             mTagSet.add(t);
         }
 
-        public void addTag(Long t) {
+        public void addTag(Integer t) {
             mTagSet.add(t);
         }
 
@@ -303,6 +303,14 @@ public class ParseTree {
         return mNodeList.valueAt(index);
     }
 
+    public void deleteNodeById(int id) {
+        mNodeList.delete(id);
+    }
+
+    public void deleteNodeByIndex(int index) {
+        mNodeList.removeAt(index);
+    }
+
     public int size() {
         return mNodeList.size();
     }
@@ -323,19 +331,19 @@ public class ParseTree {
         mNodeList.get(nodeId).getChildrenIds().removeAll(removeChildrenIdList);
     }
 
-    private void addChildreById(int nodeId, ArrayList<Integer> addChildrenList) {
+    public void addChildrenById(int nodeId, ArrayList<Integer> addChildrenList) {
         mNodeList.get(nodeId).getChildrenIds().addAll(addChildrenList);
     }
 
-    private void setNodeTypeById(int id, String type) {
+    public void setNodeTypeById(int id, String type) {
         mNodeList.get(id).setType(type);
     }
 
-    private void setNodeFlagById(int nodeId, Flag flag) {
+    public void setNodeFlagById(int nodeId, Flag flag) {
         mNodeList.get(nodeId).setFlag(flag);
     }
 
-    private void setRelationById(int advmodNodeId, String relation) {
+    public void setRelationById(int advmodNodeId, String relation) {
         mNodeList.get(advmodNodeId).setRelation(relation);
     }
 
@@ -480,221 +488,9 @@ public class ParseTree {
         return false;
     }
 
-    /**
-     * Reduce the tree to keep only essential data
-     * This should not be called directly, but
-     * instead called from the other reduce function.
-     */
-    private void recursiveReduce(int nodeId) {
-        if (getNodeById(nodeId).getChildrenIds() != null) {
-            ArrayList<Integer> toDelete = new ArrayList<>();
-            ArrayList<Integer> toAdd = new ArrayList<>();
-            int subjNodeId = NOT_EXIST;
-            int dobjNodeId = NOT_EXIST;
-            int iobjNodeId = NOT_EXIST;
-            for (int childId : getNodeById(nodeId).getChildrenIds()) {
-                recursiveReduce(childId);
-                switch (getNodeById(childId).getFlag()) {
-                    case MERGE:
-                        setNodeWordById(nodeId, getNodeById(childId).getWord() + " " + getNodeById(nodeId).getWord());   //???TODO: Or node.getWord() + child.getWord()
-                    case DELETE:
-                        if (getNodeById(childId).getChildrenIds() != null) {
-                            for (int ccId : getNodeById(childId).getChildrenIds()) {
-                                setNodeParentId(ccId, nodeId);
-                                toAdd.add(ccId);
-                            }
-                        }
-                        toDelete.add(childId);
-                        mNodeList.remove(childId);
-                        continue;
-                }
-                /* TODO check the relationship between Subjects (getRelation == "nsubj")
-                   TODO and Objects (dobj and pobj)
-                 */
-                if (getNodeById(childId).getRelation().equals(DEP_NOUN_SUBJECT))
-                    subjNodeId = childId;
-                if (getNodeById(childId).getRelation().equals(DEP_OBJECTIVE))
-                    dobjNodeId = childId;
-                if (getNodeById(childId).getRelation().equals(DEP_INDIRECT_OBJECTIVE))
-                    iobjNodeId = childId;
-            }
-            if (subjNodeId != NOT_EXIST) {
-                if (dobjNodeId != NOT_EXIST) {
-                    setNodeParentId(subjNodeId, dobjNodeId);
-                    addChildById(dobjNodeId, subjNodeId);
-                    toDelete.add(subjNodeId);
-                } else if (iobjNodeId != NOT_EXIST) {
-                    setNodeParentId(subjNodeId, iobjNodeId);
-                    addChildById(iobjNodeId, subjNodeId);
-                    toDelete.add(subjNodeId);
-                }
-            }
-            removeChildrenById(nodeId, toDelete);
-            addChildreById(nodeId, toAdd);
-        }
-        if (getNodeById(nodeId).getWord().toLowerCase().equals("when")) {
-            setNodeWordById(nodeId, "time");
-            setNodeTypeById(nodeId, POS_NOUN);
-        }
-        if (getNodeById(nodeId).getWord().toLowerCase().equals("where")) {
-
-            setNodeWordById(nodeId, "location");
-            setNodeTypeById(nodeId, POS_NOUN);
-        }
-        if (getNodeById(nodeId).getType().equals(POS_NOUN) || getNodeById(nodeId).getType().equals(POS_PROPERNOUN)) { // Nouns
-            return;
-        }
-        if (getNodeById(nodeId).getType().startsWith(POS_PRONOUN)) {
-            if (getNodeById(nodeId).getWord().toLowerCase().equals("you")) {
-                if (getNodeById(nodeId).getRelation().equals(DEP_NOUN_SUBJECT)) {
-                    return;
-                } else {
-                    getNodeById(nodeId).setFlag(Flag.DELETE);
-                    return;
-                }
-            }
-            if (!getNodeById(nodeId).getWord().toLowerCase().equals("me")) {
-                return;
-            }
-        }
-        setNodeFlagById(nodeId, Flag.DELETE);
-    }
-
-    public void resolveObjectRelation(int nodeId) {
-        if (getNodeById(nodeId).getChildrenIds() != null) {
-            ArrayList<Integer> toDelete = new ArrayList<>();
-            int subjNodeId = NOT_EXIST;
-            int dobjNodeId = NOT_EXIST;
-            int iobjNodeId = NOT_EXIST;
-            for (int childId : getNodeById(nodeId).getChildrenIds()) {
-                if (getNodeById(childId).getRelation().equals(DEP_NOUN_SUBJECT))
-                    subjNodeId = childId;
-                if (getNodeById(childId).getRelation().equals(DEP_OBJECTIVE))
-                    dobjNodeId = childId;
-                if (getNodeById(childId).getRelation().equals(DEP_INDIRECT_OBJECTIVE))
-                    iobjNodeId = childId;
-            }
-            if (subjNodeId != NOT_EXIST) {
-                if (dobjNodeId != NOT_EXIST) {
-                    setNodeParentId(subjNodeId, dobjNodeId);
-                    addChildById(dobjNodeId, subjNodeId);
-                    toDelete.add(subjNodeId);
-                } else if (iobjNodeId != NOT_EXIST) {
-                    setNodeParentId(subjNodeId, iobjNodeId);
-                    addChildById(iobjNodeId, subjNodeId);
-                    toDelete.add(subjNodeId);
-                }
-            }
-            removeChildrenById(nodeId, toDelete);
-        }
-
-    }
-
     private void setRootId(int newRootId) {
         mRootId = newRootId;
         mNodeList.get(newRootId).setParentId(NOT_EXIST);
-    }
-
-    /**
-     * Reduce the tree to keep only essential data
-     */
-    public void reduce(Trigger matchedTrigger) {
-        preReduce(matchedTrigger);
-        doReduce();
-    }
-
-    /**
-     * Mark all nodes untagged or without trigger tags as to be deleted
-     */
-    private void preReduce(Trigger matchedTrigger) {
-        for (int i = mNodeList.size() - 1; i > -1; --i) {
-            Node node = mNodeList.valueAt(i);
-            Set<Object> tagList = node.getTagList();
-            tagList.retainAll(matchedTrigger.getAllTags());
-            if (tagList.size() == 0)
-                node.setFlag(Flag.DELETE);
-        }
-    }
-
-    /**
-     * Reduce the tree to keep only essential data
-     * This should not be called directly, but
-     * instead called from the other reduce function.
-     */
-    private void doReduce() {
-        Node root = mNodeList.get(mRootId);
-        recursiveReduce(mRootId);            //root Node
-        if (root.getFlag() == Flag.DELETE) {
-            Iterator<Integer> it = root.getChildrenIds().iterator();
-            if (it.hasNext()) {
-                int firstId = it.next();
-                if (root.getChildrenIds().size() > 1) {
-                    ArrayList<Integer> toDemote = new ArrayList<>();
-                    int nodeId;
-                    while (it.hasNext()) {
-                        nodeId = it.next();
-                        setNodeParentId(nodeId, root.getId());
-                        toDemote.add(nodeId);
-                    }
-                    addChildreById(firstId, toDemote);
-                    removeChildrenById(root.getId(), toDemote);
-                }
-                if (getNodeById(firstId).getChildrenIds().size() > 0) {
-                    ArrayList<Integer> toPromote = new ArrayList<>();
-                    Iterator<Integer> cIt = getNodeById(firstId).getChildrenIds().iterator();
-                    int cFirstId = cIt.next(), cNodeId;
-                    while (cIt.hasNext()) {
-                        cNodeId = cIt.next();
-                        if (getNodeById(cNodeId).getRelation().equals(DEP_CONJUNCTION) || getNodeById(cNodeId).getRelation().equals(DEP_COORDINATING_CONJUNCTION)) {
-                            setNodeParentId(cNodeId, root.getId());
-                            toPromote.add(cNodeId);
-                        }
-                    }
-                    addChildreById(root.getId(), toPromote);
-                    removeChildrenById(cFirstId, toPromote);
-                }
-
-                changeRoot(root.getChildrenIds().iterator().next());
-                mNodeList.remove(root.getId());
-            }
-        }
-        // advmod
-        if (root.getChildrenIds().size() > 0) {
-            int advmodNodeId = NOT_EXIST;
-            for (Integer nodeId : root.getChildrenIds()) {
-                if (getNodeById(nodeId).getRelation().equals(DEP_ADVERB_MODIFIER)) {
-                    advmodNodeId = nodeId;
-                    break;
-                }
-            }
-            if (advmodNodeId != NOT_EXIST) {
-                // swap the contents
-                String tmp = getNodeById(advmodNodeId).getType();
-                setNodeTypeById(advmodNodeId, root.getType());
-                root.setType(tmp);
-                tmp = getNodeById(advmodNodeId).getWord();
-                setNodeWordById(advmodNodeId, root.getWord());
-                root.setWord(tmp);
-                tmp = getNodeById(advmodNodeId).getRelation();
-                setRelationById(advmodNodeId, root.getRelation());
-                root.setRelation(tmp);
-                resolveObjectRelation(root.getId());
-            }
-        }
-
-        removeFlagDelete();
-
-        // TODO: check for a case which *doesn't* use advmod (when or where) but still requires some special handling re. subject and object?
-    }
-
-
-    private void removeFlagDelete() {
-        ArrayList<Integer> deleteFlagNodes = new ArrayList<>();
-        for (int i = mNodeList.size() - 1; i > -1; --i) {
-            if (mNodeList.valueAt(i).getFlag() == Flag.DELETE) {
-                mNodeList.removeAt(i);
-            }
-        }
     }
 
     /**
@@ -726,20 +522,8 @@ public class ParseTree {
         }
     }
 
-
-    /**
-     * @param tagList : A list of tags which are candidates may add to a node
-     *                Add Tag to Every Tree Node
-     */
-    public void addTag(LongSparseArray<Tag> tagList) {
-        for (int i = mNodeList.size() - 1; i > -1; --i) {
-            Node node = mNodeList.valueAt(i);
-            for (int j = tagList.size() - 1; j > -1; --j) {
-                Tag tag = tagList.valueAt(j);
-                if (tag.matchWord(node.getWord(), node.getEntity()))
-                    node.addTag(tagList.keyAt(j));
-            }
-        }
+    public int getRootId() {
+        return mRootId;
     }
 
     /**
@@ -769,7 +553,7 @@ public class ParseTree {
     }
 
     public String toJson() {
-        return JSONUtils.simpleObjectToJson(this, JSONUtils.TYPE_PARSE_TREE);
+        return JSONUtils.simpleObjectToJson(this, ParseTree.class);
     }
 
     public static ArrayList<ParseTree> split(ParseTree tree) {

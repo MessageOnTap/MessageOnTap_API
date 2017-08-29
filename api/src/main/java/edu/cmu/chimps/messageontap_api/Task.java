@@ -49,7 +49,7 @@ public class Task {
 
     public long getTimeStamp(int i) {
         if (i < STATUS_NOT_EXIST || i > STATUS_FAILED)
-            throw new AssertionError("Wrong status to be used to get timestamp");
+            throw new UnsupportedOperationException("Wrong status to be used to get timestamp");
         if (i == -1)
             i = status;
         return timestamp[i];
@@ -57,7 +57,7 @@ public class Task {
 
     public void updateStatus(int i) {
         if (i < STATUS_NOT_EXIST || i > STATUS_FAILED)
-            throw new AssertionError("Wrong status to be set for task");
+            throw new UnsupportedOperationException("Wrong status to be set for task");
         if (status == i)
             return;
         status = i;

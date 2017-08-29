@@ -24,7 +24,7 @@ public class MethodConstants {
     /**
      * types of tasks
      */
-    public static final String INTERNAL_TYPE = "internal_type";
+    public static final String INTERNAL_TYPE = "internal";
     public static final String GRAPH_TYPE = "graph";
     public static final String UI_TYPE = "ui";
     public static final String ACTION_TYPE = "action";

@@ -129,10 +129,11 @@ public class ServiceAttributes {
         public static final String TAG_PERSON = "person";
         public static final String TAG_LOCATION = "location";
         public static final String TAG_EVENT = "event";
-        public static final String TAG_PHONE_NUMBER = "phone_number";
+        public static final String TAG_PHONE_NUMBER = "phone";
         public static final String TAG_EMAIL_ADDRESS = "email";
-        public static final String TAG_STREET_ADDRESS = "street_address";
+        public static final String TAG_STREET_ADDRESS = "address";
         public static final String TAG_WEB_URL = "url";
+        public static final String API_VERSION = BuildConfig.API_VERSION;
 
     }
 
