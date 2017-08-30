@@ -3,6 +3,7 @@
 
 # MessageOnTap API 
 [![Build Status](https://jenkins.yiad.am/buildStatus/icon?job=MessageOnTap_API)](https://jenkins.yiad.am/job/MessageOnTap_API)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/223ff552903848acab1de3037fb85027)](https://www.codacy.com/app/adamyi/MessageOnTap_API?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MessageOnTap/MessageOnTap_API&amp;utm_campaign=Badge_Grade)
 
 MessageOnTap API ([CHANGE LOG](CHANGELOG.md), lastest version: <u>0.3.4</u>) is an IPC ([Interprocess Communication](https://en.wikipedia.org/wiki/Inter-process_communication)) library for MessageOnTap-powered plugins to communicate to MessageOnTap Core. MessageOnTap team has already develoepd several example IM plug-ins, which can be found [here](https://github.com/MessageOnTap/MessageOnTap_Plugins). 
 
