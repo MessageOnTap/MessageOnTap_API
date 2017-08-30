@@ -132,14 +132,19 @@ public abstract class MessageOnTapPlugin extends Service {
         @Override
         public String getSemanticTemplates() throws RemoteException {
             Set<SemanticTemplate> templates = semanticTemplates();
-            Set<String> templateNames = new HashSet<>(RESERVED_KEYWORDS);
+            Set<String> templateNames = new HashSet<>();
             for (SemanticTemplate template : templates) {
                 if (templateNames.contains(template.name()))
                     throw new UnsupportedOperationException("Duplicate semantic templates!");
-                Set<String> tagNames = new HashSet<>(RESERVED_KEYWORDS);
+                templateNames.add(template.name());
+                Set<String> tagNames = new HashSet<>();
                 for (Tag tag : template.tags()) {
                     if (tagNames.contains(tag.getName()))
-                        throw new UnsupportedOperationException("Duplicate or reserved tag!");
+                        throw new UnsupportedOperationException("Duplicate tag!");
+                    if (RESERVED_KEYWORDS.contains(tag.getName())
+                            && tag.getRegularExpressions() != null
+                            && tag.getRegularExpressions().size() > 0)
+                        throw new UnsupportedOperationException("Common (built-in) tags cannot have regular expressions set.");
                     tagNames.add(tag.getName());
                 }
             }
