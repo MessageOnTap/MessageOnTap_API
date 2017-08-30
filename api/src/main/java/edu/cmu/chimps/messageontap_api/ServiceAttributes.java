@@ -192,7 +192,7 @@ public class ServiceAttributes {
         public final static String SHARE_RESULT_LIST_SELECTED = "selected";
     }
 
-    public class UI {
+    public static class UI {
         public final static String BUBBLE_FIRST_LINE = "first_line";
         public final static String BUBBLE_SECOND_LINE = "second_line";
         public final static String ICON_TYPE_STRING = "icon_type";
@@ -200,11 +200,13 @@ public class ServiceAttributes {
         public final static String HTML_STRING = "html_string";
         public final static String UPDATE_OFFSET = "update_offset";
 
-        public class Status{
-            public final static String CLICKED = "clicked";
-            public final static String DISMISSED = "dismissed";
-            public final static String TIME_OUT = "time_out";
-            public final static String LEFT_APP = "left_app";
+        public enum Status{
+            CLICKED,
+            DISMISSED,
+            TIME_OUT,
+            LEFT_APP
         }
     }
+
+
 }
