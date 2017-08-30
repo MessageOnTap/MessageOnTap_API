@@ -29,7 +29,6 @@ public class Tag {
 
 
     public Tag(String name, Set<String> regularExpressions, Type type) {
-        //TODO: check if it is a preserved keyword (common tag) with re set. If so, throw exception.
         this.mName = name;
         this.mRegularExpressions = regularExpressions;
         this.mType = type;

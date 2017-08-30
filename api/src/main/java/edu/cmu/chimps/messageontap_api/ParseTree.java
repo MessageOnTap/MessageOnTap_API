@@ -19,8 +19,6 @@ package edu.cmu.chimps.messageontap_api;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -115,6 +113,13 @@ public class ParseTree {
 
     public enum Flag {NORMAL, DELETE, MERGE}
 
+
+    private SparseArray<Node> mNodeList;
+    private int mRootId;
+
+    public Mood mood;
+    public Direction direction;
+
     /*
      * Node of ParseTree
      * Variables:                                                Functions:
@@ -130,6 +135,8 @@ public class ParseTree {
      * + toString()
      * + print()
      */
+
+
     // START Node Class
     static public class Node {
 
@@ -262,12 +269,6 @@ public class ParseTree {
 
     }
     // END Node Class
-
-    private SparseArray<Node> mNodeList;
-    private int mRootId;
-
-    public Mood mood;
-    public Direction direction;
 
     public ParseTree() {
         this.mNodeList = new SparseArray<>();
