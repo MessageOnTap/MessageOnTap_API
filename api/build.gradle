@@ -84,8 +84,8 @@ artifactory {
 
             // Do not put credentials here.
             // Put them in ~/.gradle/gradle.properties
-            username = getArtifactoryUsername()
-            password = getArtifactoryPassword()
+            username = this.getArtifactoryUsername()
+            password = this.getArtifactoryPassword()
         }
         defaults {
             publications('aar')
