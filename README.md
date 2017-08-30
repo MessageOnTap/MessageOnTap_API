@@ -4,7 +4,7 @@
 # MessageOnTap API 
 [![MessageOnTap-Core](https://img.shields.io/badge/GitHub-MessageOnTap_Core-blue.svg?style=flat)](https://github.com/MessageOnTap/MessageOnTap)
 [![License](https://img.shields.io/badge/license-Apache_2.0-green.svg?style=flat)](https://github.com/fastlane/fastlane/blob/master/LICENSE)
-[![Build Status](https://jenkins.yiad.am/buildStatus/icon?job=MessageOnTap_API)](https://jenkins.yiad.am/job/MessageOnTap_API)
+[![Build Status](https://jenkins.yiad.am/buildStatus/icon?job=MessageOnTap_API-build)](https://jenkins.yiad.am/job/MessageOnTap_API-build/)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/223ff552903848acab1de3037fb85027)](https://www.codacy.com/app/adamyi/MessageOnTap_API?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MessageOnTap/MessageOnTap_API&amp;utm_campaign=Badge_Grade)
 
 MessageOnTap API ([CHANGE LOG](CHANGELOG.md), lastest version: <u>0.3.4</u>) is an IPC ([Interprocess Communication](https://en.wikipedia.org/wiki/Inter-process_communication)) library for MessageOnTap-powered plugins to communicate to MessageOnTap Core. MessageOnTap team has already develoepd several example IM plug-ins, which can be found [here](https://github.com/MessageOnTap/MessageOnTap_Plugins). 
@@ -28,3 +28,10 @@ If one registered semantic template matches an instant message, MessageOnTap-Cor
 * **[Graph Operations](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Personal-Graph)**, to query (retrieve or update) a piece of personal knowledge graph.
 
 ![One Loop of Session](images/session.jpg)
+
+## Contributing
+### License
+This project is open-sourced under Apache 2.0.
+
+### New Version Releasing
+Change the VERSION file, README file, and CHANGELOG file. The Jenkins server will do the hard job for deploying onto our artifactory server (maven repo).
