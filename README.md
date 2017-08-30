@@ -2,6 +2,8 @@
 
 
 # MessageOnTap API 
+[![MessageOnTap-Core](https://img.shields.io/badge/GitHub-MessageOnTap_Core-blue.svg?style=flat)](https://github.com/MessageOnTap/MessageOnTap)
+[![License](https://img.shields.io/badge/license-Apache_2.0-green.svg?style=flat)](https://github.com/fastlane/fastlane/blob/master/LICENSE)
 [![Build Status](https://jenkins.yiad.am/buildStatus/icon?job=MessageOnTap_API)](https://jenkins.yiad.am/job/MessageOnTap_API)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/223ff552903848acab1de3037fb85027)](https://www.codacy.com/app/adamyi/MessageOnTap_API?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MessageOnTap/MessageOnTap_API&amp;utm_campaign=Badge_Grade)
 
