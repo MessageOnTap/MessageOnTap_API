@@ -27,7 +27,7 @@ If one registered semantic template matches an instant message, MessageOnTap-Cor
 * **[Action](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Action-Shortcuts)**, to perform all sorts of action shortcuts of existing features or services on phone, like redirecting users to the default Gmail app to compose email;
 * **[Graph Operations](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Personal-Graph)**, to query (retrieve or update) a piece of personal knowledge graph.
 
-![One Loop of Session](images/session.jpg)
+For more details in the MessageOnTap communication protocol (aka. session management), please refer to [this page](https://github.com/MessageOnTap/MessageOnTap_API/wiki/Session_Management).
 
 ## Contributing
 ### License
