@@ -19,7 +19,7 @@ Using the MessageOnTap framework, developers can create plugins for instant mess
 
 In MessageOnTap development framework, while plugins are in charge of the logical flow (what to do after users receive certain messages), MessageOnTap-Core does the heavy lifting to offer message acquisition, message understanding, common action shortcuts, and personal graph operations.
 
-When a plugin is enabled by the user, MessageOnTap-Core will ask the plugin to set up a few [semantic templates](https://github.com/MessageOnTap/MessageOnTap_API/wiki/MessageOnTap's-Plugin-Core-Architecture#register-semantic-templates) to specify what kind of messages this plugin deals with. When user receives a message, MessageOnTap-core will analyze it and store it as a ParseTree with tags matched, and will then match all the semantic templates set by plugins.
+When a plugin is enabled by the user, MessageOnTap-Core will ask the plugin to set up a few [semantic templates](https://github.com/MessageOnTap/MessageOnTap_API/wiki/MessageOnTap's-Plugin-Core-Architecture#register-semantic-templates) to specify what kind of messages this plugin deals with. When user receives a message, MessageOnTap-core will analyze it and transform it into a dependency-based parse tree with matched tags, and then match all the semantic templates set by plugins.
 
 If one registered semantic template matches an instant message, MessageOnTap-Core will initiate a new session with a tagged tree. A tagged tree represents a dependency tree with all essential linguistic components of a message. The tagged tree can serve as the basis for plugin to perform a series of following tasks over the communication within the session:
 
