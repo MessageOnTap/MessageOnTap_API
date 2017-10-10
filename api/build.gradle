@@ -1,3 +1,5 @@
+// MessageOnTap API gradle configuration file (module-wide)
+
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'com.android.library'
@@ -5,14 +7,14 @@ apply plugin: 'com.android.library'
 group = 'com.github.adamyi'
 def libraryGroupId = 'messageontap'
 def libraryArtifactId = 'api'
-def libraryVersion = "1.0.0-nightly-7"
+def libraryVersion = new File('VERSION').text
 
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -55,7 +57,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.1'
 }
 
-// yiad.am jfrog repo
 publishing.publications {
     aar(MavenPublication) {
         groupId libraryGroupId
@@ -83,8 +84,8 @@ artifactory {
 
             // Do not put credentials here.
             // Put them in ~/.gradle/gradle.properties
-            username = yiadam_jfrog_username
-            password = yiadam_jfrog_password
+            username = this.getArtifactoryUsername()
+            password = this.getArtifactoryPassword()
         }
         defaults {
             publications('aar')

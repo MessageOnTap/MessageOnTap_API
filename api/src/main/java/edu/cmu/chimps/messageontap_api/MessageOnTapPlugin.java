@@ -344,11 +344,9 @@ public abstract class MessageOnTapPlugin extends Service {
                 if (task == null) {
                     Log.e(TAG, "Received response refetch request for a task that does not exist... Ignored");
                 } else {
-                    if (task.getStatus() == 1) {
+                    if (task.getStatus() == Task.STATUS_DONE)
                         sendData(task.getTaskData(), "task response (resend)", 2);
-                    } else {
-                        // TODO:retry
-                    }
+                    //TODO: think what we have to do if status is not STATUS_DONE
                 }
                 break;
             case MethodConstants.INTERNAL_METHOD_NEW_SESSION:

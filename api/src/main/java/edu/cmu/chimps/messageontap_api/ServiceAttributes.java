@@ -20,6 +20,9 @@ package edu.cmu.chimps.messageontap_api;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused", "SameParameterValue"})
 public class ServiceAttributes {
     public static class Graph {
+        public static final String SYNTAX_TREE = "syntax_tree";
+        public static final String CARD_LIST = "card_list";
+
         public static class Person {
             public static final String TYPE = "person_type";
             public static final String NAME = "person_name";
@@ -108,10 +111,6 @@ public class ServiceAttributes {
             public static final String SIZE = "document_size";
             public static final String NODE_ID = "document_node_id";
         }
-
-        public static final String SYNTAX_TREE = "syntax_tree";
-        public static final String CARD_LIST = "card_list";
-
     }
 
     public static class Internal {
@@ -134,7 +133,6 @@ public class ServiceAttributes {
         public static final String TAG_STREET_ADDRESS = "address";
         public static final String TAG_WEB_URL = "url";
         public static final String API_VERSION = BuildConfig.API_VERSION;
-
     }
 
     public class Action {
