@@ -91,7 +91,7 @@ public abstract class MessageOnTapPlugin extends Service {
                             session.failTask(tid);
                         }
                     } else // otherwise, deal with session control related packets
-                        handleInternalTask(tid, sid, data.method());
+                        handleInternalTask(sid, tid, data.method());
 
                 } else {
 
