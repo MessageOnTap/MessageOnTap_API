@@ -41,6 +41,7 @@ public class Session {
         mTasks = new LongSparseArray<>();
         mTasks.put(0L, data);
         mUncompleted.add(0L);
+        lastTID = 0;
     }
 
     public String getPackageName() {
@@ -59,12 +60,24 @@ public class Session {
         return mUncompleted.contains(tid);
     }
 
-    public Task newTask(Task task) {
-        long tid = ++lastTID;
-        task.setTaskData(task.getTaskData().tid(tid));
+    public boolean hasTask(long tid) {
+        return mTasks.indexOfKey(tid) >= 0;
+    }
+
+    public Task addTask(Task task) {
+        long tid = task.getTaskData().tid();
         mTasks.put(tid, task);
         mUncompleted.add(tid);
         return task;
+    }
+
+    public Task newTask(Task task) {
+        ++lastTID;
+        // Fail-safe approch for uncontinuous TID (maybe possible if developer adds tasks directly instead of always calling this function)
+        while (hasTask(lastTID))
+            ++lastTID;
+        task.setTaskData(task.getTaskData().tid(lastTID));
+        return addTask(task);
     }
 
     public void updateTaskResponse(long tid) {

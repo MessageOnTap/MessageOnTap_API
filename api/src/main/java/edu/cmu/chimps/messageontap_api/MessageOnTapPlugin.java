@@ -75,7 +75,7 @@ public abstract class MessageOnTapPlugin extends Service {
                         } catch (JSONException e) {
                             Log.e(TAG, "Exception caught while parsing JSON sent by core - plugin manager (new session init):");
                             e.printStackTrace();
-                            Session session = sessionList.get(sid);
+                            Session session = sessionList.get(sid); //FIXME: session probably does not exist now... Check.
                             session.failTask(tid);
                             return;
                         }
@@ -87,7 +87,7 @@ public abstract class MessageOnTapPlugin extends Service {
                         } catch (Exception e) {
                             Log.e(TAG, "Exception caught while running plugin code (new session init):");
                             e.printStackTrace();
-                            Session session = sessionList.get(sid);
+                            Session session = sessionList.get(sid); //FIXME: session probably does not exist now... Check.
                             session.failTask(tid);
                         }
                     } else // otherwise, deal with session control related packets
