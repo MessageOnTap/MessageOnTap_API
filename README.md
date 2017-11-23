@@ -33,5 +33,8 @@ For more details in the MessageOnTap communication protocol (aka. session manage
 ### License
 This project is open-sourced under Apache 2.0.
 
+### How to Contribute
+See the [Contributing Guidelines](CONTRIBUTING.md).
+
 ### New Version Releasing
 Change the VERSION file, README file, and CHANGELOG file. The Jenkins server will do the hard job for deploying onto our artifactory server (maven repo).
